@@ -181,7 +181,7 @@ public class WorkerNodeProfileV1 extends AbstractX509PIP {
         if (fqans != null && !fqans.isEmpty()) {
             Attribute primaryFqanAttribute = new Attribute();
             primaryFqanAttribute.setId(WorkerNodeProfileV1Constants.ATT_PRIMARY_FQAN);
-            primaryFqanAttribute.setDataType(Attribute.DT_STRING);
+            primaryFqanAttribute.setDataType(WorkerNodeProfileV1Constants.DAT_FQAN);
             primaryFqanAttribute.getValues().add(fqans.get(0).getFQAN());
             log.debug("Extracted attribute: {}", primaryFqanAttribute);
             vomsAttributes.add(primaryFqanAttribute);
@@ -189,7 +189,7 @@ public class WorkerNodeProfileV1 extends AbstractX509PIP {
             // handle rest of the fqans
             Attribute fqanAttribute = new Attribute();
             fqanAttribute.setId(WorkerNodeProfileV1Constants.ATT_FQAN);
-            fqanAttribute.setDataType(Attribute.DT_STRING);
+            fqanAttribute.setDataType(WorkerNodeProfileV1Constants.DAT_FQAN);
             for (FQAN fqan : fqans) {
                 fqanAttribute.getValues().add(fqan.getFQAN());
             }

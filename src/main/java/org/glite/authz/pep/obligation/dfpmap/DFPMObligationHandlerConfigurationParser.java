@@ -30,6 +30,7 @@ import org.glite.authz.pep.obligation.dfpmap.UpdatingDFPM.DFPMFactory;
 import org.ini4j.Ini.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 
 /** INI configuration parser that constructs {@link DFPMObligationHandler}s. */
 public class DFPMObligationHandlerConfigurationParser implements IniOHConfigurationParser {
@@ -148,13 +149,13 @@ public class DFPMObligationHandlerConfigurationParser implements IniOHConfigurat
      * @throws ConfigurationException thrown if the is a problem reading the mapping file
      */
     private DFPM buildMapping(String mappingFilePath, int refreshPeriod) throws ConfigurationException {
-        DFPMFactory dfpmFactory = new DFPMFactory(){
+        DFPMFactory dfpmFactory = new DFPMFactory() {
             /** {@inheritDoc} */
             public DFPM newInstance() {
                 return new OrderedDFPM();
             }
         };
-        
+
         return new UpdatingDFPM(dfpmFactory, mappingFilePath, refreshPeriod);
     }
 
@@ -171,20 +172,24 @@ public class DFPMObligationHandlerConfigurationParser implements IniOHConfigurat
     private PoolAccountManager buildPoolAccountManager(String gridMapDirPath) throws ConfigurationException {
         File gridMapDir = new File(gridMapDirPath);
         if (!gridMapDir.exists()) {
-            log.error("Grid map directory " + gridMapDir.getAbsolutePath() + " does not exist");
-            throw new ConfigurationException("Grid map directory " + gridMapDir.getAbsolutePath() + " does not exist");
+            String errMsg = MessageFormatter.format("Grid map directory {} does not exist", gridMapDir
+                    .getAbsolutePath());
+            log.error(errMsg);
+            throw new ConfigurationException(errMsg);
         }
 
         if (!gridMapDir.canRead()) {
-            log.error("Grid map directory " + gridMapDir.getAbsolutePath() + " is not readable by this process");
-            throw new ConfigurationException("Grid map directory " + gridMapDir.getAbsolutePath()
-                    + " is not readable by this process");
+            String errMsg = MessageFormatter.format("Grid map directory {} is not readable by this process", gridMapDir
+                    .getAbsolutePath());
+            log.error(errMsg);
+            throw new ConfigurationException(errMsg);
         }
 
         if (!gridMapDir.canWrite()) {
-            log.error("Grid map directory " + gridMapDir.getAbsolutePath() + " is not writable by this process");
-            throw new ConfigurationException("Grid map directory " + gridMapDir.getAbsolutePath()
-                    + " is not writable by this process");
+            String errMsg = MessageFormatter.format("Grid map directory {} is not writable by this process", gridMapDir
+                    .getAbsolutePath());
+            log.error(errMsg);
+            throw new ConfigurationException(errMsg);
         }
         return new GridMapDirPoolAccountManager(gridMapDir);
     }

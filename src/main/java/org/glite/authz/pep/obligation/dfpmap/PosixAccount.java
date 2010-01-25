@@ -57,10 +57,10 @@ public class PosixAccount implements Serializable {
 
         this.primaryGroup = newPrimaryGroup;
 
-        if (newSecondaryGroups != null && !newSecondaryGroups.isEmpty()) {
-            this.secondaryGroups = Collections.unmodifiableList(new ArrayList<String>(newSecondaryGroups));
+        if (newSecondaryGroups == null || newSecondaryGroups.isEmpty()) {
+            secondaryGroups = Collections.emptyList();
         } else {
-            this.secondaryGroups = Collections.emptyList();
+            secondaryGroups = Collections.unmodifiableList(new ArrayList<String>(newSecondaryGroups));
         }
 
         computeString();

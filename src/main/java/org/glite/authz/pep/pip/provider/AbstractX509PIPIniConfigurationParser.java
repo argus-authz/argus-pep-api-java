@@ -28,7 +28,7 @@ import org.ini4j.Ini.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Configuration parser for {@link SCASLegacyPIP} PIPs. */
+/** Configuration parser for {@link AbstractX509PIP} PIPs. */
 public abstract class AbstractX509PIPIniConfigurationParser implements IniPIPConfigurationParser {
 
     /**

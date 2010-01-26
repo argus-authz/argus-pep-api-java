@@ -196,7 +196,7 @@ public class DFPMObligationHandler extends AbstractObligationHandler {
         Attribute primaryFQANAttribute = null;
 
         for (Attribute attribute : subject.getAttributes()) {
-            if (attribute.getId().equals(SCASLegacyPIP.VOMS_PRIMARY_FQAN)) {
+            if (attribute.getId().equals(WorkerNodeProfileV1Constants.ATT_PRIMARY_FQAN)) {
                 log.debug("Extracted primary FQAN attribute from request: {}", attribute);
                 primaryFQANAttribute = attribute;
                 break;
@@ -208,7 +208,7 @@ public class DFPMObligationHandler extends AbstractObligationHandler {
             return null;
         }
 
-        if (!primaryFQANAttribute.getDataType().equals(Attribute.DT_STRING)) {
+        if (!primaryFQANAttribute.getDataType().equals(WorkerNodeProfileV1Constants.DAT_FQAN)) {
             log.error("Subject primary FQAN attribute of the authorization request was of the incorrect data type: {}",
                     primaryFQANAttribute.getDataType());
             throw new ObligationProcessingException("Invalid request, subject attribute of invalid data type");
@@ -247,7 +247,7 @@ public class DFPMObligationHandler extends AbstractObligationHandler {
         Attribute secondaryFQANsAttribute = null;
 
         for (Attribute attribute : subject.getAttributes()) {
-            if (attribute.getId().equals(SCASLegacyPIP.VOMS_FQAN)) {
+            if (attribute.getId().equals(WorkerNodeProfileV1Constants.ATT_FQAN)) {
                 log.debug("Extracted secondary FQAN attribute from request: {}", attribute);
                 secondaryFQANsAttribute = attribute;
                 break;
@@ -259,7 +259,7 @@ public class DFPMObligationHandler extends AbstractObligationHandler {
             return null;
         }
 
-        if (!secondaryFQANsAttribute.getDataType().equals(Attribute.DT_STRING)) {
+        if (!secondaryFQANsAttribute.getDataType().equals(WorkerNodeProfileV1Constants.DAT_FQAN)) {
             log.error(
                     "Subject secondary FQAN attribute of the authorization request was of the incorrect data type: {}",
                     secondaryFQANsAttribute.getDataType());

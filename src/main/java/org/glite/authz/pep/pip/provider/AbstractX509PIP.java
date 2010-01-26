@@ -44,13 +44,11 @@ import org.glite.voms.ac.ACValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- */
+/** Base class for PIPs which work with X.509 certificates. */
 public abstract class AbstractX509PIP extends AbstractPolicyInformationPoint {
 
     /** Class logger. */
-    private Logger log = LoggerFactory.getLogger(SCASLegacyPIP.class);
+    private Logger log = LoggerFactory.getLogger(AbstractX509PIP.class);
 
     /** Reads a set of certificates in to a chain of {@link X509Certificate} objects. */
     private FileCertReader certReader;

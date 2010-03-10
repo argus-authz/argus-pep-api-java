@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) Members of the EGEE Collaboration. 2007.
+    See http://www.eu-egee.org/partners/ for details on the copyright
+    holders.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    $Id$
+-->
+<project name="org.glite.authz.pep-java" default="install-layout" basedir=".">
+
+    <!-- workspace directories -->
+    <property name="workspace.dir" location=".." />
+    <property name="stage.dir" location="${workspace.dir}/stage" />
+    <property name="stage.lib.dir" location="${stage.dir}/share/java" />
+
+    <!-- ETICS org.glite and externals component -->
+    <echo message="importing project/etics.xml" />
+    <import file="project/etics.xml" />
+
+    <!-- local properties -->
+    <property file="build.properties" />
+
+    <!-- module directories -->
+    <property name="src.dir" location="${basedir}/src/main/java" />
+    <property name="test.src.dir" location="${basedir}/src/test/java" />
+    <property name="bin.dir" location="${basedir}/bin" />
+    <property name="doc.dir" location="${basedir}/doc" />
+    
+    <!-- build dirs -->
+    <property name="build.dir" location="${basedir}/build" />
+    <property name="classes.dir" location="${build.dir}/classes" />
+    <property name="test.classes.dir" location="${build.dir}/test/classes" />
+    
+    <!-- install dirs -->
+    <property name="install.dir" location="${build.dir}/glite" />
+        
+    
+    <!-- init -->
+    <target name="init" depends="">
+        <tstamp />
+        <!-- classpath with libraries from ETICS repository -->
+        <path id="compile.path">
+            <!-- <pathelement path="${classes.dir}"/> -->
+            <path refid="glite.voms-api-java.path"/>
+            <path refid="externals.hessian.path"/>
+            <path refid="externals.bouncycastle.bcprov.path"/>
+            <path refid="externals.commons-httpclient.path"/>
+            <path refid="externals.commons-codec.path"/>
+            <path refid="externals.commons-logging.path"/>
+            <path refid="externals.log4j.path"/>
+        </path>
+        <path id="test.path">
+            <path refid="compile.path"/>
+            <pathelement path="${test.classes.dir}"/>
+            <path refid="externals.junit.path"/>
+        </path>
+    </target>
+
+    <!-- prepare -->
+    <target name="prepare" depends="init">
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${test.classes.dir}" />
+    </target>
+
+    <!-- compile -->
+    <target name="compile" depends="prepare">
+        <!-- Compile the java code from ${src} into ${build} -->
+        <javac srcdir="${src.dir}" 
+               destdir="${classes.dir}"
+               debug="true"
+               source="1.5" target="1.5"
+               sourcepath="" >
+            <include name="**/*.java" />
+            <exclude name="**/com/caucho/**" />
+
+            <classpath refid="compile.path" />
+            <compilerarg value="-Xlint"/>
+<!--
+-->
+        </javac>
+    </target>
+
+
+    <!-- jar -->
+    <target name="jar" depends="compile">
+        <!-- jar org.glite.slcs.ui classes -->
+        <jar jarfile="${build.dir}/${package.jarname}" basedir="${classes.dir}">
+            <manifest>
+                <section name="org/glite/authz/pep/client/">
+                    <attribute name="Specification-Version" value="${source.version}"/>
+                    <attribute name="Implementation-Title" value="${package.name}"/>
+                    <attribute name="Implementation-Version" value="${package.version}"/> 
+                    <attribute name="Implementation-Vendor" value="EGEE Collaboration"/>
+                </section>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- test.compile -->
+    <target name="test.compile" depends="jar">
+        <!-- Compile the java code from ${src} into ${build} -->
+        <javac srcdir="${test.src.dir}" debug="true" source="1.5" target="1.5" destdir="${test.classes.dir}">
+            <classpath>
+                <path refid="test.path"/>
+                <pathelement location="${build.dir}/${package.jarname}"/>
+            </classpath>
+        </javac>
+    </target>
+
+
+    <!-- test -->
+    <target name="test" depends="jar,test.compile">
+        <echo message="JUnit testing"/>
+        <copy todir="${test.classes.dir}" file="${test.src.dir}/log4j.xml" />
+        <junit printsummary="yes" fork="yes">
+            <classpath>
+                <path refid="test.path"/>
+                <pathelement location="${build.dir}/${package.jarname}"/>
+            </classpath>
+            <test name="org.glite.authz.pep.client.PEPClientTestCase">
+                <formatter type="plain" usefile="false"/>
+            </test>
+
+        </junit>
+    </target>
+
+   
+    <!-- OPTIONAL: stage glite-slcs-ui.jar in ../stage/share/java dir -->
+    <target name="stage" depends="jar">
+        <echo message="stage ${package.jarname}" />
+        <mkdir dir="${stage.lib.dir}" />
+        <copy todir="${stage.lib.dir}" file="${build.dir}/${package.jarname}" />
+    </target>
+ 
+    <!-- prepare installation layout in ${install.dir} -->
+    <target name="install-layout" depends="jar">
+        <echo message="prepare install in ${install.dir}"/>
+        <property name="install.doc.dir" location="${install.dir}/share/doc/${package.name}"/>
+        <property name="install.lib.dir" location="${install.dir}/share/java"/>
+
+        <!-- first clean up -->
+        <delete dir="${install.dir}"/>
+
+        <!-- create install dir -->
+        <mkdir dir="${install.doc.dir}"/>
+        <mkdir dir="${install.lib.dir}"/>
+        <!-- doc -->
+        <copy todir="${install.doc.dir}">
+            <fileset dir="${doc.dir}" />
+        </copy>
+        <!-- application jar -->
+        <copy todir="${install.lib.dir}" file="${build.dir}/${package.jarname}"/>
+        
+   </target>
+   
+   <!-- install used by ETICS packager: ant -Dprefix=${prefix} install -->
+   <target name="install" depends="install-layout,stage">
+        <!-- copy everything in $prefix -->
+        <echo message="install in ${prefix}"/>
+        <copy todir="${prefix}">
+            <fileset dir="${install.dir}"/>
+        </copy>
+    </target>
+
+    
+    <!-- clean -->
+    <target name="clean">
+        <!-- Delete the ${build} and ${dist} directory trees -->
+        <delete dir="${build.dir}" failonerror="false"/>
+        <delete dir="${install.dir}" failonerror="false"/>
+        <!-- etics build system clean up -->
+        <delete dir="RPMS" failonerror="false"/>
+        <delete dir="tgz" failonerror="false"/>
+        <delete dir="rpmbuild" failonerror="false"/>
+    </target>
+
+    <!-- download eternals dependencies in local repository -->
+    <target name="repository" depends="init">
+       <download-component component="glite.voms-api-java" />    
+       <download-component component="externals.hessian" />
+       <download-component component="externals.bouncycastle" />
+       <download-component component="externals.commons-httpclient" />
+       <download-component component="externals.commons-codec" />
+       <download-component component="externals.commons-logging" />
+       <download-component component="externals.log4j" />
+       <download-component component="externals.junit" />
+    </target>
+
+</project>

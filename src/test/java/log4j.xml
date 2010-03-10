@@ -11,14 +11,6 @@
 <log4j:configuration debug="false"
     xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-    <!-- log file appender -->
-    <appender name="logfile" class="org.apache.log4j.FileAppender">
-        <param name="File" value="${user.home}/slcs-init.log" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{ISO8601} %-5p %C{1}.%M: %m%n" />
-        </layout>
-    </appender>
-
     <!-- stdout appender -->
     <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out" />
@@ -36,7 +28,7 @@
 
     <!-- PEPClient logger -->
     <logger name="org.glite.authz">
-        <level value="info" />
+        <level value="debug" />
     </logger>
 
     <!-- VOMS API logger -->
@@ -59,7 +51,7 @@
     <root>
         <priority value="info" />
         <!--  <appender-ref ref="logfile" /> -->
-        <appender-ref ref="stderr" />
+        <appender-ref ref="stdout" />
     </root>
 
 </log4j:configuration>

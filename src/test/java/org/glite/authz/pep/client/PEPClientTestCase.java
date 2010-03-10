@@ -82,11 +82,18 @@ public class PEPClientTestCase extends TestCase {
     public void testPEPClient() throws IOException,
             AuthorizationServiceException, GeneralSecurityException {
         PEPClientConfiguration config= new PEPClientConfiguration();
-        config.addPEPDaemonEndpoint("https://chaos.switch.ch:8154/authz");
-        config.setTrustMaterial("/etc/grid-security/certificates");
-        config.setKeyMaterial("/Users/tschopp/.globus/usercert.pem",
-                              "/Users/tschopp/.globus/userkey.pem",
-                              "changeit");
+        String endpoint= "https://chaos.switch.ch:8154/authz";
+        config.addPEPDaemonEndpoint(endpoint);
+        
+        String cadir= "/etc/grid-security/certificates";
+        String home= System.getProperty("user.home");
+        String dotGlobus= home + File.separator + ".globus";
+        String usercert= dotGlobus + File.separator + "usercert.pem";
+        String userkey= dotGlobus + File.separator + "userkey.pem";
+        String password= "changeit";
+        
+        config.setTrustMaterial(cadir);
+        config.setKeyMaterial(usercert,userkey,password);
         PEPClient client= new PEPClient(config);
         Request request= createRequest("/Users/tschopp/.globus/usercert.pem",
                                        "gridftp",

@@ -17,7 +17,7 @@
  *
  * $Id$
  */
-package org.glite.authz.pep.client;
+package test;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -36,6 +36,8 @@ import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Resource;
 import org.glite.authz.common.model.Response;
 import org.glite.authz.common.model.Subject;
+import org.glite.authz.pep.client.PEPClient;
+import org.glite.authz.pep.client.Version;
 import org.glite.authz.pep.client.config.PEPClientConfiguration;
 
 import org.apache.commons.logging.Log;
@@ -81,6 +83,11 @@ public class PEPClientTestCase extends TestCase {
      */
     public void testPEPClient() throws IOException,
             AuthorizationServiceException, GeneralSecurityException {
+        System.out.println("Name: " + Version.getName());
+        System.out.println("Version: " + Version.getVersion());
+        System.out.println("Description: " + Version.getDescription());
+        System.out.println("Copyright: " + Version.getCopyright());
+        
         PEPClientConfiguration config= new PEPClientConfiguration();
         String endpoint= "https://chaos.switch.ch:8154/authz";
         config.addPEPDaemonEndpoint(endpoint);

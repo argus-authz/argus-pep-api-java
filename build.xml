@@ -20,6 +20,8 @@
 -->
 <project name="org.glite.authz.pep-java" default="install-layout" basedir=".">
 
+    <property name="project.description" value="Argus PEP-J client library" />
+
     <!-- workspace directories -->
     <property name="workspace.dir" location=".." />
     <property name="stage.dir" location="${workspace.dir}/stage" />
@@ -57,14 +59,19 @@
             <path refid="externals.hessian.path"/>
             <path refid="externals.bouncycastle.bcprov.path"/>
             <path refid="externals.commons-httpclient.path"/>
-            <path refid="externals.commons-codec.path"/>
             <path refid="externals.commons-logging.path"/>
+            <!-- only runtime 
+            <path refid="externals.commons-codec.path"/>
             <path refid="externals.log4j.path"/>
+            -->
         </path>
         <path id="test.path">
             <path refid="compile.path"/>
-            <pathelement path="${test.classes.dir}"/>
             <path refid="externals.junit.path"/>
+            <path refid="externals.commons-codec.path"/>
+            <path refid="externals.log4j.path"/>
+            <pathelement path="${test.classes.dir}"/>
+            <pathelement path="${build.dir}/${package.jarname}"/>
         </path>
     </target>
 
@@ -84,14 +91,12 @@
                sourcepath="" >
             <include name="**/*.java" />
             <exclude name="**/com/caucho/**" />
-
             <classpath refid="compile.path" />
-            <compilerarg value="-Xlint"/>
 <!--
+            <compilerarg value="-Xlint"/>
 -->
         </javac>
     </target>
-
 
     <!-- jar -->
     <target name="jar" depends="compile">
@@ -99,10 +104,10 @@
         <jar jarfile="${build.dir}/${package.jarname}" basedir="${classes.dir}">
             <manifest>
                 <section name="org/glite/authz/pep/client/">
-                    <attribute name="Specification-Version" value="${source.version}"/>
+                    <attribute name="Specification-Title" value="${project.description}"/>
                     <attribute name="Implementation-Title" value="${package.name}"/>
-                    <attribute name="Implementation-Version" value="${package.version}"/> 
-                    <attribute name="Implementation-Vendor" value="EGEE Collaboration"/>
+                    <attribute name="Implementation-Version" value="${source.version}"/> 
+                    <attribute name="Implementation-Vendor" value="Members of the EGEE Collaboration"/>
                 </section>
             </manifest>
         </jar>
@@ -114,7 +119,6 @@
         <javac srcdir="${test.src.dir}" debug="true" source="1.5" target="1.5" destdir="${test.classes.dir}">
             <classpath>
                 <path refid="test.path"/>
-                <pathelement location="${build.dir}/${package.jarname}"/>
             </classpath>
         </javac>
     </target>
@@ -129,7 +133,10 @@
                 <path refid="test.path"/>
                 <pathelement location="${build.dir}/${package.jarname}"/>
             </classpath>
-            <test name="org.glite.authz.pep.client.PEPClientTestCase">
+            <test name="test.PEPClientTestCase">
+                <formatter type="plain" usefile="false"/>
+            </test>
+            <test name="test.VersionTestCase">
                 <formatter type="plain" usefile="false"/>
             </test>
 
@@ -172,6 +179,21 @@
         <copy todir="${prefix}">
             <fileset dir="${install.dir}"/>
         </copy>
+    </target>
+
+    <target name="javadoc" depends="compile">
+        <javadoc
+            destdir="${doc.dir}/api"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="${project.description}">
+            <fileset dir="${src.dir}" defaultexcludes="yes">
+                <include name="org/glite/**"/>
+                <exclude name="com/caucho/**"/>
+            </fileset>
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+        </javadoc>
     </target>
 
     

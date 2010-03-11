@@ -30,7 +30,7 @@ import java.util.List;
 import javax.net.ssl.X509KeyManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.glite.authz.pep.client.security.PKIKeyManager;
+import org.glite.authz.common.security.PKIKeyManager;
 import org.glite.authz.pep.obligation.ObligationHandler;
 import org.glite.authz.pep.pip.PolicyInformationPoint;
 import org.glite.voms.PKIStore;
@@ -78,9 +78,9 @@ public class PEPClientConfiguration {
     }
 
     /**
-     * Gets an immutable list of PEP daemon endpoints.
+     * Gets an unmodifiable list of PEP daemon endpoints.
      * 
-     * @return unmodifiable list of PEP daemon endpoints
+     * @return an unmodifiable list of PEP daemon endpoints
      */
     public List<String> getPEPDaemonEndpoints() {
         return Collections.unmodifiableList(pepdEndpoints_);
@@ -99,7 +99,7 @@ public class PEPClientConfiguration {
     /**
      * Gets the policy information points meant to be applied to each request.
      * 
-     * @return unmodifiable list of policy information points meant to be
+     * @return an unmodifiable list of policy information points meant to be
      *         applied to each request
      */
     public List<PolicyInformationPoint> getPolicyInformationPoints() {
@@ -120,8 +120,8 @@ public class PEPClientConfiguration {
     /**
      * Gets the obligation handlers used to process response obligations.
      * 
-     * @return unmodifiable list of obligation handlers used to process response
-     *         obligations
+     * @return an unmodifiable list of obligation handlers used to process
+     *         response obligations
      */
     public List<ObligationHandler> getObligationHandlers() {
         return Collections.unmodifiableList(obligationHandlers_);
@@ -139,7 +139,9 @@ public class PEPClientConfiguration {
     }
 
     /**
-     * @return the connection timeout in millis
+     * Returns the HTTP connection timeout in millis
+     * 
+     * @return the connection timeout
      */
     public int getConnectionTimeout() {
         return connectionTimeout_;
@@ -165,6 +167,9 @@ public class PEPClientConfiguration {
      */
     public void setTrustMaterial(String cadirname) throws CertificateException,
             CRLException, IOException {
+        if (log_.isDebugEnabled()) {
+            log_.debug("cadirname: " + cadirname);
+        }
         PKIStore trustStore= new PKIStore(cadirname, PKIStore.TYPE_CADIR);
         trustManager_= new VOMSTrustManager(trustStore);
     }
@@ -198,6 +203,8 @@ public class PEPClientConfiguration {
     }
 
     /**
+     * Gets the trust manager if any
+     * 
      * @return the {@link X509TrustManager} or <code>null</code> if no trust
      *         material have been defined
      */
@@ -206,6 +213,8 @@ public class PEPClientConfiguration {
     }
 
     /**
+     * Gets the key manager if any
+     * 
      * @return the {@link X509KeyManager} or <code>null</code> if no key
      *         material have been defined
      */

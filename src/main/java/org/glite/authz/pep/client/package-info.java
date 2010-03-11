@@ -16,6 +16,6 @@
  */
 
 /** 
- * PEP Java client. 
+ * PEP Java client to communicate with the Argus PEP daemon and authorize request.
  */
 package org.glite.authz.pep.client;

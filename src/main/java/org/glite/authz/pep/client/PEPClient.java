@@ -43,8 +43,8 @@ import org.apache.commons.logging.LogFactory;
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
 
-/** 
- * A simple PEP daemon client.
+/**
+ * A PEP client to communicate with the Argus PEP daemon and authorize request.
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
@@ -104,11 +104,12 @@ public class PEPClient {
                 // success, exit loop
                 break;
             } catch (AuthorizationServiceException e) {
-                log.warn("request failed for PEP daemon " + endpoint,e);
+                log.warn("request failed for PEP daemon " + endpoint, e);
             }
         }
-        if (response==null) {
-            String error= "No PEP daemons " + pepdEndpoints_ + " was able to process the request";
+        if (response == null) {
+            String error= "No PEP daemons " + pepdEndpoints_
+                    + " was able to process the request";
             log.error(error);
             throw new AuthorizationServiceException(error);
         }
@@ -193,8 +194,7 @@ public class PEPClient {
 
         boolean pipApplied;
 
-        log.debug("Running " + pips_.size()
-                + " registered PIPs");
+        log.debug("Running " + pips_.size() + " registered PIPs");
         for (PolicyInformationPoint pip : pips_) {
             if (pip != null) {
                 pipApplied= pip.populateRequest(request);
@@ -223,7 +223,8 @@ public class PEPClient {
      */
     protected void runObligationHandlers(Request request, Response response)
             throws AuthorizationServiceException {
-        if (response==null) return;
+        if (response == null)
+            return;
         List<Result> results= response.getResults();
         for (Result result : results) {
             for (ObligationHandler oh : obligationHandlers_) {
@@ -234,5 +235,5 @@ public class PEPClient {
             }
         }
     }
- 
+
 }

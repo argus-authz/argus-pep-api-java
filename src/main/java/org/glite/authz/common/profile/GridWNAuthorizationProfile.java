@@ -19,7 +19,6 @@
 package org.glite.authz.common.profile;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +26,15 @@ import java.util.List;
 import org.glite.authz.common.model.Action;
 import org.glite.authz.common.model.Attribute;
 import org.glite.authz.common.model.Environment;
+import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Resource;
 import org.glite.authz.common.model.Subject;
-
-import org.bouncycastle.openssl.PEMWriter;
+import org.glite.authz.common.security.PEMUtils;
 
 /**
  * XACML Grid Worker Node Authorization Profile v1.0.
+ * 
+ * Profile constants and utility methods.
  * 
  * @see http://edms.cern.ch/document/1058175
  * 
@@ -46,6 +47,41 @@ public class GridWNAuthorizationProfile extends GenericProfile {
 
     /** Identifier of the profile: {@value} */
     public static final String PROFILE_ID= "http://glite.org/xacml/profile/grid-wn/1.0";
+
+    /**
+     * 
+     * @param certs
+     * @param resourceid
+     * @param actionid
+     * @return
+     * @throws IOException
+     */
+    static public Request createRequest(X509Certificate[] certs,
+            String resourceid, String actionid) throws IOException {
+        Subject subject= createSubject(certs);
+        Resource resource= createResource(resourceid);
+        Action action= createAction(actionid);
+        Request request= createRequest(subject, resource, action);
+        return request;
+    }
+
+    /**
+     * Creates a {@link Request} containing the given {@link Subject},
+     * {@link Resource} and {@link Action}. The default {@link Environment} is
+     * added to it.
+     * 
+     * @param subject
+     *            the request subject
+     * @param resource
+     *            the request resource
+     * @param action
+     *            the request action
+     * @return the request
+     */
+    public static Request createRequest(Subject subject, Resource resource,
+            Action action) {
+        return createRequest(subject, resource, action, createEnvironment());
+    }
 
     /**
      * Creates a {@link Subject} containing the {@link Attribute} identified by
@@ -106,7 +142,7 @@ public class GridWNAuthorizationProfile extends GenericProfile {
                 certs.add(chainCert);
             }
         }
-        String keyInfo= certificatesToPEMString(certs);
+        String keyInfo= PEMUtils.certificatesToPEMString(certs);
         Subject subject= new Subject();
         Attribute attrKeyInfo= new Attribute();
         attrKeyInfo.setId(Attribute.ID_SUB_KEY_INFO);
@@ -114,30 +150,6 @@ public class GridWNAuthorizationProfile extends GenericProfile {
         attrKeyInfo.getValues().add(keyInfo);
         subject.getAttributes().add(attrKeyInfo);
         return subject;
-    }
-
-    /**
-     * Writes the certificates into a PEM encoded string.
-     * 
-     * @param certs
-     *            List of certificate to PEM encode
-     * @return the String containing the PEM encoded certificates
-     * @throws IOException
-     *             if an error occurs while writing a certificate
-     */
-    private static String certificatesToPEMString(List<X509Certificate> certs)
-            throws IOException {
-        StringWriter stringWriter= new StringWriter();
-        PEMWriter writer= new PEMWriter(stringWriter);
-        for (X509Certificate cert : certs) {
-            writer.writeObject(cert);
-        }
-        try {
-            writer.close();
-        } catch (Exception e) {
-            // ignored
-        }
-        return stringWriter.toString();
     }
 
     /**

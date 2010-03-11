@@ -1,13 +1,12 @@
 /*
- * Copyright (c) 2010. Members of the EGEE Collaboration.
- * See http://www.eu-egee.org/partners/ for details on the copyright
- * holders.
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2010.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
 
@@ -36,6 +36,8 @@ import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Resource;
 import org.glite.authz.common.model.Response;
 import org.glite.authz.common.model.Subject;
+import org.glite.authz.common.profile.GridWNAuthorizationProfile;
+import org.glite.authz.common.security.PEMFileReader;
 import org.glite.authz.pep.client.PEPClient;
 import org.glite.authz.pep.client.Version;
 import org.glite.authz.pep.client.config.PEPClientConfiguration;
@@ -83,74 +85,37 @@ public class PEPClientTestCase extends TestCase {
      */
     public void testPEPClient() throws IOException,
             AuthorizationServiceException, GeneralSecurityException {
-        System.out.println("Name: " + Version.getName());
-        System.out.println("Version: " + Version.getVersion());
-        System.out.println("Description: " + Version.getDescription());
-        System.out.println("Copyright: " + Version.getCopyright());
-        
         PEPClientConfiguration config= new PEPClientConfiguration();
         String endpoint= "https://chaos.switch.ch:8154/authz";
         config.addPEPDaemonEndpoint(endpoint);
-        
+
         String cadir= "/etc/grid-security/certificates";
         String home= System.getProperty("user.home");
         String dotGlobus= home + File.separator + ".globus";
         String usercert= dotGlobus + File.separator + "usercert.pem";
         String userkey= dotGlobus + File.separator + "userkey.pem";
+        String userproxy= dotGlobus + File.separator + "userproxy.pem";
         String password= "changeit";
-        
+
         config.setTrustMaterial(cadir);
-        config.setKeyMaterial(usercert,userkey,password);
+        config.setKeyMaterial(userproxy, userproxy, password);
         PEPClient client= new PEPClient(config);
-        Request request= createRequest("/Users/tschopp/.globus/usercert.pem",
-                                       "gridftp",
-                                       "access");
+        PEMFileReader reader= new PEMFileReader();
+        X509Certificate[] certs= reader.readCertificates(userproxy);
+        Request request= createRequest(certs, "gridftp", "access");
         System.out.println(request);
         Response response= client.authorize(request);
         System.out.println(response);
     }
 
-    static protected Request createRequest(String usercertFilename,
+    static protected Request createRequest(X509Certificate [] certs,
             String resourceid, String actionid) throws IOException {
-        Request request= new Request();
-        // resource
-        Resource resource= new Resource();
-        Attribute attrResourceId= new Attribute();
-        attrResourceId.setId(Attribute.ID_RES_ID);
-        attrResourceId.setDataType(Attribute.DT_STRING);
-        attrResourceId.getValues().add(resourceid);
-        resource.getAttributes().add(attrResourceId);
-        request.getResources().add(resource);
-        // action
-        Action action= new Action();
-        Attribute attrActionId= new Attribute();
-        attrActionId.setId(Attribute.ID_ACT_ID);
-        attrActionId.setDataType(Attribute.DT_STRING);
-        attrActionId.getValues().add(actionid);
-        action.getAttributes().add(attrActionId);
-        request.setAction(action);
-        // subject
-        Subject subject= new Subject();
-        Attribute attrKeyInfo= new Attribute();
-        attrKeyInfo.setId(Attribute.ID_SUB_KEY_INFO);
-        attrKeyInfo.setDataType(Attribute.DT_STRING);
-        File file= new File(usercertFilename);
-        FileInputStream fis= new FileInputStream(file);
-        BufferedInputStream bis= new BufferedInputStream(fis);
-        byte[] bytes= new byte[(int) file.length()];
-        bis.read(bytes);
-        String keyInfo= new String(bytes);
-        attrKeyInfo.getValues().add(keyInfo);
-        subject.getAttributes().add(attrKeyInfo);
-        request.getSubjects().add(subject);
-        // profile id -> environment
-        Environment environment= new Environment();
-        Attribute attrProfileId= new Attribute();
-        attrProfileId.setId(Attribute.ID_ENV_PROFILE_ID);
-        attrProfileId.setDataType(Attribute.DT_ANY_URI);
-        attrProfileId.getValues().add("http://glite.org/xacml/profile/grid-wn/1.0");
-        environment.getAttributes().add(attrProfileId);
-        request.setEnvironment(environment);
+        Subject subject= GridWNAuthorizationProfile.createSubject(certs);
+        Resource resource= GridWNAuthorizationProfile.createResource(resourceid);
+        Action action= GridWNAuthorizationProfile.createAction(actionid);
+        Request request= GridWNAuthorizationProfile.createRequest(subject,
+                                                                  resource,
+                                                                  action);
         return request;
     }
 

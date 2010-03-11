@@ -26,10 +26,9 @@ import java.util.List;
 import org.bouncycastle.openssl.PEMWriter;
 
 /** 
- * PEMUtils
+ * PEM utility methods.
  *
  * @author Valery Tschopp &lt;tschopp&#64;switch.ch&gt;
- * @version $Revision$
  */
 public class PEMUtils {
 

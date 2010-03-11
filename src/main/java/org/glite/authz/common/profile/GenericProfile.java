@@ -48,10 +48,18 @@ public class GenericProfile {
     public static Request createRequest(Subject subject, Resource resource,
             Action action, Environment environment) {
         Request request= new Request();
-        request.getSubjects().add(subject);
-        request.getResources().add(resource);
-        request.setAction(action);
-        request.setEnvironment(environment);
+        if (subject != null) {
+            request.getSubjects().add(subject);
+        }
+        if (resource != null) {
+            request.getResources().add(resource);
+        }
+        if (action != null) {
+            request.setAction(action);
+        }
+        if (environment != null) {
+            request.setEnvironment(environment);
+        }
         return request;
     }
 

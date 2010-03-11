@@ -42,7 +42,7 @@ import org.bouncycastle.openssl.PasswordFinder;
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
-public class PEMFileReader implements PasswordFinder {
+public class PEMFileReader {
 
     /** logger */
     private Log log= LogFactory.getLog(PEMFileReader.class);
@@ -54,14 +54,10 @@ public class PEMFileReader implements PasswordFinder {
         }
     }
 
-    /** Password for the {@link PasswordFinder} */
-    private char[] password_= null;
-
     /**
      * Default constructor.
      */
     public PEMFileReader() {
-        password_= null;
     }
 
     /**
@@ -90,28 +86,24 @@ public class PEMFileReader implements PasswordFinder {
             throws FileNotFoundException, IOException {
         log.debug("file: " + file);
         FileReader fileReader= new FileReader(file);
-        log.debug("password: " + password);
-        setPassword(password);
-        PEMReader reader= new PEMReader(fileReader, this);
+        PEMReader reader= new PEMReader(fileReader, new PEMPassword(password));
         KeyPair keyPair;
         Object object= null;
-        try {
-            while (true) {
-                object= reader.readObject();
-                if (object == null) {
-                    throw new IOException("No KeyPair found in file " + file
-                            + ". EOF reached");
-                }
-                else if (object instanceof KeyPair) {
-                    keyPair= (KeyPair) object;
-                    break;
-                }
+        do {
+            object= reader.readObject();
+            if (object == null) {
+                log.error("No KeyPair object found in file " + file);
+                throw new IOException("No KeyPair object found in file " + file);
             }
-        } catch (IOException e) {
-            throw e;
-        } finally {
+        } while (!(object instanceof KeyPair));
+
+        try {
             reader.close();
+        } catch (Exception e) {
+            // ignored
         }
+
+        keyPair= (KeyPair) object;
         return keyPair.getPrivate();
     }
 
@@ -139,49 +131,71 @@ public class PEMFileReader implements PasswordFinder {
     public X509Certificate[] readCertificates(File file)
             throws FileNotFoundException, IOException {
         FileReader fileReader= new FileReader(file);
-        setPassword(null);
-        PEMReader reader= new PEMReader(fileReader, this);
+        PEMReader reader= new PEMReader(fileReader, new PEMPassword());
         List<X509Certificate> certs= new ArrayList<X509Certificate>();
         Object object= null;
-        try {
-            do {
+        do {
+            try {
+                // object is null at EOF
                 object= reader.readObject();
                 if (object instanceof X509CertificateObject) {
                     X509Certificate cert= (X509Certificate) object;
                     certs.add(cert);
                 }
-            } while (object != null);
-        } catch (IOException e) {
-            throw e;
-        } finally {
+            } catch (IOException e) {
+                // ignored, trying to read an encrypted object in file, like a
+                // encrypted private key.
+            }
+        } while (object != null);
+
+        try {
             reader.close();
+        } catch (Exception e) {
+            // ignored
         }
 
         return certs.toArray(new X509Certificate[] {});
     }
 
     /**
-     * Sets the password for the {@link PasswordFinder}
-     * 
-     * @param password
-     *            used by the {@link PasswordFinder}
+     * PEMPassword is a {@link PasswordFinder} for PEM encoded encrypted private
+     * key or other object.
      */
-    protected void setPassword(String password) {
-        if (password == null) {
+    private class PEMPassword implements PasswordFinder {
+
+        /** The password */
+        private char[] password_= null;
+
+        /**
+         * Default constructor. The password is <code>null</code>.
+         */
+        public PEMPassword() {
             password_= null;
         }
-        else {
-            password_= password.toCharArray();
+
+        /**
+         * Constructor.
+         * 
+         * @param password
+         *            the PEM password.
+         */
+        public PEMPassword(String password) {
+            if (password == null) {
+                password_= null;
+            }
+            else {
+                password_= password.toCharArray();
+            }
         }
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.bouncycastle.openssl.PasswordFinder#getPassword()
-     */
-    public char[] getPassword() {
-        return password_;
-    }
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.bouncycastle.openssl.PasswordFinder#getPassword()
+         */
+        public char[] getPassword() {
+            return password_;
+        }
 
+    }
 }

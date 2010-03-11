@@ -54,6 +54,15 @@ public class Version {
     }
 
     /**
+     * Returns the specification title from the jar MANIFEST.
+     * 
+     * @return the specification title
+     */
+    static public String getDescription() {
+        return PKG.getSpecificationTitle();
+    }
+
+    /**
      * Prevents instantiation.
      */
     private Version() {

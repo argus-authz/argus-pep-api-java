@@ -29,7 +29,8 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * PKITrustManager
+ * PKITrustManager is a {@link X509TrustManager} to manage which X509
+ * certificates may be used to authenticate the remote side of a secure socket.
  * 
  * @author Valery Tschopp &lt;tschopp&#64;switch.ch&gt;
  */

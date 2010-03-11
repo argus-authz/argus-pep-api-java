@@ -19,9 +19,8 @@
 package org.glite.authz.pep.client.config;
 
 import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
@@ -37,12 +36,18 @@ import org.glite.authz.pep.pip.PolicyInformationPoint;
 import org.glite.voms.PKIStore;
 import org.glite.voms.VOMSTrustManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * PEP client configuration
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
 public class PEPClientConfiguration {
+
+    /** Logging */
+    private Log log_= LogFactory.getLog(PEPClientConfiguration.class);
 
     /** Registered PEP daemon endpoints. */
     private List<String> pepdEndpoints_;
@@ -134,7 +139,7 @@ public class PEPClientConfiguration {
     }
 
     /**
-     * @return
+     * @return the connection timeout in millis
      */
     public int getConnectionTimeout() {
         return connectionTimeout_;
@@ -169,28 +174,40 @@ public class PEPClientConfiguration {
      * @param usercert
      * @param userkey
      * @param password
-     * @throws CertificateException
+     * @throws GeneralSecurityException
      * @throws IOException
-     * @throws UnrecoverableKeyException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
      */
     public void setKeyMaterial(String usercert, String userkey, String password)
-            throws CertificateException, IOException,
-            UnrecoverableKeyException, NoSuchAlgorithmException,
-            KeyStoreException {
+            throws GeneralSecurityException, IOException {
+        if (log_.isDebugEnabled()) {
+            log_.debug("usercert: " + usercert);
+            log_.debug("userkey: " + userkey + " password: " + password);
+        }
         keyManager_= new PKIKeyManager(usercert, userkey, password);
     }
 
     /**
-     * @return
+     * 
+     * @param keystore
+     * @param password
+     * @throws GeneralSecurityException
+     */
+    public void setKeyMaterial(KeyStore keystore, String password)
+            throws GeneralSecurityException {
+        keyManager_= new PKIKeyManager(keystore, password);
+    }
+
+    /**
+     * @return the {@link X509TrustManager} or <code>null</code> if no trust
+     *         material have been defined
      */
     public X509TrustManager getTrustManager() {
         return trustManager_;
     }
 
     /**
-     * @return
+     * @return the {@link X509KeyManager} or <code>null</code> if no key
+     *         material have been defined
      */
     public X509KeyManager getKeyManager() {
         return keyManager_;

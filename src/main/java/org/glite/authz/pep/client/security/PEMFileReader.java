@@ -18,6 +18,8 @@
  */
 package org.glite.authz.pep.client.security;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.KeyPair;
@@ -27,6 +29,8 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.openssl.PEMReader;
@@ -34,11 +38,14 @@ import org.bouncycastle.openssl.PasswordFinder;
 
 /**
  * PEM files reader to extract PEM encoded private key and certificates from
- * file.
+ * file. (OpenSSL compatible)
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
 public class PEMFileReader implements PasswordFinder {
+
+    /** logger */
+    private Log log= LogFactory.getLog(PEMFileReader.class);
 
     static {
         // add BouncyCastle security provider if not already done
@@ -59,14 +66,31 @@ public class PEMFileReader implements PasswordFinder {
 
     /**
      * 
+     * @param filename
+     * @param password
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public PrivateKey readPrivateKey(String filename, String password)
+            throws FileNotFoundException, IOException {
+        File file= new File(filename);
+        return readPrivateKey(file, password);
+    }
+
+    /**
+     * 
      * @param file
      * @param password
      * @return
+     * @throws FileNotFoundException
      * @throws IOException
      */
-    public PrivateKey readPrivateKey(String file, String password)
-            throws IOException {
+    public PrivateKey readPrivateKey(File file, String password)
+            throws FileNotFoundException, IOException {
+        log.debug("file: " + file);
         FileReader fileReader= new FileReader(file);
+        log.debug("password: " + password);
         setPassword(password);
         PEMReader reader= new PEMReader(fileReader, this);
         KeyPair keyPair;
@@ -93,15 +117,29 @@ public class PEMFileReader implements PasswordFinder {
 
     /**
      * 
+     * @param filename
+     * @param password
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public X509Certificate[] readCertificates(String filename)
+            throws FileNotFoundException, IOException {
+        File file= new File(filename);
+        return readCertificates(file);
+    }
+
+    /**
+     * 
      * @param file
      * @param password
      * @return
      * @throws IOException
      */
-    public X509Certificate[] readCertificates(String file, String password)
-            throws IOException {
+    public X509Certificate[] readCertificates(File file)
+            throws FileNotFoundException, IOException {
         FileReader fileReader= new FileReader(file);
-        setPassword(password);
+        setPassword(null);
         PEMReader reader= new PEMReader(fileReader, this);
         List<X509Certificate> certs= new ArrayList<X509Certificate>();
         Object object= null;
@@ -125,7 +163,8 @@ public class PEMFileReader implements PasswordFinder {
     /**
      * Sets the password for the {@link PasswordFinder}
      * 
-     * @param password used by the {@link PasswordFinder}
+     * @param password
+     *            used by the {@link PasswordFinder}
      */
     protected void setPassword(String password) {
         if (password == null) {

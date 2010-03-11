@@ -33,8 +33,11 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509KeyManager;
 
 /**
- * @author tschopp
+ * PKIKeyManager is a {@link X509KeyManager} to manage which X509
+ * certificate-based key pairs is used to authenticate the local side of a
+ * secure socket.
  * 
+ * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
 public class PKIKeyManager implements X509KeyManager {
 
@@ -42,6 +45,16 @@ public class PKIKeyManager implements X509KeyManager {
     private X509KeyManager keyManager_= null;
 
     /**
+     * Constructor where the key material is contained in PEM encoded
+     * certificate and private key files. (OpenSSL compatible)
+     * 
+     * @param certfile
+     *            PEM encoded certificate(s) filename
+     * @param keyfile
+     *            PEM encoded private key filename
+     * @param password
+     *            private key and keystore password, can not be
+     *            <code>null</code>
      * @throws IOException
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
@@ -56,9 +69,13 @@ public class PKIKeyManager implements X509KeyManager {
     }
 
     /**
+     * Constructor based on a {@link KeyStore} containing the certificate and
+     * the private key.
      * 
      * @param keystore
+     *            the keystore containing the certificate and private key
      * @param password
+     *            the keystore password
      * @throws UnrecoverableKeyException
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
@@ -70,22 +87,28 @@ public class PKIKeyManager implements X509KeyManager {
     }
 
     /**
+     * Creates and initializes a {@link KeyStore} with key material from PEM
+     * encoded files.
      * 
      * @param certfile
+     *            PEM encoded certificate filename
      * @param keyfile
+     *            PEM encoded private key filename
      * @param password
-     * @return
+     *            password for the encrypted private key and the resulting
+     *            keystore, can not be <code>null</code>
+     * @return the KeyStore containing the key material
      * @throws IOException
      * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      * @throws CertificateException
      */
-    private KeyStore createKeyStore(String certfile, String keyfile,
+    protected KeyStore createKeyStore(String certfile, String keyfile,
             String password) throws IOException, KeyStoreException,
             NoSuchAlgorithmException, CertificateException {
         PEMFileReader reader= new PEMFileReader();
         PrivateKey pkey= reader.readPrivateKey(keyfile, password);
-        X509Certificate[] certs= reader.readCertificates(certfile, password);
+        X509Certificate[] certs= reader.readCertificates(certfile);
         char passwd[]= password.toCharArray();
         KeyStore keystore= KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(null, passwd);
@@ -102,7 +125,7 @@ public class PKIKeyManager implements X509KeyManager {
      * @throws UnrecoverableKeyException
      * @throws KeyStoreException
      */
-    private X509KeyManager createX509KeyManager(KeyStore keystore,
+    protected X509KeyManager createX509KeyManager(KeyStore keystore,
             String password) throws NoSuchAlgorithmException,
             UnrecoverableKeyException, KeyStoreException {
         KeyManagerFactory kmfactory= KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());

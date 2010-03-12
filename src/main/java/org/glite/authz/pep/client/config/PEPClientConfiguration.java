@@ -184,6 +184,9 @@ public class PEPClientConfiguration {
      */
     public void setKeyMaterial(String usercert, String userkey, String password)
             throws GeneralSecurityException, IOException {
+        if (password == null) {
+            throw new IllegalArgumentException("password can not be null");
+        }
         if (log_.isDebugEnabled()) {
             log_.debug("usercert: " + usercert);
             log_.debug("userkey: " + userkey + " password: " + password);
@@ -199,6 +202,9 @@ public class PEPClientConfiguration {
      */
     public void setKeyMaterial(KeyStore keystore, String password)
             throws GeneralSecurityException {
+        if (password == null) {
+            throw new IllegalArgumentException("password can not be null");
+        }
         keyManager_= new PKIKeyManager(keystore, password);
     }
 

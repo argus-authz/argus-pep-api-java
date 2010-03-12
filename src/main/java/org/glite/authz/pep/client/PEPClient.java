@@ -84,6 +84,9 @@ public class PEPClient {
         httpClient_= httpClientBuilder.buildClient();
 
         pepdEndpoints_= config.getPEPDaemonEndpoints();
+        if (pepdEndpoints_.isEmpty()) {
+            throw new IllegalArgumentException("Configuration doesn't contain any PEP daemon endpoint URL");
+        }
         pips_= config.getPolicyInformationPoints();
         obligationHandlers_= config.getObligationHandlers();
     }

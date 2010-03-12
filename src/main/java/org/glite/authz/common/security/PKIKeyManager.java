@@ -54,7 +54,8 @@ public class PKIKeyManager implements X509KeyManager {
      *            PEM encoded private key filename
      * @param password
      *            private key and keystore password, can not be
-     *            <code>null</code>
+     *            <code>null</code>. If the private key is not encrypted, choose
+     *            a password for the keystore.
      * @throws IOException
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
@@ -75,7 +76,7 @@ public class PKIKeyManager implements X509KeyManager {
      * @param keystore
      *            the keystore containing the certificate and private key
      * @param password
-     *            the keystore password
+     *            the keystore password, can not be <code>null</code>.
      * @throws UnrecoverableKeyException
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException

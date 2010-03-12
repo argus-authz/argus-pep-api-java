@@ -40,9 +40,12 @@ public class PKITrustManager implements X509TrustManager {
     private X509TrustManager trustManager_= null;
 
     /**
+     * Creates a {@link X509TrustManager} based on a {@link KeyStore}.
      * 
      * @param keystore
+     *            the existing trust store
      * @param password
+     *            the keystore password
      * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      */

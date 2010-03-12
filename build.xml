@@ -210,14 +210,18 @@
 
     <!-- download eternals dependencies in local repository -->
     <target name="repository" depends="init">
-       <download-component component="glite.voms-api-java" />    
-       <download-component component="externals.hessian" />
-       <download-component component="externals.bouncycastle" />
-       <download-component component="externals.commons-httpclient" />
-       <download-component component="externals.commons-codec" />
-       <download-component component="externals.commons-logging" />
-       <download-component component="externals.log4j" />
-       <download-component component="externals.junit" />
+        <download-repository component="glite.voms-api-java" />    
+        <stage-repository-files component="glite.voms-api-java">
+            <include name="**/vomsjapi.jar" />
+        </stage-repository-files>
+
+        <download-repository component="externals.hessian" />
+        <download-repository component="externals.bouncycastle" />
+        <download-repository component="externals.commons-httpclient" />
+        <download-repository component="externals.commons-codec" />
+        <download-repository component="externals.commons-logging" />
+        <download-repository component="externals.log4j" />
+        <download-repository component="externals.junit" />
     </target>
 
 </project>

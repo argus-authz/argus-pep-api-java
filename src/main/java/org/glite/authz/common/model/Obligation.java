@@ -27,7 +27,13 @@ import org.glite.authz.common.util.Strings;
 public final class Obligation implements Serializable {
 
     /** Serial version UID. */
-    private static final long serialVersionUID = -5500418892138258526L;
+    private static final long serialVersionUID= -5500418892138258526L;
+
+    /** The obligation id map to environment identifier: {@value} . */
+    public static final String ID_OBLIGATION_ENV_MAP= "http://glite.org/xacml/obligation/local-environment-map";
+
+    /** The obligation id map to POSIX environment identifier: {@value} . */
+    public static final String ID_OBLIGATION_MAP_POSIX= "http://glite.org/xacml/obligation/local-environment-map/posix";
 
     /** ID for the obligation. */
     private String id;
@@ -40,7 +46,7 @@ public final class Obligation implements Serializable {
 
     /** Constructor. */
     public Obligation() {
-        attributeAssignments = new LazyList<AttributeAssignment>();
+        attributeAssignments= new LazyList<AttributeAssignment>();
     }
 
     /**
@@ -55,10 +61,11 @@ public final class Obligation implements Serializable {
     /**
      * Sets the ID of the obligation.
      * 
-     * @param newId ID of the obligation
+     * @param newId
+     *            ID of the obligation
      */
     public void setId(String newId) {
-        id = Strings.safeTrimOrNullString(newId);
+        id= Strings.safeTrimOrNullString(newId);
     }
 
     /**
@@ -71,16 +78,19 @@ public final class Obligation implements Serializable {
     }
 
     /**
-     * Sets the authorization decision which activates this obligation. Permissible values are
-     * {@link Result#DECISION_DENY} and {@link Result#DECISION_PERMIT}.
+     * Sets the authorization decision which activates this obligation.
+     * Permissible values are {@link Result#DECISION_DENY} and
+     * {@link Result#DECISION_PERMIT}.
      * 
-     * @param newFulfillOn authorization decision which activates this obligation
+     * @param newFulfillOn
+     *            authorization decision which activates this obligation
      */
     public void setFulfillOn(int newFulfillOn) {
-        if (fulfillOn != Result.DECISION_DENY && fulfillOn != Result.DECISION_PERMIT) {
+        if (fulfillOn != Result.DECISION_DENY
+                && fulfillOn != Result.DECISION_PERMIT) {
             throw new IllegalArgumentException("Invalid FulfillOn value");
         }
-        fulfillOn = newFulfillOn;
+        fulfillOn= newFulfillOn;
     }
 
     /**
@@ -94,7 +104,7 @@ public final class Obligation implements Serializable {
 
     /** {@inheritDoc} */
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder= new StringBuilder();
 
         stringBuilder.append("Obligation {");
         stringBuilder.append("id: ").append(id).append(", ");
@@ -113,11 +123,11 @@ public final class Obligation implements Serializable {
 
     /** {@inheritDoc} */
     public int hashCode() {
-        int hash = 13;
+        int hash= 13;
 
-        hash = 31 * hash + (null == id ? 0 : id.hashCode());
-        hash = 31 * hash + fulfillOn;
-        hash = 31 * hash + attributeAssignments.hashCode();
+        hash= 31 * hash + (null == id ? 0 : id.hashCode());
+        hash= 31 * hash + fulfillOn;
+        hash= 31 * hash + attributeAssignments.hashCode();
 
         return hash;
     }
@@ -132,8 +142,9 @@ public final class Obligation implements Serializable {
             return false;
         }
 
-        Obligation otherObligation = (Obligation) obj;
-        return Strings.safeEquals(id, otherObligation.getId()) && fulfillOn == otherObligation.getFulfillOn()
+        Obligation otherObligation= (Obligation) obj;
+        return Strings.safeEquals(id, otherObligation.getId())
+                && fulfillOn == otherObligation.getFulfillOn()
                 && attributeAssignments.equals(otherObligation.getAttributeAssignments());
     }
 }

@@ -21,11 +21,23 @@ import java.io.Serializable;
 
 import org.glite.authz.common.util.Strings;
 
-/** A requirement that a particular attribute have a given set of values within the PEP. */
+/**
+ * A requirement that a particular attribute have a given set of values within
+ * the PEP.
+ */
 public final class AttributeAssignment implements Serializable {
 
     /** Serial version UID. */
-    private static final long serialVersionUID = -1159499031052230298L;
+    private static final long serialVersionUID= -1159499031052230298L;
+
+    /** The attribute id user-id identifier: {@value} . */
+    public static final String ID_ATTRIBUTE_USER_ID= "http://glite.org/xacml/attribute/user-id";
+
+    /** The attribute id group-id identifier: {@value} . */
+    public static final String ID_ATTRIBUTE_GROUP_ID= "http://glite.org/xacml/attribute/group-id";
+
+    /** The attribute id primary group-id identifier: {@value} . */
+    public static final String ID_ATTRIBUTE_PRIMARY_GROUP_ID= "http://glite.org/xacml/attribute/group-id/primary";
 
     /** ID of the attribute. */
     private String attributeId;
@@ -52,10 +64,11 @@ public final class AttributeAssignment implements Serializable {
     /**
      * Sets the ID of the attribute.
      * 
-     * @param id ID of the attribute
+     * @param id
+     *            ID of the attribute
      */
     public void setAttributeId(String id) {
-        attributeId = Strings.safeTrimOrNullString(id);
+        attributeId= Strings.safeTrimOrNullString(id);
     }
 
     /**
@@ -70,10 +83,11 @@ public final class AttributeAssignment implements Serializable {
     /**
      * Sets the data type of the attribute.
      * 
-     * @param type data type of the attribute
+     * @param type
+     *            data type of the attribute
      */
     public void setDataType(String type) {
-        dataType = Strings.safeTrimOrNullString(type);
+        dataType= Strings.safeTrimOrNullString(type);
     }
 
     /**
@@ -88,15 +102,16 @@ public final class AttributeAssignment implements Serializable {
     /**
      * Sets the value the identified attribute must be assigned.
      * 
-     * @param newValue value the identified attribute must be assigned
+     * @param newValue
+     *            value the identified attribute must be assigned
      */
     public void setValue(String newValue) {
-        value = Strings.safeTrimOrNullString(newValue);
+        value= Strings.safeTrimOrNullString(newValue);
     }
 
     /** {@inheritDoc} */
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder= new StringBuilder();
 
         stringBuilder.append("AttributeAssignment {");
         stringBuilder.append("attributeId: ").append(attributeId).append(", ");
@@ -109,11 +124,11 @@ public final class AttributeAssignment implements Serializable {
 
     /** {@inheritDoc} */
     public int hashCode() {
-        int hash = 13;
+        int hash= 13;
 
-        hash = 31 * hash + (null == attributeId ? 0 : attributeId.hashCode());
-        hash = 31 * hash + (null == dataType ? 0 : dataType.hashCode());
-        hash = 31 * hash + (null == value ? 0 : value.hashCode());
+        hash= 31 * hash + (null == attributeId ? 0 : attributeId.hashCode());
+        hash= 31 * hash + (null == dataType ? 0 : dataType.hashCode());
+        hash= 31 * hash + (null == value ? 0 : value.hashCode());
 
         return hash;
     }
@@ -128,7 +143,7 @@ public final class AttributeAssignment implements Serializable {
             return false;
         }
 
-        AttributeAssignment otherAssignment = (AttributeAssignment) obj;
+        AttributeAssignment otherAssignment= (AttributeAssignment) obj;
         return Strings.safeEquals(attributeId, otherAssignment)
                 && Strings.safeEquals(dataType, otherAssignment.getDataType())
                 && Strings.safeEquals(value, otherAssignment.getValue());

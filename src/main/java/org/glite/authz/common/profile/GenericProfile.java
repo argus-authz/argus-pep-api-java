@@ -70,12 +70,19 @@ public abstract class GenericProfile {
     }
 
     /**
+     * Gets the obligation identified by id from the response for a given
+     * decision.
      * 
      * @param response
+     *            the response to process
      * @param decision
+     *            the decision to match
      * @param obligationId
-     * @return
+     *            the obligation id to match
+     * @return the matching obligation
      * @throws ProfileProcessingException
+     *             if the response doesn't contain the result for the decision,
+     *             or obligation matching the id.
      */
     public static Obligation getObligation(Response response, int decision,
             String obligationId) throws ProfileProcessingException {

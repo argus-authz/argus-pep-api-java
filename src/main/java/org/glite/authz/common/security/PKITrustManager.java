@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 2010. Members of the EGEE Collaboration.
- * See http://www.eu-egee.org/partners/ for details on the copyright
- * holders.
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2010.
+ * See http://www.eu-egee.org/partners/ for details on the copyright holders.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +29,8 @@ import javax.net.ssl.X509TrustManager;
 
 /**
  * PKITrustManager is a {@link X509TrustManager} to manage which X509
- * certificates may be used to authenticate the remote side of a secure socket.
+ * certificates may be used to authenticate the remote side (server) of a secure
+ * socket.
  * 
  * @author Valery Tschopp &lt;tschopp&#64;switch.ch&gt;
  */
@@ -42,19 +42,18 @@ public class PKITrustManager implements X509TrustManager {
     /**
      * Creates a {@link X509TrustManager} based on a {@link KeyStore}.
      * 
-     * @param keystore
+     * @param truststore
      *            the existing trust store
-     * @param password
-     *            the keystore password
      * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      */
-    public PKITrustManager(KeyStore keystore) throws NoSuchAlgorithmException,
-            KeyStoreException {
-        trustManager_= createX509TrustManager(keystore);
+    public PKITrustManager(KeyStore truststore)
+            throws NoSuchAlgorithmException, KeyStoreException {
+        trustManager_= createX509TrustManager(truststore);
     }
 
     /**
+     * Creates a {@link X509TrustManager} based on a {@link KeyStore}.
      * 
      * @param keystore
      * @return

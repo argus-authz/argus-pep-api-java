@@ -34,8 +34,8 @@ import javax.net.ssl.X509KeyManager;
 
 /**
  * PKIKeyManager is a {@link X509KeyManager} to manage which X509
- * certificate-based key pairs is used to authenticate the local side of a
- * secure socket.
+ * certificate-based key pairs is used to authenticate the local side (client)
+ * of a secure socket.
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */

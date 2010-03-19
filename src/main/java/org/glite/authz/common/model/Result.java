@@ -27,19 +27,19 @@ import org.glite.authz.common.util.Strings;
 public final class Result implements Serializable {
 
     /** Decision Deny value, {@value} . */
-    public static final int DECISION_DENY = 0;
+    public static final int DECISION_DENY= 0;
 
     /** Decision Permit value, {@value} . */
-    public static final int DECISION_PERMIT = 1;
+    public static final int DECISION_PERMIT= 1;
 
     /** Decision Indeterminate value, {@value} . */
-    public static final int DECISION_INDETERMINATE = 2;
+    public static final int DECISION_INDETERMINATE= 2;
 
     /** Decision NotApplicable value, {@value} . */
-    public static final int DECISION_NOT_APPLICABLE = 3;
+    public static final int DECISION_NOT_APPLICABLE= 3;
 
     /** Serial version UID. */
-    private static final long serialVersionUID = 6419281476715041885L;
+    private static final long serialVersionUID= 6419281476715041885L;
 
     /** Decision of the authorization request. */
     private int decision;
@@ -55,7 +55,7 @@ public final class Result implements Serializable {
 
     /** Constructor. */
     public Result() {
-        obligations = new LazyList<Obligation>();
+        obligations= new LazyList<Obligation>();
     }
 
     /**
@@ -68,36 +68,51 @@ public final class Result implements Serializable {
     }
 
     /**
-     * Helper method for converting the numeric decision code to its equivalent XACML string.
+     * Helper method for converting the numeric decision code to its equivalent
+     * XACML string.
      * 
      * @return numeric decision code's equivalent XACML string
      */
     public String getDecisionString() {
+        return decisionToString(decision);
+    }
+
+    /**
+     * Converts the numeric decision code to its equivalent XACML string.
+     * 
+     * @param decision
+     *            the numeric decision
+     * @return the XACML string equivalent of the numeric decision,
+     *         <code>null</code> if not in range
+     */
+    static public String decisionToString(int decision) {
         switch (decision) {
-            case 0:
-                return "Deny";
-            case 1:
-                return "Permit";
-            case 2:
-                return "Indeterminate";
-            case 3:
-                return "NotApplicable";
-            default:
-                return null;
+        case Result.DECISION_DENY:
+            return "Deny";
+        case Result.DECISION_PERMIT:
+            return "Permit";
+        case Result.DECISION_INDETERMINATE:
+            return "Indeterminate";
+        case Result.DECISION_NOT_APPLICABLE:
+            return "NotApplicable";
+        default:
+            return null;
         }
     }
 
     /**
      * Sets the decision of the authorization request.
      * 
-     * @param newDecision decision of the authorization request
+     * @param newDecision
+     *            decision of the authorization request
      */
     public void setDecision(int newDecision) {
-        if (decision != DECISION_DENY && decision != DECISION_PERMIT && decision != DECISION_INDETERMINATE
+        if (decision != DECISION_DENY && decision != DECISION_PERMIT
+                && decision != DECISION_INDETERMINATE
                 && decision != DECISION_NOT_APPLICABLE) {
             throw new IllegalArgumentException("Invalid decision value");
         }
-        decision = newDecision;
+        decision= newDecision;
     }
 
     /**
@@ -112,10 +127,11 @@ public final class Result implements Serializable {
     /**
      * Sets the ID of the resource to which the result applies.
      * 
-     * @param id ID of the resource to which the result applies
+     * @param id
+     *            ID of the resource to which the result applies
      */
     public void setResourceId(String id) {
-        resourceId = Strings.safeTrimOrNullString(id);
+        resourceId= Strings.safeTrimOrNullString(id);
     }
 
     /**
@@ -130,10 +146,11 @@ public final class Result implements Serializable {
     /**
      * Sets the status message associated with the result.
      * 
-     * @param newStatus status message associated with the result
+     * @param newStatus
+     *            status message associated with the result
      */
     public void setStatus(Status newStatus) {
-        status = newStatus;
+        status= newStatus;
     }
 
     /**
@@ -147,7 +164,7 @@ public final class Result implements Serializable {
 
     /** {@inheritDoc} */
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder= new StringBuilder();
 
         stringBuilder.append("Result {");
 
@@ -168,12 +185,12 @@ public final class Result implements Serializable {
 
     /** {@inheritDoc} */
     public int hashCode() {
-        int hash = 13;
+        int hash= 13;
 
-        hash = 31 * hash + decision;
-        hash = 31 * hash + (null == resourceId ? 0 : resourceId.hashCode());
-        hash = 31 * hash + obligations.hashCode();
-        hash = 31 * hash + (null == status ? 0 : status.hashCode());
+        hash= 31 * hash + decision;
+        hash= 31 * hash + (null == resourceId ? 0 : resourceId.hashCode());
+        hash= 31 * hash + obligations.hashCode();
+        hash= 31 * hash + (null == status ? 0 : status.hashCode());
 
         return hash;
     }
@@ -188,20 +205,24 @@ public final class Result implements Serializable {
             return false;
         }
 
-        Result otherResult = (Result) obj;
+        Result otherResult= (Result) obj;
 
         boolean statsEqual;
         if (status == null) {
             if (otherResult.getStatus() == null) {
-                statsEqual = true;
-            } else {
-                statsEqual = false;
+                statsEqual= true;
             }
-        } else {
-            statsEqual = status.equals(otherResult.getStatus());
+            else {
+                statsEqual= false;
+            }
+        }
+        else {
+            statsEqual= status.equals(otherResult.getStatus());
         }
 
-        return decision == otherResult.getDecision() && Strings.safeEquals(resourceId, otherResult.getResourceId())
-                && obligations.equals(otherResult.getObligations()) && statsEqual;
+        return decision == otherResult.getDecision()
+                && Strings.safeEquals(resourceId, otherResult.getResourceId())
+                && obligations.equals(otherResult.getObligations())
+                && statsEqual;
     }
 }

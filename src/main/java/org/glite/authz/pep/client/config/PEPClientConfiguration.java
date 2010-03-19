@@ -21,6 +21,8 @@ package org.glite.authz.pep.client.config;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
@@ -31,11 +33,13 @@ import javax.net.ssl.X509KeyManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.glite.authz.common.security.PKIKeyManager;
+import org.glite.authz.common.security.PKITrustManager;
 import org.glite.authz.pep.obligation.ObligationHandler;
 import org.glite.authz.pep.pip.PolicyInformationPoint;
 import org.glite.voms.PKIStore;
 import org.glite.voms.VOMSTrustManager;
 
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -65,10 +69,15 @@ public class PEPClientConfiguration {
     private X509KeyManager keyManager_= null;
 
     /**
-     * HTTP connection timeout in millis, <code>0</code> is no timeout. Default
-     * is <code>5000</code> millis
+     * HTTP connection timeout in millis, <code>0</code> is no timeout.
      */
     private int connectionTimeout_= 5000;
+
+    /** Max connections per host for the multi-threaded Http client */
+    private int maxConnectionsPerHost_= 5;
+
+    /** Max total number of connections for the multi-threaded Http client */
+    private int maxTotalConnections_= 20;
 
     /** Default constructor. */
     public PEPClientConfiguration() {
@@ -139,7 +148,8 @@ public class PEPClientConfiguration {
     }
 
     /**
-     * Returns the HTTP connection timeout in millis
+     * Returns the HTTP connection timeout in millisecond. Default is
+     * <code>5000</code> milliseconds.
      * 
      * @return the connection timeout
      */
@@ -159,31 +169,75 @@ public class PEPClientConfiguration {
     }
 
     /**
+     * Sets the directory containing the trust material X509 certificates used
+     * to authenticate the server side of a secure socket (server
+     * authentication). This is typically the EUGridPMA bundle directory
+     * <code>/etc/grid-security/certificates</code>
      * 
      * @param cadirname
-     * @throws CertificateException
-     * @throws CRLException
-     * @throws IOException
+     *            the directory containing the CA issuing certificates in PEM
+     *            format. This is typically the EUGridPMA bundle directory
+     *            <code>/etc/grid-security/certificates</code>
+     * @throws PEPClientConfigurationError
+     *             if an error occurs processing the cadirname or creating the
+     *             trust manager
      */
-    public void setTrustMaterial(String cadirname) throws CertificateException,
-            CRLException, IOException {
+    public void setTrustMaterial(String cadirname)
+            throws PEPClientConfigurationError {
         if (log_.isDebugEnabled()) {
             log_.debug("cadirname: " + cadirname);
         }
-        PKIStore trustStore= new PKIStore(cadirname, PKIStore.TYPE_CADIR);
-        trustManager_= new VOMSTrustManager(trustStore);
+        try {
+            PKIStore trustStore= new PKIStore(cadirname, PKIStore.TYPE_CADIR);
+            trustManager_= new VOMSTrustManager(trustStore);
+        } catch (CertificateException e) {
+            throw new PEPClientConfigurationError(e);
+        } catch (CRLException e) {
+            throw new PEPClientConfigurationError(e);
+        } catch (IOException e) {
+            throw new PEPClientConfigurationError(e);
+        }
     }
 
     /**
+     * Sets the trust material X509 certificates used to authenticate the server
+     * side of a secure socket (server authentication).
+     * 
+     * @param truststore
+     *            the trust store containing the trusted server certificates or
+     *            issuing CA certificates.
+     * @throws PEPClientConfigurationError
+     *             if an error occurs creating the trust manager
+     */
+    public void setTrustMaterial(KeyStore truststore)
+            throws PEPClientConfigurationError {
+        try {
+            trustManager_= new PKITrustManager(truststore);
+        } catch (NoSuchAlgorithmException e) {
+            throw new PEPClientConfigurationError(e);
+        } catch (KeyStoreException e) {
+            throw new PEPClientConfigurationError(e);
+        }
+    }
+
+    /**
+     * Sets the key material X509 certificate-based key pairs used to
+     * authenticate the client side of a secure socket (client authentication).
+     * The certificate and private key must be in PEM format.
      * 
      * @param usercert
+     *            the filename containing the X509 certificate in PEM format
      * @param userkey
+     *            the filename containing the private key in PEM format
      * @param password
-     * @throws GeneralSecurityException
-     * @throws IOException
+     *            the password of the private key, and of the resulting
+     *            keystore. It can not be <code>null</code>.
+     * @throws PEPClientConfigurationError
+     *             if an error occurs reading the key material or creating the
+     *             key manager
      */
     public void setKeyMaterial(String usercert, String userkey, String password)
-            throws GeneralSecurityException, IOException {
+            throws PEPClientConfigurationError {
         if (password == null) {
             throw new IllegalArgumentException("password can not be null");
         }
@@ -191,21 +245,37 @@ public class PEPClientConfiguration {
             log_.debug("usercert: " + usercert);
             log_.debug("userkey: " + userkey + " password: " + password);
         }
-        keyManager_= new PKIKeyManager(usercert, userkey, password);
+        try {
+            keyManager_= new PKIKeyManager(usercert, userkey, password);
+        } catch (GeneralSecurityException e) {
+            throw new PEPClientConfigurationError(e);
+        } catch (IOException e) {
+            throw new PEPClientConfigurationError(e);
+        }
     }
 
     /**
+     * Sets the key material X509 certificate-based key pairs used to
+     * authenticate the client side of a secure socket (client authentication).
      * 
      * @param keystore
+     *            the KeyStore containing the certificate-based key pairs
      * @param password
-     * @throws GeneralSecurityException
+     *            password of the keystore, can not be <code>null</code>
+     * @throws PEPClientConfigurationError
+     *             if an error occurs reading the key material or creating the
+     *             key manager
      */
     public void setKeyMaterial(KeyStore keystore, String password)
-            throws GeneralSecurityException {
+            throws PEPClientConfigurationError {
         if (password == null) {
             throw new IllegalArgumentException("password can not be null");
         }
-        keyManager_= new PKIKeyManager(keystore, password);
+        try {
+            keyManager_= new PKIKeyManager(keystore, password);
+        } catch (GeneralSecurityException e) {
+            throw new PEPClientConfigurationError(e);
+        }
     }
 
     /**
@@ -226,5 +296,48 @@ public class PEPClientConfiguration {
      */
     public X509KeyManager getKeyManager() {
         return keyManager_;
+    }
+
+    /**
+     * Gets the maximum number of connections per host to keep alive. Default is
+     * <code>5</code>.
+     * 
+     * @return maximum number of connection per host
+     */
+    public int getMaxConnectionsPerHost() {
+        return maxConnectionsPerHost_;
+    }
+
+    /**
+     * Sets the maximum number of connections per host to keep alive.
+     * 
+     * @param connectionsPerHost
+     *            maximum number of connections per host
+     * @see HttpConnectionManagerParams#setDefaultMaxConnectionsPerHost(int)
+     */
+    public void setMaxConnectionsPerHost(int connectionsPerHost) {
+        maxConnectionsPerHost_= connectionsPerHost;
+    }
+
+    /**
+     * Sets the maximum total number of connections in the connections pool to
+     * keep alive.
+     * 
+     * @param maxConnections
+     *            maximum total number of connections
+     * @see HttpConnectionManagerParams#setMaxTotalConnections(int)
+     */
+    public void setMaxTotalConnections(int maxConnections) {
+        maxTotalConnections_= maxConnections;
+    }
+
+    /**
+     * Gets the maximum total number of connections in the connections pool.
+     * Default is <code>20</code>.
+     * 
+     * @return maximum total number of connections
+     */
+    public int getMaxTotalConnections() {
+        return maxTotalConnections_;
     }
 }

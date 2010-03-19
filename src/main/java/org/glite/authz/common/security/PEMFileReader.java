@@ -61,12 +61,18 @@ public class PEMFileReader {
     }
 
     /**
+     * Reads the first PEM encoded private key from a filename
      * 
      * @param filename
+     *            the filename of the file to read from
      * @param password
-     * @return
+     *            the password of the private key if encrypted, can be
+     *            <code>null</code> if the key is not encrypted
+     * @return the private key
      * @throws FileNotFoundException
+     *             if the file doesn't exist
      * @throws IOException
+     *             if an error occurs while reading the file
      */
     public PrivateKey readPrivateKey(String filename, String password)
             throws FileNotFoundException, IOException {
@@ -75,12 +81,18 @@ public class PEMFileReader {
     }
 
     /**
+     * Reads the first PEM encoded private key from a file
      * 
      * @param file
+     *            the file to read from
      * @param password
-     * @return
+     *            the password of the private key if encrypted, can be
+     *            <code>null</code> if the key is not encrypted
+     * @return the private key
      * @throws FileNotFoundException
+     *             if the file doesn't exist
      * @throws IOException
+     *             if an error occurs while reading the file
      */
     public PrivateKey readPrivateKey(File file, String password)
             throws FileNotFoundException, IOException {
@@ -108,12 +120,13 @@ public class PEMFileReader {
     }
 
     /**
+     * Reads all PEM encoded X.509 certificates from a file
      * 
      * @param filename
-     * @param password
-     * @return
-     * @throws FileNotFoundException
+     *            the filename of the file to read from
+     * @return a list of all X.509 certificates
      * @throws IOException
+     *             if an error occurs while reading the file
      */
     public X509Certificate[] readCertificates(String filename)
             throws FileNotFoundException, IOException {
@@ -122,11 +135,13 @@ public class PEMFileReader {
     }
 
     /**
+     * Reads all PEM encoded X.509 certificates from a file
      * 
      * @param file
-     * @param password
-     * @return
+     *            the file to read from
+     * @return a list of all X.509 certificates
      * @throws IOException
+     *             if an error occurs while reading the file
      */
     public X509Certificate[] readCertificates(File file)
             throws FileNotFoundException, IOException {

@@ -21,11 +21,11 @@ package org.glite.authz.pep.client;
 import org.glite.authz.common.AuthorizationServiceException;
 
 /**
- * PEPClientError
+ * PEP client exception
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
-public class PEPClientError extends AuthorizationServiceException {
+public class PEPClientException extends AuthorizationServiceException {
 
     /**
      * Serial version uid
@@ -35,7 +35,7 @@ public class PEPClientError extends AuthorizationServiceException {
     /**
      * Default constructor.
      */
-    public PEPClientError() {
+    public PEPClientException() {
         super();
     }
 
@@ -44,7 +44,7 @@ public class PEPClientError extends AuthorizationServiceException {
      * 
      * @param message
      */
-    public PEPClientError(String message) {
+    public PEPClientException(String message) {
         super(message);
     }
 
@@ -53,7 +53,7 @@ public class PEPClientError extends AuthorizationServiceException {
      * 
      * @param wrappedException
      */
-    public PEPClientError(Exception wrappedException) {
+    public PEPClientException(Exception wrappedException) {
         super(wrappedException);
     }
 
@@ -63,7 +63,7 @@ public class PEPClientError extends AuthorizationServiceException {
      * @param message
      * @param wrappedException
      */
-    public PEPClientError(String message, Exception wrappedException) {
+    public PEPClientException(String message, Exception wrappedException) {
         super(message, wrappedException);
     }
 

@@ -20,6 +20,8 @@ package org.glite.authz.pep.client;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.glite.authz.common.AuthorizationServiceException;
@@ -31,11 +33,14 @@ import org.glite.authz.pep.client.config.PEPClientConfiguration;
 import org.glite.authz.pep.client.http.HttpClientBuilder;
 import org.glite.authz.pep.client.http.TLSProtocolSocketFactory;
 import org.glite.authz.pep.obligation.ObligationHandler;
+import org.glite.authz.pep.obligation.ObligationProcessingException;
+import org.glite.authz.pep.pip.PIPProcessingException;
 import org.glite.authz.pep.pip.PolicyInformationPoint;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,6 +51,8 @@ import com.caucho.hessian.io.HessianOutput;
 /**
  * A PEP client to communicate with the Argus PEP daemon and authorize request.
  * 
+ * It uses a multi-threaded http client to authorize the request.
+ * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
 public class PEPClient {
@@ -53,25 +60,31 @@ public class PEPClient {
     /** Class logger. */
     private final Log log= LogFactory.getLog(PEPClient.class);
 
+    /** Unmodifiable list of PIPs */
     private List<PolicyInformationPoint> pips_= null;
 
+    /** Unmodifiable list of ObligationHandlers */
     private List<ObligationHandler> obligationHandlers_= null;
 
+    /** Unmodifiable list of PEP daemon endpoints */
     private List<String> pepdEndpoints_= null;
 
     /** HTTP client used to contact the PEP daemon. */
     private HttpClient httpClient_= null;
 
     /**
-     * Constructor.
+     * Constructor. Creates a new PEP client based on the given configuration.
+     * The PEP client uses a multi-threaded {@link HttpClient}
      * 
      * @param config
      *            the client configuration used for this client
+     * @throws PEPClientException
      */
-    public PEPClient(PEPClientConfiguration config) {
+    public PEPClient(PEPClientConfiguration config) throws PEPClientException {
         HttpClientBuilder httpClientBuilder= new HttpClientBuilder();
         httpClientBuilder.setConnectionTimeout(config.getConnectionTimeout());
-        // httpClientBuilder.setMaxTotalConnections(config.getMaxRequests());
+        httpClientBuilder.setMaxConnectionsPerHost(config.getMaxConnectionsPerHost());
+        httpClientBuilder.setMaxTotalConnections(config.getMaxTotalConnections());
         // httpClientBuilder.setReceiveBufferSize(config.getReceiveBufferSize());
         // httpClientBuilder.setSendBufferSize(config.getSendBufferSize());
 
@@ -85,22 +98,28 @@ public class PEPClient {
 
         pepdEndpoints_= config.getPEPDaemonEndpoints();
         if (pepdEndpoints_.isEmpty()) {
-            throw new IllegalArgumentException("Configuration doesn't contain any PEP daemon endpoint URL");
+            throw new PEPClientException("Configuration doesn't contain any PEP daemon endpoint URL");
         }
         pips_= config.getPolicyInformationPoints();
         obligationHandlers_= config.getObligationHandlers();
     }
 
     /**
+     * Authorizes the request with the PEP daemon and return the response
      * 
      * @param request
-     * @return
-     * @throws AuthorizationServiceException
+     *            the authorization request
+     * @return the reponse
+     * @throws PEPClientException
+     *             if a processing error occurs.
      */
-    public Response authorize(Request request)
-            throws AuthorizationServiceException {
+    public Response authorize(Request request) throws PEPClientException {
         Response response= null;
-        runPolicyInformationPoints(request);
+        try {
+            runPolicyInformationPoints(request);
+        } catch (PIPProcessingException e) {
+            throw new PEPClientException("PIP processing failure", e);
+        }
         for (String endpoint : pepdEndpoints_) {
             try {
                 response= performRequest(endpoint, request);
@@ -111,12 +130,17 @@ public class PEPClient {
             }
         }
         if (response == null) {
-            String error= "No PEP daemons " + pepdEndpoints_
+            String error= "No PEP daemon(s) " + pepdEndpoints_
                     + " was able to process the request";
             log.error(error);
-            throw new AuthorizationServiceException(error);
+            throw new PEPClientException(error);
         }
-        runObligationHandlers(request, response);
+        try {
+            runObligationHandlers(request, response);
+        } catch (ObligationProcessingException e) {
+            throw new PEPClientException("ObligationHandler processing failure",
+                                         e);
+        }
         return response;
     }
 
@@ -135,37 +159,46 @@ public class PEPClient {
      */
     protected Response performRequest(String pepUrl, Request authzRequest)
             throws AuthorizationServiceException {
-        PostMethod postMethod= null;
 
+        String b64Message= null;
         try {
             ByteArrayOutputStream out= new ByteArrayOutputStream();
             HessianOutput hout= new HessianOutput(out);
             hout.writeObject(authzRequest);
             hout.flush();
-
-            String b64Message= Base64.encodeBytes(out.toByteArray());
-            if (log.isDebugEnabled()) {
-                log.debug("Outgoing Base64-encoded request:\n" + b64Message);
-            }
-
-            postMethod= new PostMethod(pepUrl);
-            postMethod.setRequestEntity(new StringRequestEntity(b64Message,
-                                                                "UTF-8",
-                                                                "UTF-8"));
+            b64Message= Base64.encodeBytes(out.toByteArray());
         } catch (IOException e) {
             log.error("Unable to serialize request object", e);
             throw new AuthorizationServiceException("Unable to serialize request object",
                                                     e);
         }
 
+        PostMethod postMethod= new PostMethod(pepUrl);
+        try {
+            RequestEntity requestEntity= new StringRequestEntity(b64Message,
+                                                                 "application/octet-stream",
+                                                                 "UTF-8");
+            postMethod.setRequestEntity(requestEntity);
+        } catch (UnsupportedEncodingException e) {
+            throw new AuthorizationServiceException(e);
+        }
+
+        Response response= null;
         try {
             httpClient_.executeMethod(postMethod);
             if (postMethod.getStatusCode() == HttpStatus.SC_OK) {
-                HessianInput hin= new HessianInput(new Base64.InputStream(postMethod.getResponseBodyAsStream()));
-                return (Response) hin.readObject(Response.class);
+                try {
+                    InputStream is= new Base64.InputStream(postMethod.getResponseBodyAsStream());
+                    HessianInput hin= new HessianInput(is);
+                    response= (Response) hin.readObject(Response.class);
+                } catch (IOException e) {
+                    log.error("Unable to deserialize response object", e);
+                    throw new AuthorizationServiceException("Unable to deserialize response object",
+                                                            e);
+                }
             }
             else {
-                String error= "Received a " + postMethod.getStatusCode()
+                String error= postMethod.getStatusCode()
                         + " status code response from the PEP daemon " + pepUrl;
                 log.error(error);
                 throw new AuthorizationServiceException(error);
@@ -177,8 +210,11 @@ public class PEPClient {
                                                             + pepUrl,
                                                     e);
         } finally {
+            log.debug("release connection");
             postMethod.releaseConnection();
         }
+
+        return response;
     }
 
     /**
@@ -188,27 +224,19 @@ public class PEPClient {
      *            the request
      * @param pips
      *            PIPs to run over the request
-     * 
-     * @throws AuthorizationServiceException
-     *             thrown if there is a
+     * @throws PIPProcessingException
+     *             thrown if a PIP failed to populate the request
      */
     protected void runPolicyInformationPoints(Request request)
-            throws AuthorizationServiceException {
-
+            throws PIPProcessingException {
         boolean pipApplied;
-
-        log.debug("Running " + pips_.size() + " registered PIPs");
         for (PolicyInformationPoint pip : pips_) {
-            if (pip != null) {
-                pipApplied= pip.populateRequest(request);
-                if (pipApplied) {
-                    log.debug("PIP " + pip.getId()
-                            + " was applied to the request");
-                }
-                else {
-                    log.debug("PIP " + pip.getId()
-                            + " did not apply to the request");
-                }
+            if (log.isDebugEnabled()) {
+                log.debug("applying PIP " + pip.getId());
+            }
+            pipApplied= pip.populateRequest(request);
+            if (log.isErrorEnabled()) {
+                log.debug("PIP " + pip.getId() + " applied: " + pipApplied);
             }
         }
     }
@@ -221,19 +249,24 @@ public class PEPClient {
      * @param response
      *            the authorization response
      * 
-     * @throws AuthorizationServiceException
+     * @throws ObligationProcessingException
      *             thrown if there is a problem evaluating obligation handlers.
      */
     protected void runObligationHandlers(Request request, Response response)
-            throws AuthorizationServiceException {
+            throws ObligationProcessingException {
         if (response == null)
             return;
+        boolean ohApplied;
         List<Result> results= response.getResults();
         for (Result result : results) {
             for (ObligationHandler oh : obligationHandlers_) {
-                if (oh != null) {
+                if (log.isDebugEnabled()) {
                     log.debug("applying OH " + oh.getObligationId());
-                    oh.evaluateObligation(request, result);
+                }
+                ohApplied= oh.evaluateObligation(request, result);
+                if (log.isDebugEnabled()) {
+                    log.debug("OH " + oh.getObligationId() + " applied: "
+                            + ohApplied);
                 }
             }
         }

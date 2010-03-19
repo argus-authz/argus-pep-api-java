@@ -19,8 +19,8 @@
 package org.glite.authz.common.profile;
 
 /**
- * Grid Authorization Profile base class. Defines the namespaces used in grid wn
- * and ce profiles.
+ * Abstract Grid authorization profile base class. Defines the namespaces used
+ * in grid wn and ce profiles.
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */

@@ -18,18 +18,24 @@
  */
 package org.glite.authz.common.profile;
 
+import java.util.List;
+
 import org.glite.authz.common.model.Action;
 import org.glite.authz.common.model.Environment;
+import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Resource;
+import org.glite.authz.common.model.Response;
+import org.glite.authz.common.model.Result;
 import org.glite.authz.common.model.Subject;
 
 /**
- * GenericProfile
+ * Abstract generic profile containing helper methods to build request and parse
+ * response.
  * 
  * @author Valery Tschopp &lt;tschopp&#64;switch.ch&gt;
  */
-public class GenericProfile {
+public abstract class GenericProfile {
 
     /**
      * Creates a {@link Request} containing the given {@link Subject},
@@ -61,6 +67,40 @@ public class GenericProfile {
             request.setEnvironment(environment);
         }
         return request;
+    }
+
+    /**
+     * 
+     * @param response
+     * @param decision
+     * @param obligationId
+     * @return
+     * @throws ProfileProcessingException
+     */
+    public static Obligation getObligation(Response response, int decision,
+            String obligationId) throws ProfileProcessingException {
+        List<Result> results= response.getResults();
+        // should be only 1 result!!!!
+        for (Result result : results) {
+            if (result.getDecision() == decision) {
+                List<Obligation> obligations= result.getObligations();
+                for (Obligation obligation : obligations) {
+                    String id= obligation.getId();
+                    if (obligation.getFulfillOn() == decision
+                            && obligationId.equals(id)) {
+                        return obligation;
+                    }
+                }
+                throw new ProfileProcessingException("No obligation "
+                        + obligationId + " found", result);
+            }
+            else {
+                throw new ProfileProcessingException("No decision "
+                        + Result.decisionToString(decision) + " found: "
+                        + result.getDecisionString(), result);
+            }
+        }
+        return null;
     }
 
     /** Prevents instantiation */

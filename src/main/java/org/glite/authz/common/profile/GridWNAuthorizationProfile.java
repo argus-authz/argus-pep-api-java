@@ -26,8 +26,11 @@ import java.util.List;
 import org.glite.authz.common.model.Action;
 import org.glite.authz.common.model.Attribute;
 import org.glite.authz.common.model.Environment;
+import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Resource;
+import org.glite.authz.common.model.Response;
+import org.glite.authz.common.model.Result;
 import org.glite.authz.common.model.Subject;
 import org.glite.authz.common.security.PEMUtils;
 
@@ -40,24 +43,55 @@ import org.glite.authz.common.security.PEMUtils;
  * 
  * @version 1.0
  */
-public class GridWNAuthorizationProfile extends GenericProfile {
+public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
+
+    /** The attribute id profile-id identifier, {@value} . */
+    public static final String ID_ATTRIBUTE_PROFILE_ID= NS_ATTRIBUTE
+            + "/profile-id";
+
+    /** The attribute id user-id identifier: {@value} . */
+    public static final String ID_ATTRIBUTE_USER_ID= NS_ATTRIBUTE + "/user-id";
+
+    /** The attribute id group-id identifier: {@value} . */
+    public static final String ID_ATTRIBUTE_GROUP_ID= NS_ATTRIBUTE
+            + "/group-id";
+
+    /** The attribute id primary group-id identifier: {@value} . */
+    public static final String ID_ATTRIBUTE_PRIMARY_GROUP_ID= NS_ATTRIBUTE
+            + "/group-id/primary";
+
+    /** The obligation id map to environment identifier: {@value} . */
+    public static final String ID_OBLIGATION_LOCAL_ENV_MAP= NS_OBLIGATION
+            + "/local-environment-map";
+
+    /** The obligation id map to POSIX environment identifier: {@value} . */
+    public static final String ID_OBLIGATION_LOCAL_MAP_POSIX= NS_OBLIGATION
+            + "/local-environment-map/posix";
 
     /** Version of the profile: {@value} */
     public static final String PROFILE_VERSION= "1.0";
 
     /** Identifier of the profile: {@value} */
-    public static final String PROFILE_ID= "http://glite.org/xacml/profile/grid-wn/1.0";
+    public static final String PROFILE_ID= NS_PROFILE + "/grid-wn/"
+            + PROFILE_VERSION;
 
     /**
+     * Creates a {@link Request} with the given user certificate, and chain,
+     * resourceid and actionid.
      * 
      * @param certs
+     *            the user certificate or proxy certificate, with chain
      * @param resourceid
+     *            the resource id
      * @param actionid
-     * @return
-     * @throws IOException
+     *            the action id
+     * @return a new request
+     * @throws ProfileProcessingException
+     *             if the a certificate can not be converted to PEM format.
      */
     static public Request createRequest(X509Certificate[] certs,
-            String resourceid, String actionid) throws IOException {
+            String resourceid, String actionid)
+            throws ProfileProcessingException {
         Subject subject= createSubject(certs);
         Resource resource= createResource(resourceid);
         Action action= createAction(actionid);
@@ -91,12 +125,12 @@ public class GridWNAuthorizationProfile extends GenericProfile {
      * @param cert
      *            the user certificate
      * @return the subject
-     * @throws IOException
+     * @throws ProfileProcessingException
      *             if an error occurs while converting a certificate in PEM
      *             format
      */
     public static Subject createSubject(X509Certificate cert)
-            throws IOException {
+            throws ProfileProcessingException {
         return createSubject(cert, null);
     }
 
@@ -108,12 +142,12 @@ public class GridWNAuthorizationProfile extends GenericProfile {
      * @param certs
      *            the user certificate and chain
      * @return the subject
-     * @throws IOException
+     * @throws ProfileProcessingException
      *             if an error occurs while converting a certificate in PEM
      *             format
      */
     public static Subject createSubject(X509Certificate[] certs)
-            throws IOException {
+            throws ProfileProcessingException {
         return createSubject(null, certs);
     }
 
@@ -127,12 +161,12 @@ public class GridWNAuthorizationProfile extends GenericProfile {
      * @param chain
      *            the user certificate chain
      * @return the subject
-     * @throws IOException
+     * @throws ProfileProcessingException
      *             if an error occurs while converting a certificate in PEM
      *             format
      */
     public static Subject createSubject(X509Certificate cert,
-            X509Certificate[] chain) throws IOException {
+            X509Certificate[] chain) throws ProfileProcessingException {
         List<X509Certificate> certs= new ArrayList<X509Certificate>();
         if (cert != null) {
             certs.add(cert);
@@ -142,7 +176,13 @@ public class GridWNAuthorizationProfile extends GenericProfile {
                 certs.add(chainCert);
             }
         }
-        String keyInfo= PEMUtils.certificatesToPEMString(certs);
+        String keyInfo;
+        try {
+            keyInfo= PEMUtils.certificatesToPEMString(certs);
+        } catch (IOException e) {
+            throw new ProfileProcessingException("Can not convert certificate to PEM format",
+                                                 e);
+        }
         Subject subject= new Subject();
         Attribute attrKeyInfo= new Attribute();
         attrKeyInfo.setId(Attribute.ID_SUB_KEY_INFO);
@@ -190,22 +230,46 @@ public class GridWNAuthorizationProfile extends GenericProfile {
 
     /**
      * Creates a base {@link Environment} containing the Attribute identified by
-     * {@link Attribute#ID_ENV_PROFILE_ID} with value for the Grid WN AuthZ
-     * profile identifier.
+     * {@link #ID_ATTRIBUTE_PROFILE_ID} with value for the Grid WN AuthZ profile
+     * identifier.
      * 
      * @return the environment
      */
     public static Environment createEnvironment() {
         Environment environment= new Environment();
         Attribute attrProfileId= new Attribute();
-        attrProfileId.setId(Attribute.ID_ENV_PROFILE_ID);
+        attrProfileId.setId(ID_ATTRIBUTE_PROFILE_ID);
         attrProfileId.setDataType(Attribute.DT_ANY_URI);
         attrProfileId.getValues().add(PROFILE_ID);
         environment.getAttributes().add(attrProfileId);
         return environment;
     }
 
+    public static Obligation getObligationPosixMapping(Response response)
+            throws ProfileProcessingException {
+        Obligation posixMappingObligation= getObligation(response,
+                                                         Result.DECISION_PERMIT,
+                                                         ID_OBLIGATION_LOCAL_MAP_POSIX);
+        return posixMappingObligation;
+    }
+
+    public static String getAttributeAssignmentUserId(
+            Obligation posixMappingObligation) {
+        return null;
+    }
+
+    public static String[] getAttributeAssignmentGroupIds(
+            Obligation posixMappingObligation) {
+        return null;
+    }
+
+    public static String getAttributeAssignmentPrimaryGroupId(
+            Obligation posixMappingObligation) {
+        return null;
+    }
+
     /** Prevents instantiation */
     private GridWNAuthorizationProfile() {
+        super();
     }
 }

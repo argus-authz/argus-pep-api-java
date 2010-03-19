@@ -142,9 +142,6 @@ public final class Attribute implements Serializable {
     /** Serial version UID. */
     private static final long serialVersionUID = -998357326993743203L;
 
-    /** The environment profile id attribute ID, {@value}. */
-    public static final String ID_ENV_PROFILE_ID= "http://glite.org/xacml/attribute/profile-id";
-
     /** ID of the attribute. */
     private String id;
 

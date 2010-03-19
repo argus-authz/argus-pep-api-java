@@ -30,15 +30,6 @@ public final class AttributeAssignment implements Serializable {
     /** Serial version UID. */
     private static final long serialVersionUID= -1159499031052230298L;
 
-    /** The attribute id user-id identifier: {@value} . */
-    public static final String ID_ATTRIBUTE_USER_ID= "http://glite.org/xacml/attribute/user-id";
-
-    /** The attribute id group-id identifier: {@value} . */
-    public static final String ID_ATTRIBUTE_GROUP_ID= "http://glite.org/xacml/attribute/group-id";
-
-    /** The attribute id primary group-id identifier: {@value} . */
-    public static final String ID_ATTRIBUTE_PRIMARY_GROUP_ID= "http://glite.org/xacml/attribute/group-id/primary";
-
     /** ID of the attribute. */
     private String attributeId;
 

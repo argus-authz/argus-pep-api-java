@@ -29,12 +29,6 @@ public final class Obligation implements Serializable {
     /** Serial version UID. */
     private static final long serialVersionUID= -5500418892138258526L;
 
-    /** The obligation id map to environment identifier: {@value} . */
-    public static final String ID_OBLIGATION_ENV_MAP= "http://glite.org/xacml/obligation/local-environment-map";
-
-    /** The obligation id map to POSIX environment identifier: {@value} . */
-    public static final String ID_OBLIGATION_MAP_POSIX= "http://glite.org/xacml/obligation/local-environment-map/posix";
-
     /** ID for the obligation. */
     private String id;
 

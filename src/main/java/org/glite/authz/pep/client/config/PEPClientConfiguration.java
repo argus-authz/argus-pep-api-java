@@ -178,12 +178,12 @@ public class PEPClientConfiguration {
      *            the directory containing the CA issuing certificates in PEM
      *            format. This is typically the EUGridPMA bundle directory
      *            <code>/etc/grid-security/certificates</code>
-     * @throws PEPClientConfigurationError
+     * @throws PEPClientConfigurationException
      *             if an error occurs processing the cadirname or creating the
      *             trust manager
      */
     public void setTrustMaterial(String cadirname)
-            throws PEPClientConfigurationError {
+            throws PEPClientConfigurationException {
         if (log_.isDebugEnabled()) {
             log_.debug("cadirname: " + cadirname);
         }
@@ -191,11 +191,11 @@ public class PEPClientConfiguration {
             PKIStore trustStore= new PKIStore(cadirname, PKIStore.TYPE_CADIR);
             trustManager_= new VOMSTrustManager(trustStore);
         } catch (CertificateException e) {
-            throw new PEPClientConfigurationError(e);
+            throw new PEPClientConfigurationException(e);
         } catch (CRLException e) {
-            throw new PEPClientConfigurationError(e);
+            throw new PEPClientConfigurationException(e);
         } catch (IOException e) {
-            throw new PEPClientConfigurationError(e);
+            throw new PEPClientConfigurationException(e);
         }
     }
 
@@ -206,17 +206,17 @@ public class PEPClientConfiguration {
      * @param truststore
      *            the trust store containing the trusted server certificates or
      *            issuing CA certificates.
-     * @throws PEPClientConfigurationError
+     * @throws PEPClientConfigurationException
      *             if an error occurs creating the trust manager
      */
     public void setTrustMaterial(KeyStore truststore)
-            throws PEPClientConfigurationError {
+            throws PEPClientConfigurationException {
         try {
             trustManager_= new PKITrustManager(truststore);
         } catch (NoSuchAlgorithmException e) {
-            throw new PEPClientConfigurationError(e);
+            throw new PEPClientConfigurationException(e);
         } catch (KeyStoreException e) {
-            throw new PEPClientConfigurationError(e);
+            throw new PEPClientConfigurationException(e);
         }
     }
 
@@ -232,12 +232,12 @@ public class PEPClientConfiguration {
      * @param password
      *            the password of the private key, and of the resulting
      *            keystore. It can not be <code>null</code>.
-     * @throws PEPClientConfigurationError
+     * @throws PEPClientConfigurationException
      *             if an error occurs reading the key material or creating the
      *             key manager
      */
     public void setKeyMaterial(String usercert, String userkey, String password)
-            throws PEPClientConfigurationError {
+            throws PEPClientConfigurationException {
         if (password == null) {
             throw new IllegalArgumentException("password can not be null");
         }
@@ -248,9 +248,9 @@ public class PEPClientConfiguration {
         try {
             keyManager_= new PKIKeyManager(usercert, userkey, password);
         } catch (GeneralSecurityException e) {
-            throw new PEPClientConfigurationError(e);
+            throw new PEPClientConfigurationException(e);
         } catch (IOException e) {
-            throw new PEPClientConfigurationError(e);
+            throw new PEPClientConfigurationException(e);
         }
     }
 
@@ -262,19 +262,19 @@ public class PEPClientConfiguration {
      *            the KeyStore containing the certificate-based key pairs
      * @param password
      *            password of the keystore, can not be <code>null</code>
-     * @throws PEPClientConfigurationError
+     * @throws PEPClientConfigurationException
      *             if an error occurs reading the key material or creating the
      *             key manager
      */
     public void setKeyMaterial(KeyStore keystore, String password)
-            throws PEPClientConfigurationError {
+            throws PEPClientConfigurationException {
         if (password == null) {
             throw new IllegalArgumentException("password can not be null");
         }
         try {
             keyManager_= new PKIKeyManager(keystore, password);
         } catch (GeneralSecurityException e) {
-            throw new PEPClientConfigurationError(e);
+            throw new PEPClientConfigurationException(e);
         }
     }
 

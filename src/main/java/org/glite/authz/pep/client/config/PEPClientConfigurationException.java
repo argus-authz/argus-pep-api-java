@@ -18,14 +18,14 @@
  */
 package org.glite.authz.pep.client.config;
 
-import org.glite.authz.pep.client.PEPClientError;
+import org.glite.authz.pep.client.PEPClientException;
 
 /**
- * PEPClientConfigurationError
+ * PEP client configuration exception
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
-public class PEPClientConfigurationError extends PEPClientError {
+public class PEPClientConfigurationException extends PEPClientException {
 
     /**
      * Serial number
@@ -35,7 +35,7 @@ public class PEPClientConfigurationError extends PEPClientError {
     /**
      * Default constructor.
      */
-    public PEPClientConfigurationError() {
+    public PEPClientConfigurationException() {
         super();
     }
 
@@ -44,7 +44,7 @@ public class PEPClientConfigurationError extends PEPClientError {
      * 
      * @param message
      */
-    public PEPClientConfigurationError(String message) {
+    public PEPClientConfigurationException(String message) {
         super(message);
     }
 
@@ -53,7 +53,7 @@ public class PEPClientConfigurationError extends PEPClientError {
      * 
      * @param wrappedException
      */
-    public PEPClientConfigurationError(Exception wrappedException) {
+    public PEPClientConfigurationException(Exception wrappedException) {
         super(wrappedException);
     }
 
@@ -63,7 +63,7 @@ public class PEPClientConfigurationError extends PEPClientError {
      * @param message
      * @param wrappedException
      */
-    public PEPClientConfigurationError(String message,
+    public PEPClientConfigurationException(String message,
             Exception wrappedException) {
         super(message, wrappedException);
     }

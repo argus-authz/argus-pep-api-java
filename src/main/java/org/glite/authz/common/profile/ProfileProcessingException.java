@@ -54,6 +54,16 @@ public class ProfileProcessingException extends AuthorizationServiceException {
      * 
      * @param message
      *            the error message
+     */
+    public ProfileProcessingException(String message) {
+        super(message);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param message
+     *            the error message
      * @param result
      *            the result
      */

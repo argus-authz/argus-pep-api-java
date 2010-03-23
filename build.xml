@@ -26,6 +26,7 @@
     <property name="workspace.dir" location=".." />
     <property name="stage.dir" location="${workspace.dir}/stage" />
     <property name="stage.lib.dir" location="${stage.dir}/share/java" />
+    <property name="stage.doc.dir" location="${stage.dir}/share/doc/${package.name}" />
 
     <!-- ETICS org.glite and externals component -->
     <echo message="importing project/etics.xml" />
@@ -37,6 +38,7 @@
     <!-- module directories -->
     <property name="src.dir" location="${basedir}/src/main/java" />
     <property name="test.src.dir" location="${basedir}/src/test/java" />
+    <property name="example.src.dir" location="${basedir}/src/example/java" />
     <property name="bin.dir" location="${basedir}/bin" />
     <property name="doc.dir" location="${basedir}/doc" />
     
@@ -152,28 +154,32 @@
     </target>
  
     <!-- prepare installation layout in ${install.dir} -->
-    <target name="install-layout" depends="jar">
-        <echo message="prepare install in ${install.dir}"/>
-        <property name="install.doc.dir" location="${install.dir}/share/doc/${package.name}"/>
+    <target name="install-layout-lib" depends="jar">
+        <echo message="prepare install lib in ${install.dir}"/>
         <property name="install.lib.dir" location="${install.dir}/share/java"/>
-
         <!-- first clean up -->
-        <delete dir="${install.dir}"/>
-
+        <!-- <delete dir="${install.dir}"/> -->
         <!-- create install dir -->
-        <mkdir dir="${install.doc.dir}"/>
         <mkdir dir="${install.lib.dir}"/>
-        <!-- doc -->
-        <copy todir="${install.doc.dir}">
-            <fileset dir="${doc.dir}" />
-        </copy>
         <!-- application jar -->
         <copy todir="${install.lib.dir}" file="${build.dir}/${package.jarname}"/>
-        
    </target>
-   
+   <target name="install-layout-doc" depends="doc">
+        <echo message="prepare install doc in ${install.dir}"/>
+        <property name="install.doc.dir" location="${install.dir}/share/doc/${package.name}"/>
+        <!-- create install dir -->
+        <mkdir dir="${install.doc.dir}"/>
+        <!-- doc -->
+        <copy todir="${install.doc.dir}">
+            <fileset dir="${doc.dir}">
+                <exclude name="**/*Hessian*"/>
+            </fileset>
+        </copy>
+   </target>
+    <target name="install-layout" depends="install-layout-lib,install-layout-doc" />
+
    <!-- install used by ETICS packager: ant -Dprefix=${prefix} install -->
-   <target name="install" depends="install-layout,stage">
+   <target name="install" depends="stage,install-layout">
         <!-- copy everything in $prefix -->
         <echo message="install in ${prefix}"/>
         <copy todir="${prefix}">
@@ -181,7 +187,7 @@
         </copy>
     </target>
 
-    <target name="javadoc" depends="compile">
+    <target name="javadoc" depends="prepare">
         <javadoc
             destdir="${doc.dir}/api"
             author="true"
@@ -196,6 +202,11 @@
         </javadoc>
     </target>
 
+    <target name="doc" depends="javadoc">
+        <copy todir="${doc.dir}">
+            <fileset dir="${example.src.dir}" />
+        </copy>
+    </target>
     
     <!-- clean -->
     <target name="clean">
@@ -214,7 +225,6 @@
         <stage-repository-files component="glite.voms-api-java">
             <include name="**/vomsjapi.jar" />
         </stage-repository-files>
-
         <download-repository component="externals.hessian" />
         <download-repository component="externals.bouncycastle" />
         <download-repository component="externals.commons-httpclient" />

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.glite.authz.common.model.Action;
 import org.glite.authz.common.model.Attribute;
+import org.glite.authz.common.model.AttributeAssignment;
 import org.glite.authz.common.model.Environment;
 import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
@@ -118,9 +119,9 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
     }
 
     /**
-     * Creates a {@link Subject} containing the {@link Attribute} identified by
-     * {@link Attribute#ID_SUB_KEY_INFO} and for value the certificates given as
-     * parameter, encoded in PEM blocks.
+     * Creates a {@link Subject} containing the {@link Attribute}
+     * {@value org.glite.authz.common.model.Attribute#ID_SUB_KEY_INFO} and for
+     * value the certificates given as parameter, encoded in PEM blocks.
      * 
      * @param cert
      *            the user certificate
@@ -135,9 +136,9 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
     }
 
     /**
-     * Creates a {@link Subject} containing the {@link Attribute} identified by
-     * {@link Attribute#ID_SUB_KEY_INFO} and for value the certificates given as
-     * parameter, encoded in PEM blocks.
+     * Creates a {@link Subject} containing the {@link Attribute}
+     * {@value org.glite.authz.common.model.Attribute#ID_SUB_KEY_INFO} and for
+     * value the certificates given as parameter, encoded in PEM blocks.
      * 
      * @param certs
      *            the user certificate and chain
@@ -152,9 +153,9 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
     }
 
     /**
-     * Creates a {@link Subject} containing the {@link Attribute} identified by
-     * {@link Attribute#ID_SUB_KEY_INFO} and for value the certificates given as
-     * parameter, encoded in PEM blocks.
+     * Creates a {@link Subject} containing the {@link Attribute}
+     * {@value org.glite.authz.common.model.Attribute#ID_SUB_KEY_INFO} and for
+     * value the certificates given as parameter, encoded in PEM blocks.
      * 
      * @param cert
      *            the user certificate
@@ -193,8 +194,9 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
     }
 
     /**
-     * Creates a {@link Resource} containing the {@link Attribute} identified by
-     * {@link Attribute#ID_RES_ID} with the value given as parameter.
+     * Creates a {@link Resource} containing the {@link Attribute}
+     * {@value org.glite.authz.common.model.Attribute#ID_RES_ID} with the value
+     * given as parameter.
      * 
      * @param resourceId
      *            The value of the resource-id attribute
@@ -211,8 +213,9 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
     }
 
     /**
-     * Creates an {@link Action} containing the {@link Attribute} identified by
-     * {@link Attribute#ID_ACT_ID} with the value given as parameter.
+     * Creates an {@link Action} containing the {@link Attribute}
+     * {@value org.glite.authz.common.model.Attribute#ID_ACT_ID} with the value
+     * given as parameter.
      * 
      * @param actionId
      *            The value of the action-id attribute
@@ -229,9 +232,9 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
     }
 
     /**
-     * Creates a base {@link Environment} containing the Attribute identified by
-     * {@link #ID_ATTRIBUTE_PROFILE_ID} with value for the Grid WN AuthZ profile
-     * identifier.
+     * Creates a base {@link Environment} containing the Attribute
+     * {@value #ID_ATTRIBUTE_PROFILE_ID} with value for the Grid WN AuthZ
+     * profile identifier.
      * 
      * @return the environment
      */
@@ -245,6 +248,18 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
         return environment;
     }
 
+    /**
+     * Gets the obligation {@value #ID_OBLIGATION_LOCAL_MAP_POSIX} from the
+     * result with a <code>Permit</code> decision
+     * 
+     * @param response
+     *            the response to process
+     * @return the POSIX mapping obligation, with decision Permit
+     * @throws ProfileProcessingException
+     *             if no decision Permit or no POSIX mapping obligation is
+     *             found. The exception contains the result decision, status
+     *             message, and status code
+     */
     public static Obligation getObligationPosixMapping(Response response)
             throws ProfileProcessingException {
         Obligation posixMappingObligation= getObligation(response,
@@ -253,18 +268,97 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
         return posixMappingObligation;
     }
 
+    /**
+     * Gets the mandatory POSIX user-id (username) from the
+     * {@value #ID_OBLIGATION_LOCAL_MAP_POSIX} obligation
+     * 
+     * @param posixMappingObligation
+     *            the posix mapping obligation
+     * @return the POSIX user-id (username) to map
+     * @throws ProfileProcessingException
+     *             if the obligation is not a
+     *             {@value #ID_OBLIGATION_LOCAL_MAP_POSIX}, or if the mandatory
+     *             user-id attribute assignment is not contained in the
+     *             obligation
+     */
     public static String getAttributeAssignmentUserId(
-            Obligation posixMappingObligation) {
-        return null;
+            Obligation posixMappingObligation)
+            throws ProfileProcessingException {
+        if (!ID_OBLIGATION_LOCAL_MAP_POSIX.equals(posixMappingObligation.getId())) {
+            throw new ProfileProcessingException("Obligation is not "
+                    + ID_OBLIGATION_LOCAL_MAP_POSIX);
+        }
+        List<AttributeAssignment> attributes= posixMappingObligation.getAttributeAssignments();
+        for (AttributeAssignment attribute : attributes) {
+            String id= attribute.getAttributeId();
+            if (ID_ATTRIBUTE_USER_ID.equals(id)) {
+                String userId= attribute.getValue();
+                return userId;
+            }
+        }
+        // attribute user-id not found
+        throw new ProfileProcessingException("Attribute assignment "
+                + ID_ATTRIBUTE_USER_ID + " not found in obligation "
+                + ID_OBLIGATION_LOCAL_MAP_POSIX);
     }
 
-    public static String[] getAttributeAssignmentGroupIds(
-            Obligation posixMappingObligation) {
-        return null;
+    /**
+     * Gets the list of POSIX group-ids from the
+     * {@value #ID_OBLIGATION_LOCAL_MAP_POSIX} obligation
+     * 
+     * @param posixMappingObligation
+     *            the posix mapping obligation
+     * @return list of POSIX group-ids, can be empty if the attributes are not
+     *         contained in the obligation.
+     * @throws ProfileProcessingException
+     *             if the obligation is not a
+     *             {@value #ID_OBLIGATION_LOCAL_MAP_POSIX}
+     */
+    public static List<String> getAttributeAssignmentGroupIds(
+            Obligation posixMappingObligation)
+            throws ProfileProcessingException {
+        if (!ID_OBLIGATION_LOCAL_MAP_POSIX.equals(posixMappingObligation.getId())) {
+            throw new ProfileProcessingException("Obligation is not "
+                    + ID_OBLIGATION_LOCAL_MAP_POSIX);
+        }
+        List<String> groupIds= new ArrayList<String>();
+        List<AttributeAssignment> attributes= posixMappingObligation.getAttributeAssignments();
+        for (AttributeAssignment attribute : attributes) {
+            String id= attribute.getAttributeId();
+            if (ID_ATTRIBUTE_GROUP_ID.equals(id)) {
+                groupIds.add(attribute.getValue());
+            }
+        }
+        return groupIds;
     }
 
+    /**
+     * Gets the POSIX primary group-id from the
+     * {@value #ID_OBLIGATION_LOCAL_MAP_POSIX} obligation
+     * 
+     * @param posixMappingObligation
+     *            the posix mapping obligation
+     * @return the POSIX group-id, can be <code>null</code> if the attribute is
+     *         not contained in the obligation.
+     * @throws ProfileProcessingException
+     *             if the obligation is not a
+     *             {@value #ID_OBLIGATION_LOCAL_MAP_POSIX}
+     */
     public static String getAttributeAssignmentPrimaryGroupId(
-            Obligation posixMappingObligation) {
+            Obligation posixMappingObligation)
+            throws ProfileProcessingException {
+        if (!ID_OBLIGATION_LOCAL_MAP_POSIX.equals(posixMappingObligation.getId())) {
+            throw new ProfileProcessingException("Obligation is not "
+                    + ID_OBLIGATION_LOCAL_MAP_POSIX);
+        }
+        List<AttributeAssignment> attributes= posixMappingObligation.getAttributeAssignments();
+        for (AttributeAssignment attribute : attributes) {
+            String id= attribute.getAttributeId();
+            if (ID_ATTRIBUTE_PRIMARY_GROUP_ID.equals(id)) {
+                String groupId= attribute.getValue();
+                return groupId;
+            }
+        }
         return null;
     }
 

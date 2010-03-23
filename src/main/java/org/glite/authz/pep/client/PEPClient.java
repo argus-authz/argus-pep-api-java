@@ -51,7 +51,8 @@ import com.caucho.hessian.io.HessianOutput;
 /**
  * A PEP client to communicate with the Argus PEP daemon and authorize request.
  * 
- * It uses a multi-threaded http client to authorize the request.
+ * It uses a multi-threaded http client to authorize the request. The http
+ * client tries to keep alive connection whitin its pool of connections.
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
@@ -74,7 +75,8 @@ public class PEPClient {
 
     /**
      * Constructor. Creates a new PEP client based on the given configuration.
-     * The PEP client uses a multi-threaded {@link HttpClient}
+     * The PEP client uses a multi-threaded {@link HttpClient} with a pool of
+     * connections.
      * 
      * @param config
      *            the client configuration used for this client
@@ -89,8 +91,8 @@ public class PEPClient {
         // httpClientBuilder.setSendBufferSize(config.getSendBufferSize());
 
         if (config.getTrustManager() != null) {
-            // it's okay if the key manager is null, it just means client-auth
-            // isn't enabled
+            // if the key manager is null, it just means TLS client-auth isn't
+            // enabled
             httpClientBuilder.setHttpsProtocolSocketFactory(new TLSProtocolSocketFactory(config.getKeyManager(),
                                                                                          config.getTrustManager()));
         }
@@ -151,9 +153,7 @@ public class PEPClient {
      *            the remote PEP to which to callout
      * @param authzRequest
      *            the authorization request to send to the PEP daemon
-     * 
      * @return the response to the request
-     * 
      * @throws AuthorizationServiceException
      *             thrown if there is a problem processing the request
      */

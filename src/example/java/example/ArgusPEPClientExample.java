@@ -18,20 +18,20 @@
  */
 package example;
 
+import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import org.glite.authz.common.model.AttributeAssignment;
 import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Response;
-import org.glite.authz.common.model.Result;
-import org.glite.authz.common.model.Status;
-import org.glite.authz.common.model.StatusCode;
 import org.glite.authz.common.profile.GridWNAuthorizationProfile;
+import org.glite.authz.common.profile.ProfileProcessingException;
 import org.glite.authz.common.security.PEMFileReader;
 import org.glite.authz.pep.client.PEPClient;
+import org.glite.authz.pep.client.PEPClientException;
 import org.glite.authz.pep.client.config.PEPClientConfiguration;
+import org.glite.authz.pep.client.config.PEPClientConfigurationException;
 
 /**
  * Simple example to use the Argus PEP Java client, authorize a request and
@@ -39,7 +39,7 @@ import org.glite.authz.pep.client.config.PEPClientConfiguration;
  */
 public class ArgusPEPClientExample {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         // Argus PEP daemon endpoint
         String endpoint= "https://chaos.switch.ch:8154/authz";
@@ -52,62 +52,87 @@ public class ArgusPEPClientExample {
 
         // create PEP client config
         PEPClientConfiguration config= new PEPClientConfiguration();
-        config.addPEPDaemonEndpoint(endpoint);
-        config.setTrustMaterial(cadirname);
-        config.setKeyMaterial(clientcert, clientkey, "changeit");
-
+        try {
+            config.addPEPDaemonEndpoint(endpoint);
+            config.setTrustMaterial(cadirname);
+            config.setKeyMaterial(clientcert, clientkey, "changeit");
+        } catch (PEPClientConfigurationException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
+        }
         // create the PEP client
-        PEPClient pep= new PEPClient(config);
+        PEPClient pep= null;
+        try {
+            pep= new PEPClient(config);
+        } catch (PEPClientException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
+        }
 
         // get the user proxy
         String userproxy= "/tmp/x509up_u959";
         PEMFileReader reader= new PEMFileReader();
-        X509Certificate[] certs= reader.readCertificates(userproxy);
+        X509Certificate[] certs= null;
+        try {
+            certs= reader.readCertificates(userproxy);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
+        }
+
         // create a request
         String resourceid= "gridftp";
         String actionid= "access";
-        Request request= GridWNAuthorizationProfile.createRequest(certs,
-                                                                  resourceid,
-                                                                  actionid);
+        Request request= null;
+        try {
+            request= GridWNAuthorizationProfile.createRequest(certs,
+                                                              resourceid,
+                                                              actionid);
+        } catch (ProfileProcessingException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
+        }
         System.out.println(request);
 
         // authorize the request by PEP daemon
-        Response response= pep.authorize(request);
+        Response response= null;
+        try {
+            response= pep.authorize(request);
+        } catch (PEPClientException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
+        }
         System.out.println(response);
 
-        // parse the response
-        List<Result> results= response.getResults();
-        for (Result result : results) {
-            System.out.println("Decison: " + result.getDecisionString());
-            int decision= result.getDecision();
-            if (decision == Result.DECISION_PERMIT) {
-                List<Obligation> obligations= result.getObligations();
-                for (Obligation obligation : obligations) {
-                    String id= obligation.getId();
-                    System.out.println("ObligationId: " + id);
-                    int fulfillOn= obligation.getFulfillOn();
-                    if (fulfillOn == decision) {
-                        List<AttributeAssignment> attributeAssignments= obligation.getAttributeAssignments();
-                        for (AttributeAssignment attributeAssignment : attributeAssignments) {
-                            System.out.println("AttributeAssignmentId: "
-                                    + attributeAssignment.getAttributeId());
-                            String value= attributeAssignment.getValue();
-                            System.out.println("Value: " + value);
-                        }
-                    }
-                }
-            }
-            else {
-                Status status= result.getStatus();
-                if (status.getMessage()!=null) {
-                    System.out.println("Status: " + status.getMessage());
-                }
-                StatusCode statusCode= status.getCode();
-                if (statusCode.getCode()!=null) {
-                    System.out.println("StatusCode: " + statusCode.getCode());
-                }
-                
-            }
+        // extract response attributes
+        String userId= null;
+        String groupId= null;
+        List<String> groupIds= null;
+        try {
+            Obligation posixMappingObligation= GridWNAuthorizationProfile.getObligationPosixMapping(response);
+            userId= GridWNAuthorizationProfile.getAttributeAssignmentUserId(posixMappingObligation);
+            groupId= GridWNAuthorizationProfile.getAttributeAssignmentPrimaryGroupId(posixMappingObligation);
+            groupIds= GridWNAuthorizationProfile.getAttributeAssignmentGroupIds(posixMappingObligation);
+
+        } catch (ProfileProcessingException e) {
+            System.err.println(e);
+            System.err.println("Decision: " + e.getDecisionString());
+            System.err.println("Status: " + e.getStatus());
+//            e.printStackTrace();
+            System.exit(-1);
+        }
+
+        System.out.println("Username: " + userId);
+        if (groupId != null) {
+            System.out.println("Group: " + groupId);
+        }
+        if (groupIds != null && !groupIds.isEmpty()) {
+            System.out.println("Secondary groups: " + groupIds);
         }
     }
 }

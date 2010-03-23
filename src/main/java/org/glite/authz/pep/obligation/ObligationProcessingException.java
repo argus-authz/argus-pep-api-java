@@ -19,11 +19,12 @@ package org.glite.authz.pep.obligation;
 
 import org.glite.authz.common.AuthorizationServiceException;
 
-/** Thrown when an {@link AbstractObligationHandler} fails to handle an obligation. */
-public class ObligationProcessingException extends AuthorizationServiceException {
+/** Thrown when an {@link ObligationHandler} fails to handle an obligation. */
+public class ObligationProcessingException extends
+        AuthorizationServiceException {
 
     /** Serial version UID. */
-    private static final long serialVersionUID = -7787659159540080804L;
+    private static final long serialVersionUID= -7787659159540080804L;
 
     /** Constructor. */
     public ObligationProcessingException() {
@@ -33,7 +34,8 @@ public class ObligationProcessingException extends AuthorizationServiceException
     /**
      * Constructor.
      * 
-     * @param message exception message
+     * @param message
+     *            exception message
      */
     public ObligationProcessingException(String message) {
         super(message);
@@ -42,7 +44,8 @@ public class ObligationProcessingException extends AuthorizationServiceException
     /**
      * Constructor.
      * 
-     * @param wrappedException exception to be wrapped by this one
+     * @param wrappedException
+     *            exception to be wrapped by this one
      */
     public ObligationProcessingException(Exception wrappedException) {
         super(wrappedException);
@@ -51,10 +54,13 @@ public class ObligationProcessingException extends AuthorizationServiceException
     /**
      * Constructor.
      * 
-     * @param message exception message
-     * @param wrappedException exception to be wrapped by this one
+     * @param message
+     *            exception message
+     * @param wrappedException
+     *            exception to be wrapped by this one
      */
-    public ObligationProcessingException(String message, Exception wrappedException) {
+    public ObligationProcessingException(String message,
+            Exception wrappedException) {
         super(message, wrappedException);
     }
 }

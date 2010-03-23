@@ -49,13 +49,14 @@ public class ArgusPEPClientExample {
         String cadirname= "/etc/grid-security/certificates";
         String clientcert= "/etc/grid-security/hostcert.pem";
         String clientkey= "/etc/grid-security/hostkey.pem";
+        String clientpasswd= "changeit";
 
         // create PEP client config
         PEPClientConfiguration config= new PEPClientConfiguration();
         try {
             config.addPEPDaemonEndpoint(endpoint);
             config.setTrustMaterial(cadirname);
-            config.setKeyMaterial(clientcert, clientkey, "changeit");
+            config.setKeyMaterial(clientcert, clientkey, clientpasswd);
         } catch (PEPClientConfigurationException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();

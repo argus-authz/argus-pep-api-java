@@ -186,6 +186,22 @@
             <fileset dir="${install.dir}"/>
         </copy>
     </target>
+    <target name="install-doc" depends="install-layout-doc">
+        <!-- copy everything in $prefix -->
+        <echo message="install in ${prefix}"/>
+        <copy todir="${prefix}">
+            <fileset dir="${install.dir}"/>
+        </copy>
+    </target>
+    <target name="install-lib" depends="stage,install-layout-lib">
+        <!-- copy everything in $prefix -->
+        <echo message="install in ${prefix}"/>
+        <copy todir="${prefix}">
+            <fileset dir="${install.dir}"/>
+        </copy>
+    </target>
+
+
 
     <target name="javadoc" depends="prepare">
         <javadoc

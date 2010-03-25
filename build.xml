@@ -179,7 +179,7 @@
     <target name="install-layout" depends="install-layout-lib,install-layout-doc" />
 
    <!-- install used by ETICS packager: ant -Dprefix=${prefix} install -->
-   <target name="install" depends="stage,install-layout">
+   <target name="install" depends="install-layout">
         <!-- copy everything in $prefix -->
         <echo message="install in ${prefix}"/>
         <copy todir="${prefix}">
@@ -193,7 +193,7 @@
             <fileset dir="${install.dir}"/>
         </copy>
     </target>
-    <target name="install-lib" depends="stage,install-layout-lib">
+    <target name="install-lib" depends="install-layout-lib">
         <!-- copy everything in $prefix -->
         <echo message="install in ${prefix}"/>
         <copy todir="${prefix}">

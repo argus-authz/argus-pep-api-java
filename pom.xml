@@ -96,6 +96,13 @@ limitations under the License.
         	<type>jar</type>
         	<scope>compile</scope>
         </dependency>
+        <dependency>
+        	<groupId>com.caucho</groupId>
+        	<artifactId>hessian</artifactId>
+        	<version>3.2.1</version>
+        	<type>jar</type>
+        	<scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

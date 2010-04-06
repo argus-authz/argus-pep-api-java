@@ -44,11 +44,7 @@ import org.glite.authz.common.security.PEMUtils;
  * 
  * @version 1.0
  */
-public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
-
-    /** The attribute id profile-id identifier, {@value} . */
-    public static final String ID_ATTRIBUTE_PROFILE_ID= NS_ATTRIBUTE
-            + "/profile-id";
+public final class GridWNAuthorizationProfile extends GridAuthorizationProfile {
 
     /** The attribute id user-id identifier: {@value} . */
     public static final String ID_ATTRIBUTE_USER_ID= NS_ATTRIBUTE + "/user-id";
@@ -191,44 +187,6 @@ public class GridWNAuthorizationProfile extends GridAuthorizationProfile {
         attrKeyInfo.getValues().add(keyInfo);
         subject.getAttributes().add(attrKeyInfo);
         return subject;
-    }
-
-    /**
-     * Creates a {@link Resource} containing the {@link Attribute}
-     * {@value org.glite.authz.common.model.Attribute#ID_RES_ID} with the value
-     * given as parameter.
-     * 
-     * @param resourceId
-     *            The value of the resource-id attribute
-     * @return the resource
-     */
-    public static Resource createResource(String resourceId) {
-        Resource resource= new Resource();
-        Attribute attrResourceId= new Attribute();
-        attrResourceId.setId(Attribute.ID_RES_ID);
-        attrResourceId.setDataType(Attribute.DT_STRING);
-        attrResourceId.getValues().add(resourceId);
-        resource.getAttributes().add(attrResourceId);
-        return resource;
-    }
-
-    /**
-     * Creates an {@link Action} containing the {@link Attribute}
-     * {@value org.glite.authz.common.model.Attribute#ID_ACT_ID} with the value
-     * given as parameter.
-     * 
-     * @param actionId
-     *            The value of the action-id attribute
-     * @return the action
-     */
-    public static Action createAction(String actionId) {
-        Action action= new Action();
-        Attribute attrActionId= new Attribute();
-        attrActionId.setId(Attribute.ID_ACT_ID);
-        attrActionId.setDataType(Attribute.DT_STRING);
-        attrActionId.getValues().add(actionId);
-        action.getAttributes().add(attrActionId);
-        return action;
     }
 
     /**

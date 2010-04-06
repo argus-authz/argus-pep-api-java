@@ -18,31 +18,82 @@
  */
 package org.glite.authz.common.profile;
 
+import org.glite.authz.common.model.Action;
+import org.glite.authz.common.model.Attribute;
+import org.glite.authz.common.model.Resource;
+
 /**
- * Abstract Grid authorization profile base class. Defines the namespaces used
- * in grid wn and ce profiles.
+ * Abstract Grid authorization profile base class.
+ * 
+ * Defines the namespaces and attribute used in grid WN and CE authorization
+ * profiles.
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
 public abstract class GridAuthorizationProfile extends GenericProfile {
 
+    /** The namespace base prefix {@value} */
+    private static final String NS_PREFIX= "http://glite.org/xacml";
+
     /** The attribute namespace: {@value} . */
-    public static final String NS_ATTRIBUTE= "http://glite.org/xacml/attribute";
+    public static final String NS_ATTRIBUTE= NS_PREFIX + "/attribute";
 
     /** The action namespace: {@value} . */
-    public static final String NS_ACTION= "http://glite.org/xacml/action";
+    public static final String NS_ACTION= NS_PREFIX + "/action";
 
     /** The datatype namespace: {@value} . */
-    public static final String NS_DATATYPE= "http://glite.org/xacml/datatype";
+    public static final String NS_DATATYPE= NS_PREFIX + "/datatype";
 
     /** The profile namespace: {@value} . */
-    public static final String NS_PROFILE= "http://glite.org/xacml/profile";
+    public static final String NS_PROFILE= NS_PREFIX + "/profile";
 
     /** The obligation namespace: {@value} . */
-    public static final String NS_OBLIGATION= "http://glite.org/xacml/obligation";
+    public static final String NS_OBLIGATION= NS_PREFIX + "/obligation";
 
     /** The algorithm namespace: {@value} . */
-    public static final String NS_ALGORITHM= "http://glite.org/xacml/algorithm";
+    public static final String NS_ALGORITHM= NS_PREFIX + "/algorithm";
+
+    /** The attribute id profile-id identifier, {@value} . */
+    public static final String ID_ATTRIBUTE_PROFILE_ID= NS_ATTRIBUTE
+            + "/profile-id";
+    
+    /**
+     * Creates a {@link Resource} containing the {@link Attribute}
+     * {@value org.glite.authz.common.model.Attribute#ID_RES_ID} with the value
+     * given as parameter.
+     * 
+     * @param resourceId
+     *            The value of the resource-id attribute
+     * @return the resource
+     */
+    public static Resource createResource(String resourceId) {
+        Resource resource= new Resource();
+        Attribute attrResourceId= new Attribute();
+        attrResourceId.setId(Attribute.ID_RES_ID);
+        attrResourceId.setDataType(Attribute.DT_STRING);
+        attrResourceId.getValues().add(resourceId);
+        resource.getAttributes().add(attrResourceId);
+        return resource;
+    }
+
+    /**
+     * Creates an {@link Action} containing the {@link Attribute}
+     * {@value org.glite.authz.common.model.Attribute#ID_ACT_ID} with the value
+     * given as parameter.
+     * 
+     * @param actionId
+     *            The value of the action-id attribute
+     * @return the action
+     */
+    public static Action createAction(String actionId) {
+        Action action= new Action();
+        Attribute attrActionId= new Attribute();
+        attrActionId.setId(Attribute.ID_ACT_ID);
+        attrActionId.setDataType(Attribute.DT_STRING);
+        attrActionId.getValues().add(actionId);
+        action.getAttributes().add(attrActionId);
+        return action;
+    }
 
     /**
      * Default constructor

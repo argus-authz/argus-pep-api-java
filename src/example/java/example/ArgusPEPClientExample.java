@@ -42,7 +42,7 @@ public class ArgusPEPClientExample {
     public static void main(String[] args) {
 
         // Argus PEP daemon endpoint
-        String endpoint= "https://chaos.switch.ch:8154/authz";
+        String endpoint= "https://chaos.switch.ch:8154/authz/wrong";
 
         // trust and key material for the HTTPS/TLS communication
         // with the Argus PEP daemon

@@ -18,9 +18,8 @@
 package org.glite.authz.common.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
-
-import org.glite.authz.common.util.LazySet;
 
 /** An attribute-based description of an action to be authorized. */
 public final class Action implements Serializable {
@@ -29,11 +28,11 @@ public final class Action implements Serializable {
     private static final long serialVersionUID = -2085506180809169465L;
 
     /** Attributes that identify the action. */
-    private LazySet<Attribute> attributes;
+    private Set<Attribute> attributes;
 
     /** Constructor. */
     public Action() {
-        attributes = new LazySet<Attribute>();
+        attributes = new HashSet<Attribute>(1);
     }
 
     /**

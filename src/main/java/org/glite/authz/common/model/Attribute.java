@@ -19,10 +19,10 @@
 package org.glite.authz.common.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.glite.authz.common.util.LazySet;
-import org.glite.authz.common.util.Strings;
+//import org.glite.authz.common.util.Strings;
 
 /**
  * An attribute that identifies either a {@link Subject}, {@link Resource}, {@link Environment} or {@link Action}.
@@ -152,12 +152,12 @@ public final class Attribute implements Serializable {
     private String issuer;
 
     /** Values of the attribute. */
-    private LazySet<Object> values;
+    private Set<Object> values;
 
     /** Constructor. */
     public Attribute() {
         dataType = DT_STRING;
-        values = new LazySet<Object>();
+        values = new HashSet<Object>(1);
     }
 
     /**

@@ -27,7 +27,7 @@
     </appender>
 
     <!-- PEPClient logger -->
-    <logger name="org.glite.authz">
+    <logger name="org.glite.authz.pep.client">
         <level value="info" />
     </logger>
 

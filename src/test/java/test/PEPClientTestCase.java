@@ -18,32 +18,20 @@
  */
 package test;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.glite.authz.common.AuthorizationServiceException;
-import org.glite.authz.common.model.Action;
-import org.glite.authz.common.model.Attribute;
-import org.glite.authz.common.model.Environment;
+import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
-import org.glite.authz.common.model.Resource;
 import org.glite.authz.common.model.Response;
-import org.glite.authz.common.model.Subject;
 import org.glite.authz.common.profile.GridWNAuthorizationProfile;
 import org.glite.authz.common.security.PEMFileReader;
 import org.glite.authz.pep.client.PEPClient;
-import org.glite.authz.pep.client.Version;
 import org.glite.authz.pep.client.config.PEPClientConfiguration;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * PEPClientTestCase
@@ -52,8 +40,6 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision$
  */
 public class PEPClientTestCase extends TestCase {
-
-    private Log log= LogFactory.getLog(PEPClientTestCase.class);
 
     /*
      * (non-Javadoc)
@@ -78,13 +64,11 @@ public class PEPClientTestCase extends TestCase {
      * {@link org.glite.authz.pep.client.PEPClient#PEPClient(org.glite.authz.pep.client.config.PEPClientConfiguration)}
      * .
      * 
-     * @throws IOException
-     * @throws AuthorizationServiceException
-     * @throws GeneralSecurityException
+     * @throws Exception
+     * 
      * @throws CertificateException
      */
-    public void testPEPClient() throws IOException,
-            AuthorizationServiceException, GeneralSecurityException {
+    public void testPEPClient() throws Exception {
         PEPClientConfiguration config= new PEPClientConfiguration();
         String endpoint= "https://chaos.switch.ch:8154/authz";
         config.addPEPDaemonEndpoint(endpoint);
@@ -102,21 +86,17 @@ public class PEPClientTestCase extends TestCase {
         PEPClient client= new PEPClient(config);
         PEMFileReader reader= new PEMFileReader();
         X509Certificate[] certs= reader.readCertificates(userproxy);
-        Request request= createRequest(certs, "gridftp", "access");
+        Request request= GridWNAuthorizationProfile.createRequest(certs, "gridftp", "access");
         System.out.println(request);
         Response response= client.authorize(request);
         System.out.println(response);
-    }
-
-    static protected Request createRequest(X509Certificate [] certs,
-            String resourceid, String actionid) throws IOException {
-        Subject subject= GridWNAuthorizationProfile.createSubject(certs);
-        Resource resource= GridWNAuthorizationProfile.createResource(resourceid);
-        Action action= GridWNAuthorizationProfile.createAction(actionid);
-        Request request= GridWNAuthorizationProfile.createRequest(subject,
-                                                                  resource,
-                                                                  action);
-        return request;
+        Obligation obligation= GridWNAuthorizationProfile.getObligationPosixMapping(response);
+        String username= GridWNAuthorizationProfile.getAttributeAssignmentUserId(obligation);
+        System.out.println("Username: " + username);
+        String group= GridWNAuthorizationProfile.getAttributeAssignmentPrimaryGroupId(obligation);
+        System.out.println("Group: " + group);
+        List<String> groups= GridWNAuthorizationProfile.getAttributeAssignmentGroupIds(obligation);
+        System.out.println("Secondary Groups: " + groups);
     }
 
 }

@@ -118,7 +118,7 @@ public class LazySet<ElementType> implements Set<ElementType>, Serializable {
      * @return the delegate set
      */
     private Set<ElementType> createImplementation() {
-        if (delegate instanceof HashSet) {
+        if (delegate instanceof HashSet<?>) {
             return delegate;
         }
 

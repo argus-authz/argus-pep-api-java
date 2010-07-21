@@ -112,7 +112,7 @@ public class LazyMap<KeyType, ValueType> implements Map<KeyType, ValueType>, Ser
      * @return the delegate map
      */
     protected Map<KeyType, ValueType> buildMap() {
-        if (delegate instanceof HashMap) {
+        if (delegate instanceof HashMap<?, ?>) {
             return delegate;
         }
 

@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.glite.authz.common.model.util.Strings;
+
 /** A utility class for working with files. */
 public final class Files {
 

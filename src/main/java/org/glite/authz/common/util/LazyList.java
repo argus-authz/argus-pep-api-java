@@ -173,7 +173,7 @@ public class LazyList<ElementType> implements List<ElementType>, Serializable {
      * @return delegate for this list
      */
     protected List<ElementType> buildList() {
-        if (delegate instanceof ArrayList) {
+        if (delegate instanceof ArrayList<?>) {
             return delegate;
         }
 

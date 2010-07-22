@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-/**
- * This model serves as a simplified XACML model and is used as the Hessian object model used to communicate between 
- * the PEP client and daemon.
+/** 
+ * XACML Grid authorization profiles
  */
-package org.glite.authz.common.model;
+package org.glite.authz.pep.profile;

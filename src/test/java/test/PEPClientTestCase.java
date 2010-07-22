@@ -28,10 +28,11 @@ import junit.framework.TestCase;
 import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Response;
-import org.glite.authz.common.profile.GridWNAuthorizationProfile;
 import org.glite.authz.common.security.PEMFileReader;
 import org.glite.authz.pep.client.PEPClient;
 import org.glite.authz.pep.client.config.PEPClientConfiguration;
+import org.glite.authz.pep.profile.AuthorizationProfile;
+import org.glite.authz.pep.profile.GridWNAuthorizationProfile;
 
 /**
  * PEPClientTestCase
@@ -78,24 +79,25 @@ public class PEPClientTestCase extends TestCase {
         String dotGlobus= home + File.separator + ".globus";
         String usercert= dotGlobus + File.separator + "usercert.pem";
         String userkey= dotGlobus + File.separator + "userkey.pem";
-        String userproxy= dotGlobus + File.separator + "userproxy.pem";
         String password= "changeit";
 
         config.setTrustMaterial(cadir);
-        config.setKeyMaterial(userproxy, userproxy, password);
+        config.setKeyMaterial(usercert, userkey, password);
         PEPClient client= new PEPClient(config);
         PEMFileReader reader= new PEMFileReader();
-        X509Certificate[] certs= reader.readCertificates(userproxy);
-        Request request= GridWNAuthorizationProfile.createRequest(certs, "gridftp", "access");
+        X509Certificate[] certs= reader.readCertificates(usercert);
+        
+        AuthorizationProfile profile= GridWNAuthorizationProfile.getInstance();
+        Request request= profile.createRequest(certs, "gridftp", "access");
         System.out.println(request);
         Response response= client.authorize(request);
         System.out.println(response);
-        Obligation obligation= GridWNAuthorizationProfile.getObligationPosixMapping(response);
-        String username= GridWNAuthorizationProfile.getAttributeAssignmentUserId(obligation);
+        Obligation obligation= profile.getObligationPosixMapping(response);
+        String username= profile.getAttributeAssignmentUserId(obligation);
         System.out.println("Username: " + username);
-        String group= GridWNAuthorizationProfile.getAttributeAssignmentPrimaryGroupId(obligation);
+        String group= profile.getAttributeAssignmentPrimaryGroupId(obligation);
         System.out.println("Group: " + group);
-        List<String> groups= GridWNAuthorizationProfile.getAttributeAssignmentGroupIds(obligation);
+        List<String> groups= profile.getAttributeAssignmentGroupIds(obligation);
         System.out.println("Secondary Groups: " + groups);
     }
 

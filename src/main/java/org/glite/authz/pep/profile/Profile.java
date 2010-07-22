@@ -15,7 +15,18 @@
  * limitations under the License.
  */
 
+package org.glite.authz.pep.profile;
+
 /** 
- * Classes for handling XACML obligations that may be returned within a policy decision response. 
+ * Profile interface
  */
-package org.glite.authz.pep.obligation;
+public interface Profile {
+    
+    /**
+     * Return the profile identifier
+     * 
+     * @return the profile ID
+     */
+    String getProfileId();
+    
+}

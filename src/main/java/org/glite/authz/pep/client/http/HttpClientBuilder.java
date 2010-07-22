@@ -18,7 +18,7 @@
  */
 package org.glite.authz.pep.client.http;
 
-import org.glite.authz.common.util.Strings;
+import org.glite.authz.common.model.util.Strings;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HostConfiguration;

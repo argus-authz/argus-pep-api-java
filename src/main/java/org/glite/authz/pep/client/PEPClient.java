@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.glite.authz.common.AuthorizationServiceException;
 import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Response;
 import org.glite.authz.common.model.Result;
@@ -127,7 +126,7 @@ public class PEPClient {
                 response= performRequest(endpoint, request);
                 // success, exit loop
                 break;
-            } catch (AuthorizationServiceException e) {
+            } catch (PEPClientException e) {
                 log.warn("request failed for PEP daemon " + endpoint, e);
             }
         }
@@ -154,11 +153,11 @@ public class PEPClient {
      * @param authzRequest
      *            the authorization request to send to the PEP daemon
      * @return the response to the request
-     * @throws AuthorizationServiceException
+     * @throws PEPClientException
      *             thrown if there is a problem processing the request
      */
     protected Response performRequest(String pepUrl, Request authzRequest)
-            throws AuthorizationServiceException {
+            throws PEPClientException {
 
         String b64Message= null;
         try {
@@ -169,7 +168,7 @@ public class PEPClient {
             b64Message= Base64.encodeBytes(out.toByteArray());
         } catch (IOException e) {
             log.error("Unable to serialize request object", e);
-            throw new AuthorizationServiceException("Unable to serialize request object",
+            throw new PEPClientException("Unable to serialize request object",
                                                     e);
         }
 
@@ -180,7 +179,7 @@ public class PEPClient {
                                                                  "UTF-8");
             postMethod.setRequestEntity(requestEntity);
         } catch (UnsupportedEncodingException e) {
-            throw new AuthorizationServiceException(e);
+            throw new PEPClientException(e);
         }
 
         Response response= null;
@@ -193,7 +192,7 @@ public class PEPClient {
                     response= (Response) hin.readObject(Response.class);
                 } catch (IOException e) {
                     log.error("Unable to deserialize response object", e);
-                    throw new AuthorizationServiceException("Unable to deserialize response object",
+                    throw new PEPClientException("Unable to deserialize response object",
                                                             e);
                 }
             }
@@ -201,12 +200,12 @@ public class PEPClient {
                 String error= postMethod.getStatusCode()
                         + " status code response from the PEP daemon " + pepUrl;
                 log.error(error);
-                throw new AuthorizationServiceException(error);
+                throw new PEPClientException(error);
 
             }
         } catch (IOException e) {
             log.error("Unable to read response from PEP daemon " + pepUrl, e);
-            throw new AuthorizationServiceException("Unable to read response from PEP daemon "
+            throw new PEPClientException("Unable to read response from PEP daemon "
                                                             + pepUrl,
                                                     e);
         } finally {

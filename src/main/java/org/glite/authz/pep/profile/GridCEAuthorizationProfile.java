@@ -16,49 +16,45 @@
  *
  * $Id$
  */
-package org.glite.authz.common.profile;
+package org.glite.authz.pep.profile;
 
-import org.glite.authz.common.model.Attribute;
-import org.glite.authz.common.model.Environment;
+import org.glite.authz.common.profile.AuthorizationProfileConstants;
 
 /**
  * XACML Grid Computing Element Authorization Profile v1.0.
- * 
+ * <p>
  * Profile constants and utility methods.
  * 
- * @see TODO document url
+ * @see https://edms.cern.ch/document/1078881
  * 
  * @version 1.0
  */
-public final class GridCEAuthorizationProfile extends GridAuthorizationProfile {
+public final class GridCEAuthorizationProfile extends AuthorizationProfile {
+
+    /** Singleton */
+    private static GridCEAuthorizationProfile SINGLETON= null;
 
     /** Version of the profile: {@value} */
     public static final String PROFILE_VERSION= "1.0";
 
     /** Identifier of the profile: {@value} */
-    public static final String PROFILE_ID= NS_PROFILE + "/grid-ce/"
-            + PROFILE_VERSION;
-
-    /**
-     * Creates a base {@link Environment} containing the Attribute
-     * {@value #ID_ATTRIBUTE_PROFILE_ID} with value for the Grid CE AuthZ
-     * profile identifier.
-     * 
-     * @return the environment
-     */
-    public static Environment createEnvironment() {
-        Environment environment= new Environment();
-        Attribute attrProfileId= new Attribute();
-        attrProfileId.setId(ID_ATTRIBUTE_PROFILE_ID);
-        attrProfileId.setDataType(Attribute.DT_ANY_URI);
-        attrProfileId.getValues().add(PROFILE_ID);
-        environment.getAttributes().add(attrProfileId);
-        return environment;
-    }
+    public static final String PROFILE_ID= AuthorizationProfileConstants.NS_PROFILE
+            + "/grid-ce/" + PROFILE_VERSION;
 
     /** Prevents instantiation */
     private GridCEAuthorizationProfile() {
-        super();
+        super(PROFILE_ID);
     }
 
+    /**
+     * Gets the Grid Computing Element Authorization Profile instance
+     * 
+     * @return
+     */
+    public static synchronized GridCEAuthorizationProfile getInstance() {
+        if (SINGLETON == null) {
+            SINGLETON= new GridCEAuthorizationProfile();
+        }
+        return SINGLETON;
+    }
 }

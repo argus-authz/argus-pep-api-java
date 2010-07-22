@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Members of the EGEE Collaboration. 2010.
+ * Copyright (c) Members of the EGEE Collaboration. 2006-2010.
  * See http://www.eu-egee.org/partners/ for details on the copyright holders.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,26 +16,22 @@
  *
  * $Id$
  */
-package org.glite.authz.pep.client;
+package org.glite.authz.pep.profile;
 
 import org.glite.authz.pep.PEPException;
 
 /**
- * PEP client exception
- * 
- * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
+ * Exception for profile processing
  */
-public class PEPClientException extends PEPException {
+public class ProfileException extends PEPException {
 
-    /**
-     * Serial version uid
-     */
-    private static final long serialVersionUID= -1739763574977992063L;
+    /** Serial version */
+    private static final long serialVersionUID= 6696042569341460539L;
 
     /**
      * Default constructor.
      */
-    public PEPClientException() {
+    public ProfileException() {
         super();
     }
 
@@ -43,28 +39,32 @@ public class PEPClientException extends PEPException {
      * Constructor.
      * 
      * @param message
+     *            the error message
      */
-    public PEPClientException(String message) {
+    public ProfileException(String message) {
         super(message);
     }
 
     /**
      * Constructor.
      * 
-     * @param wrappedException
+     * @param cause
+     *            the exception cause
      */
-    public PEPClientException(Exception wrappedException) {
-        super(wrappedException);
+    public ProfileException(Exception cause) {
+        super(cause);
     }
 
     /**
      * Constructor.
      * 
      * @param message
-     * @param wrappedException
+     *            the exception message
+     * @param cause
+     *            the exception cause
      */
-    public PEPClientException(String message, Exception wrappedException) {
-        super(message, wrappedException);
+    public ProfileException(String message, Exception cause) {
+        super(message, cause);
     }
 
 }

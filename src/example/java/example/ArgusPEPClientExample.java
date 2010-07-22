@@ -25,13 +25,14 @@ import java.util.List;
 import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Response;
-import org.glite.authz.common.profile.GridWNAuthorizationProfile;
-import org.glite.authz.common.profile.ProfileProcessingException;
 import org.glite.authz.common.security.PEMFileReader;
 import org.glite.authz.pep.client.PEPClient;
 import org.glite.authz.pep.client.PEPClientException;
 import org.glite.authz.pep.client.config.PEPClientConfiguration;
 import org.glite.authz.pep.client.config.PEPClientConfigurationException;
+import org.glite.authz.pep.profile.AuthorizationProfile;
+import org.glite.authz.pep.profile.GridWNAuthorizationProfile;
+import org.glite.authz.pep.profile.ProfileException;
 
 /**
  * Simple example to use the Argus PEP Java client, authorize a request and
@@ -84,15 +85,16 @@ public class ArgusPEPClientExample {
             System.exit(-1);
         }
 
+        // get the profile
+        AuthorizationProfile profile= GridWNAuthorizationProfile.getInstance();
+
         // create a request
         String resourceid= "gridftp";
         String actionid= "access";
         Request request= null;
         try {
-            request= GridWNAuthorizationProfile.createRequest(certs,
-                                                              resourceid,
-                                                              actionid);
-        } catch (ProfileProcessingException e) {
+            request= profile.createRequest(certs, resourceid, actionid);
+        } catch (ProfileException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
             System.exit(-1);
@@ -115,16 +117,14 @@ public class ArgusPEPClientExample {
         String groupId= null;
         List<String> groupIds= null;
         try {
-            Obligation posixMappingObligation= GridWNAuthorizationProfile.getObligationPosixMapping(response);
-            userId= GridWNAuthorizationProfile.getAttributeAssignmentUserId(posixMappingObligation);
-            groupId= GridWNAuthorizationProfile.getAttributeAssignmentPrimaryGroupId(posixMappingObligation);
-            groupIds= GridWNAuthorizationProfile.getAttributeAssignmentGroupIds(posixMappingObligation);
+            Obligation posixMappingObligation= profile.getObligationPosixMapping(response);
+            userId= profile.getAttributeAssignmentUserId(posixMappingObligation);
+            groupId= profile.getAttributeAssignmentPrimaryGroupId(posixMappingObligation);
+            groupIds= profile.getAttributeAssignmentGroupIds(posixMappingObligation);
 
-        } catch (ProfileProcessingException e) {
+        } catch (ProfileException e) {
             System.err.println(e);
-            System.err.println("Decision: " + e.getDecisionString());
-            System.err.println("Status: " + e.getStatus());
-//            e.printStackTrace();
+            // e.printStackTrace();
             System.exit(-1);
         }
 

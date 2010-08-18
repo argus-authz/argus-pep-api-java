@@ -43,7 +43,7 @@ public class ArgusPEPClientExample {
     public static void main(String[] args) {
 
         // Argus PEP daemon endpoint
-        String endpoint= "https://chaos.switch.ch:8154/authz/wrong";
+        String endpoint= "https://chaos.switch.ch:8154/authz";
 
         // trust and key material for the HTTPS/TLS communication
         // with the Argus PEP daemon
@@ -89,8 +89,8 @@ public class ArgusPEPClientExample {
         AuthorizationProfile profile= GridWNAuthorizationProfile.getInstance();
 
         // create a request
-        String resourceid= "gridftp";
-        String actionid= "access";
+        String resourceid= "http://grid.switch.ch/wn002";
+        String actionid= GridWNAuthorizationProfile.ACTION_EXECUTE;
         Request request= null;
         try {
             request= profile.createRequest(certs, resourceid, actionid);

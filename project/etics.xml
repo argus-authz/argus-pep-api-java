@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (c) Members of the EGEE Collaboration. 2007.
+    See http://www.eu-egee.org/partners/ for details on the copyright
+    holders.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    ant macros for ETICS components
+
+    Author: Valery Tschopp <tschopp@switch.ch>
+    Version: $Id$
+-->
+<project name="etics">
+
+    <!-- ========================================================
+         MACRODEF for ETICS components
+         ======================================================== -->
+
+    <!-- 
+        <define-repository-dir component="name"/>
+        - defines the properties <name>.bundle and <name>.dir for the component in local repository
+        - requires the property repository.dir to be defined.
+        - requires the properties <name>.category, <name>.name, <name>.version and <name>.platform to be defined.
+    -->
+    <macrodef name="define-repository-dir">
+        <attribute name="component" />
+        <sequential>
+            <!-- fail on missing required properties -->
+            <fail unless="repository.dir" message="ERROR: define-repository-dir: property repository.dir doesn't exist" />
+            <fail unless="@{component}.category" message="ERROR: define-repository-dir: property @{component}.category doesn't exist" />
+            <fail unless="@{component}.name" message="ERROR: define-repository-dir: property @{component}.name doesn't exist" />
+            <fail unless="@{component}.version" message="ERROR: define-repository-dir: property @{component}.version doesn't exist" />
+            <fail unless="@{component}.platform" message="ERROR: define-repository-dir: property @{component}.platform doesn't exist" />
+            <!-- create new properties -->
+            <property name="_@{component}.bundle.value" value="${@{component}.name}/${@{component}.version}/${@{component}.platform}" />
+            <property name="@{component}.bundle" value="${_@{component}.bundle.value}" />
+            <property name="_@{component}.dir.value" value="${repository.dir}/${@{component}.category}/${@{component}.bundle}" />
+            <property name="@{component}.dir" location="${_@{component}.dir.value}" />
+            <!-- 
+            <echo message="define-component-dir: @{component}.bundle=${_@{component}.bundle.value}" />
+            <echo message="define-component-dir: @{component}.dir=${_@{component}.dir.value}" /> 
+            -->
+        </sequential>
+    </macrodef>
+
+    <!--
+        <define-component-path component="name" dir="${name.dir}">
+            <includes .../>
+            <excludes .../>
+        </define-component-path>
+        - define the fileset id <name>.fileset and the path id <name>.path
+        - use <name>.dir as default
+    -->
+    <macrodef name="define-component-path">
+        <attribute name="component" />
+        <attribute name="dir" default="${@{component}.dir}" />
+        <element name="includes-excludes" implicit="true" />
+        <sequential>
+            <!-- create fileset and then path -->
+            <fileset id="@{component}.fileset" dir="@{dir}">
+                <includes-excludes />
+            </fileset>
+            <path id="@{component}.path">
+                <fileset refid="@{component}.fileset" />
+            </path>
+        </sequential>
+    </macrodef>
+
+
+    <macrodef name="stage-repository-files">
+        <attribute name="component" />
+        <attribute name="fromdir" default="${@{component}.dir}" />        
+        <attribute name="todir" default="${stage.dir}" />
+        <element name="includes-excludes" implicit="true" />
+        <sequential>
+            <echo message="staging files for @{component} from @{fromdir} to @{todir}"/> 
+            <!-- copy from dir to dir -->
+            <copy todir="@{todir}">
+                <fileset dir="@{fromdir}">
+                    <includes-excludes />
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+    
+
+    <!-- 
+    Download and expand component in the local repository 
+    Globus glite.url and glite.dir vars used!!!!
+            - requires the property repository.dir and repository.url to be defined.
+    -->
+    <macrodef name="download-repository">
+        <attribute name="component" />
+        <sequential>
+            <!-- fail on missing properties -->
+            <fail unless="repository.url" message="ERROR: define-component-dir: property repository.url is not defined" />
+            <fail unless="repository.dir" message="ERROR: define-component-dir: property repository.dir is not defined" />
+            <fail unless="@{component}.category" message="ERROR: download-component: property @{component}.category is not defined" />
+            <fail unless="@{component}.bundle" message="ERROR: download-component: property @{component}.bundle not defined, call define-repository-dir first." />
+            <fail unless="@{component}.distfile" message="ERROR: download-component: property @{component}.distfile doesn't exist." />
+            <!-- create some properties -->
+            <property name="_@{component}.url.value" value="${repository.url}/${@{component}.category}/${@{component}.bundle}/${@{component}.distfile}" />
+            <property name="_@{component}.dest.dir.value" location="${repository.dir}/${@{component}.category}/${@{component}.bundle}" />
+            <property name="_@{component}.dest.value" location="${_@{component}.dest.dir.value}/${@{component}.distfile}" />
+            <!-- create repository location, download and expand -->
+            <mkdir dir="${_@{component}.dest.dir.value}" />
+            <get src="${_@{component}.url.value}" dest="${_@{component}.dest.value}" usetimestamp="true" />
+            <untar compression="gzip" src="${_@{component}.dest.value}" dest="${_@{component}.dest.dir.value}" overwrite="false" />
+            <property name="@{component}.downloaded" value="true" />
+        </sequential>
+    </macrodef>
+
+
+
+    <!-- ========================================================
+         BOOTSTRAP
+         ======================================================== -->
+
+    <!-- determine current script directory -->
+    <dirname property="etics.basedir" file="${ant.file.etics}" />
+
+    <!-- get all externals glite.NAME.version, glite.NAME.name and glite.NAME.platform definitions -->
+    <echo message="load properties: ${etics.basedir}/etics.properties" />
+    <property file="${etics.basedir}/etics.properties" />
+    <echo message="ETICS repository.url=${repository.url} (remote)" />
+
+    <!-- local externals repository location -->
+    <property name="repository.dir" location="${etics.basedir}/../../repository" />
+    <echo message="ETICS repository.dir=${repository.dir} (local)" />
+    <mkdir dir="${repository.dir}" />
+    
+    <!-- stage dir for ETICS -->
+    <property name="stage.dir" location="${etics.basedir}/../../stage" />
+    <echo message="ETICS stage.dir=${stage.dir} (local)" />
+    
+
+    <!-- ========================================================
+         ETICS component DEFINITIONS
+         ======================================================== -->
+
+    <!-- VOMS Java API -->
+    <define-repository-dir component="glite.voms-api-java" />
+    <define-component-path component="glite.voms-api-java">
+        <include name="**/vomsjapi.jar" />
+    </define-component-path>
+<!--
+    <define-component-path component="glite.voms-api-java" dir="${stage.dir}">
+        <include name="**/vomsjapi.jar" />
+    </define-component-path>
+-->
+    <!-- hessian -->
+    <define-repository-dir component="externals.hessian" />
+    <define-component-path component="externals.hessian">
+        <include name="**/hessian-*.jar" />
+    </define-component-path>
+
+    <!-- bouncycastle jdk 1.5 (default) -->
+    <define-repository-dir component="externals.bouncycastle" />
+    <define-component-path component="externals.bouncycastle.bcprov" dir="${externals.bouncycastle.dir}">
+        <include name="**/bcprov-*.jar" />
+    </define-component-path>
+    <define-component-path component="externals.bouncycastle.bcmail" dir="${externals.bouncycastle.dir}">
+        <include name="**/bcmail-*.jar" />
+    </define-component-path>
+    <define-component-path component="externals.bouncycastle">
+        <include name="**/bcprov-*.jar" />
+        <include name="**/bcmail-*.jar" />
+    </define-component-path>
+    
+    <!-- commons-httpclient -->
+    <define-repository-dir component="externals.commons-httpclient" />
+    <define-component-path component="externals.commons-httpclient">
+        <include name="**/${externals.commons-httpclient.name}-${externals.commons-httpclient.version}.jar" />
+    </define-component-path>
+
+    <!-- commons-codec -->
+    <define-repository-dir component="externals.commons-codec" />
+    <define-component-path component="externals.commons-codec">
+        <include name="**/${externals.commons-codec.name}-${externals.commons-codec.version}.jar" />
+    </define-component-path>
+
+    <!-- commons-logging -->
+    <define-repository-dir component="externals.commons-logging" />
+    <define-component-path component="externals.commons-logging">
+        <include name="**/${externals.commons-logging.name}-${externals.commons-logging.version}.jar" />
+    </define-component-path>
+    
+    <!-- junit -->
+    <define-repository-dir component="externals.junit" />
+    <define-component-path component="externals.junit">
+        <include name="junit.jar" />
+    </define-component-path>
+
+    <!-- log4j -->
+    <define-repository-dir component="externals.log4j" />
+    <define-component-path component="externals.log4j">
+        <include name="**/log4j-*.jar" />
+    </define-component-path>
+
+</project>
+

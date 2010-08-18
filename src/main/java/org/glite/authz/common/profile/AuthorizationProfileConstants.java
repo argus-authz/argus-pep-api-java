@@ -26,11 +26,11 @@ import org.glite.authz.common.model.Attribute;
  */
 public class AuthorizationProfileConstants {
 
-    /** Namespaces, datatypes and identifiers name components separtor */
-    private static final char SEPARATOR= '/';
+    /** Namespaces, datatypes and identifiers name components separator */
+    public static final char SEPARATOR= '/';
 
     /** The namespace base prefix {@value} */
-    private static final String NS_PREFIX= "http://glite.org/xacml";
+    protected static final String NS_PREFIX= "http://glite.org/xacml";
 
     /** The attribute namespace: {@value} . */
     public static final String NS_ATTRIBUTE= NS_PREFIX + SEPARATOR
@@ -125,12 +125,5 @@ public class AuthorizationProfileConstants {
     /** The algorithm FQAN regular expression match id: {@value} */
     public static final String ID_ALGORITHM_FQAN_REGEXP_MATCH= NS_ALGORITHM
             + SEPARATOR + "fqan-regexp-match";
-
-    /**
-     * Prevent instantiation
-     */
-    private AuthorizationProfileConstants() {
-        // empty
-    }
 
 }

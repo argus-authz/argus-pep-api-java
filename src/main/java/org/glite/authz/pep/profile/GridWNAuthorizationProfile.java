@@ -18,8 +18,6 @@
  */
 package org.glite.authz.pep.profile;
 
-import org.glite.authz.common.profile.AuthorizationProfileConstants;
-
 /**
  * XACML Grid Worker Node Authorization Profile v1.0.
  * <p>
@@ -37,9 +35,16 @@ public final class GridWNAuthorizationProfile extends AuthorizationProfile {
     /** Version of the profile: {@value} */
     public static final String PROFILE_VERSION= "1.0";
 
-    /** Identifier of the profile: {@value} */
-    public static final String PROFILE_ID= AuthorizationProfileConstants.NS_PROFILE
-            + "/grid-wn/" + PROFILE_VERSION;
+    /**
+     * Identifier of the XACML Grid Worker Node Authorization Profile v1.0:
+     * {@value}
+     */
+    public static final String PROFILE_ID= NS_PROFILE + SEPARATOR + "grid-wn"
+            + SEPARATOR + PROFILE_VERSION;
+
+    /** Action value <b>execute</b>: {@value} */
+    public static final String ACTION_EXECUTE= NS_ACTION + SEPARATOR
+            + "execute";
 
     /**
      * Gets the Grid Worker Node Authorization Profile instance

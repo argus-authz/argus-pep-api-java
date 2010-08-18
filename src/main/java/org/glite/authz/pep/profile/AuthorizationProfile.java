@@ -41,7 +41,8 @@ import org.glite.authz.common.security.PEMUtils;
  * Base authorization profile containing helper methods to build request and
  * parse response.
  */
-public abstract class AuthorizationProfile implements Profile {
+public abstract class AuthorizationProfile extends
+        AuthorizationProfileConstants implements Profile {
 
     /** profile ID */
     private String profileId_;
@@ -80,8 +81,7 @@ public abstract class AuthorizationProfile implements Profile {
 
     /**
      * Creates a {@link Resource} containing the {@link Attribute}
-     * {@value AuthorizationProfileConstants#ID_ATTRIBUTE_RESOURCE_ID} with the
-     * value given as parameter.
+     * {@value #ID_ATTRIBUTE_RESOURCE_ID} with the value given as parameter.
      * 
      * @param resourceId
      *            The value of the resource-id attribute
@@ -90,17 +90,16 @@ public abstract class AuthorizationProfile implements Profile {
     public Resource createResourceId(String resourceId) {
         Resource resource= new Resource();
         Attribute attrResourceId= new Attribute();
-        attrResourceId.setId(AuthorizationProfileConstants.ID_ATTRIBUTE_RESOURCE_ID);
-        attrResourceId.setDataType(AuthorizationProfileConstants.DATATYPE_STRING);
+        attrResourceId.setId(ID_ATTRIBUTE_RESOURCE_ID);
+        attrResourceId.setDataType(DATATYPE_STRING);
         attrResourceId.getValues().add(resourceId);
         resource.getAttributes().add(attrResourceId);
         return resource;
     }
 
     /**
-     * Creates an {@link Action} containing the {@link Attribute} {@value
-     * AuthorizationProfileConstants.ID_ATTRIBUTE_ACTION_ID} with the value
-     * given as parameter.
+     * Creates an {@link Action} containing the {@link Attribute}
+     * {@value #ID_ATTRIBUTE_ACTION_ID} with the value given as parameter.
      * 
      * @param actionId
      *            The value of the action-id attribute
@@ -109,8 +108,8 @@ public abstract class AuthorizationProfile implements Profile {
     public Action createActionId(String actionId) {
         Action action= new Action();
         Attribute attrActionId= new Attribute();
-        attrActionId.setId(AuthorizationProfileConstants.ID_ATTRIBUTE_ACTION_ID);
-        attrActionId.setDataType(AuthorizationProfileConstants.DATATYPE_STRING);
+        attrActionId.setId(ID_ATTRIBUTE_ACTION_ID);
+        attrActionId.setDataType(DATATYPE_STRING);
         attrActionId.getValues().add(actionId);
         action.getAttributes().add(attrActionId);
         return action;
@@ -200,35 +199,35 @@ public abstract class AuthorizationProfile implements Profile {
 
     /**
      * Creates a base {@link Environment} containing the Attribute
-     * {@value AuthorizationProfileConstants#ID_ATTRIBUTE_PROFILE_ID} with the
-     * profile identifier
-     * 
+     * {@value #ID_ATTRIBUTE_PROFILE_ID} with the profile identifier
+     * @param profileId the profile ID value
      * @return the environment
      */
     public Environment createEnvironmentProfileId(String profileId) {
         Environment environment= new Environment();
         Attribute attrProfileId= new Attribute();
-        attrProfileId.setId(AuthorizationProfileConstants.ID_ATTRIBUTE_PROFILE_ID);
-        attrProfileId.setDataType(AuthorizationProfileConstants.DATATYPE_ANY_URI);
+        attrProfileId.setId(ID_ATTRIBUTE_PROFILE_ID);
+        attrProfileId.setDataType(DATATYPE_ANY_URI);
         attrProfileId.getValues().add(profileId);
         environment.getAttributes().add(attrProfileId);
         return environment;
     }
 
-/**
-         * Creates a {@link Request} with the given end entity certificate or proxy
-         * certificate, with chain, the resourceid and the actionid. The subject attribute is {@link AuthorizationProfileConstants#ID_A
-         * 
-         * @param certs
-         *            the user certificate or proxy certificate, with chain
-         * @param resourceid
-         *            the resource id
-         * @param actionid
-         *            the action id
-         * @return a new request
-         * @throws ProfileException
-         *             if the a certificate can not be converted to PEM format.
-         */
+    /**
+     * Creates a {@link Request} with the given end entity certificate or proxy
+     * certificate, with chain, the resourceid and the actionid. The subject
+     * attribute is {@value #ID_ATTRIBUTE_SUBJECT_KEY_INFO}
+     * 
+     * @param certs
+     *            the user certificate or proxy certificate, with chain
+     * @param resourceid
+     *            the resource id
+     * @param actionid
+     *            the action id
+     * @return a new request
+     * @throws ProfileException
+     *             if the a certificate can not be converted to PEM format.
+     */
     public Request createRequest(X509Certificate[] certs, String resourceid,
             String actionid) throws ProfileException {
         Subject subject= createSubjectKeyInfo(certs);
@@ -240,8 +239,8 @@ public abstract class AuthorizationProfile implements Profile {
 
     /**
      * Creates a {@link Subject} containing the {@link Attribute}
-     * {@value org.glite.authz.common.model.Attribute#ID_SUB_KEY_INFO} and for
-     * value the certificates given as parameter, encoded in PEM blocks.
+     * {@value #ID_ATTRIBUTE_SUBJECT_KEY_INFO} and for value the certificates
+     * given as parameter, encoded in PEM blocks.
      * 
      * @param cert
      *            the user certificate
@@ -257,8 +256,8 @@ public abstract class AuthorizationProfile implements Profile {
 
     /**
      * Creates a {@link Subject} containing the {@link Attribute}
-     * {@value org.glite.authz.common.model.Attribute#ID_SUB_KEY_INFO} and for
-     * value the certificates given as parameter, encoded in PEM blocks.
+     * {@value #ID_ATTRIBUTE_SUBJECT_KEY_INFO} and for value the certificates
+     * given as parameter, encoded in PEM blocks.
      * 
      * @param certs
      *            the user certificate and chain
@@ -274,8 +273,8 @@ public abstract class AuthorizationProfile implements Profile {
 
     /**
      * Creates a {@link Subject} containing the {@link Attribute}
-     * {@value AuthorizationProfileConstants#ID_ATTRIBUTE_SUBJECT_KEY_INFO} and
-     * for value the certificates given as parameter, encoded in PEM blocks.
+     * {@value #ID_ATTRIBUTE_SUBJECT_KEY_INFO} and for value the certificates
+     * given as parameter, encoded in PEM blocks.
      * 
      * @param cert
      *            the user certificate
@@ -306,17 +305,16 @@ public abstract class AuthorizationProfile implements Profile {
         }
         Subject subject= new Subject();
         Attribute attrKeyInfo= new Attribute();
-        attrKeyInfo.setId(AuthorizationProfileConstants.ID_ATTRIBUTE_SUBJECT_KEY_INFO);
-        attrKeyInfo.setDataType(AuthorizationProfileConstants.DATATYPE_STRING);
+        attrKeyInfo.setId(ID_ATTRIBUTE_SUBJECT_KEY_INFO);
+        attrKeyInfo.setDataType(DATATYPE_STRING);
         attrKeyInfo.getValues().add(keyInfo);
         subject.getAttributes().add(attrKeyInfo);
         return subject;
     }
 
     /**
-     * Gets the obligation
-     * {@value AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP} from
-     * the result with a <code>Permit</code> decision
+     * Gets the obligation {@value #ID_OBLIGATION_POSIX_ENV_MAP} from the result
+     * with a <code>Permit</code> decision
      * 
      * @param response
      *            the response to process
@@ -329,40 +327,38 @@ public abstract class AuthorizationProfile implements Profile {
             throws ProfileException {
         Obligation posixMappingObligation= getObligation(response,
                                                          Result.DECISION_PERMIT,
-                                                         AuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP);
+                                                         ID_OBLIGATION_POSIX_ENV_MAP);
         return posixMappingObligation;
     }
 
     /**
      * Gets the mandatory POSIX user-id (login name) from the
-     * {@value AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP}
-     * obligation
+     * {@value #ID_OBLIGATION_POSIX_ENV_MAP} obligation
      * 
      * @param posixMappingObligation
      *            the posix mapping obligation
      * @return the POSIX login name to map
      * @throws ProfileException
      *             if the obligation is not a
-     *             {@value AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP}
-     *             , or if the mandatory user-id attribute assignment is not
-     *             contained in the obligation, or if the user-id login name is
-     *             empty or null.
+     *             {@value #ID_OBLIGATION_POSIX_ENV_MAP} , or if the mandatory
+     *             user-id attribute assignment is not contained in the
+     *             obligation, or if the user-id login name is empty or null.
      */
     public String getAttributeAssignmentUserId(Obligation posixMappingObligation)
             throws ProfileException {
-        if (!AuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP.equals(posixMappingObligation.getId())) {
+        if (!ID_OBLIGATION_POSIX_ENV_MAP.equals(posixMappingObligation.getId())) {
             throw new ProfileException("Obligation is not "
-                    + AuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP
-                    + " but " + posixMappingObligation.getId());
+                    + ID_OBLIGATION_POSIX_ENV_MAP + " but "
+                    + posixMappingObligation.getId());
         }
         List<AttributeAssignment> attributes= posixMappingObligation.getAttributeAssignments();
         for (AttributeAssignment attribute : attributes) {
             String id= attribute.getAttributeId();
-            if (AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID.equals(id)) {
+            if (ID_ATTRIBUTE_USER_ID.equals(id)) {
                 String userId= Strings.safeTrimOrNullString(attribute.getValue());
                 if (userId == null) {
                     throw new ProfileException("Attribute assignment "
-                            + AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID
+                            + ID_ATTRIBUTE_USER_ID
                             + " found in obligation, but with an empty or null value");
                 }
                 return userId;
@@ -370,34 +366,33 @@ public abstract class AuthorizationProfile implements Profile {
         }
         // attribute user-id not found
         throw new ProfileException("Mandatory attribute assignment "
-                + AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID
-                + " not found in obligation "
-                + AuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP);
+                + ID_ATTRIBUTE_USER_ID + " not found in obligation "
+                + ID_OBLIGATION_POSIX_ENV_MAP);
     }
 
     /**
      * Gets the list of POSIX group-ids (group names) from the obligation
-     * {@value AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID}
+     * {@value #ID_OBLIGATION_POSIX_ENV_MAP}
      * 
      * @param posixMappingObligation
      *            the posix mapping obligation
      * @return list of POSIX group names, can be empty if the group-id attribute
      *         assignments are not contained in the obligation.
      * @throws ProfileException
-     *             if the obligation is not a {@value
-     *             AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID}
+     *             if the obligation is not a
+     *             {@value #ID_OBLIGATION_POSIX_ENV_MAP}
      */
     public List<String> getAttributeAssignmentGroupIds(
             Obligation posixMappingObligation) throws ProfileException {
-        if (!AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID.equals(posixMappingObligation.getId())) {
+        if (!ID_OBLIGATION_POSIX_ENV_MAP.equals(posixMappingObligation.getId())) {
             throw new ProfileException("Obligation is not "
-                    + AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID);
+                    + ID_OBLIGATION_POSIX_ENV_MAP);
         }
         List<String> groupIds= new ArrayList<String>();
         List<AttributeAssignment> attributes= posixMappingObligation.getAttributeAssignments();
         for (AttributeAssignment attribute : attributes) {
             String id= attribute.getAttributeId();
-            if (AuthorizationProfileConstants.ID_ATTRIBUTE_GROUP_ID.equals(id)) {
+            if (ID_ATTRIBUTE_GROUP_ID.equals(id)) {
                 groupIds.add(attribute.getValue());
             }
         }
@@ -406,7 +401,7 @@ public abstract class AuthorizationProfile implements Profile {
 
     /**
      * Gets the POSIX primary group-id (group name) from the obligation
-     * {@value AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP}
+     * {@value #ID_OBLIGATION_POSIX_ENV_MAP}
      * 
      * @param posixMappingObligation
      *            the posix mapping obligation
@@ -414,18 +409,18 @@ public abstract class AuthorizationProfile implements Profile {
      *         is not contained in the obligation.
      * @throws ProfileException
      *             if the obligation is not a
-     *             {@value AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP}
+     *             {@value #ID_OBLIGATION_POSIX_ENV_MAP}
      */
     public String getAttributeAssignmentPrimaryGroupId(
             Obligation posixMappingObligation) throws ProfileException {
-        if (!AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID.equals(posixMappingObligation.getId())) {
+        if (!ID_OBLIGATION_POSIX_ENV_MAP.equals(posixMappingObligation.getId())) {
             throw new ProfileException("Obligation is not "
-                    + AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID);
+                    + ID_OBLIGATION_POSIX_ENV_MAP);
         }
         List<AttributeAssignment> attributes= posixMappingObligation.getAttributeAssignments();
         for (AttributeAssignment attribute : attributes) {
             String id= attribute.getAttributeId();
-            if (AuthorizationProfileConstants.ID_ATTRIBUTE_PRIMARY_GROUP_ID.equals(id)) {
+            if (ID_ATTRIBUTE_PRIMARY_GROUP_ID.equals(id)) {
                 String groupId= attribute.getValue();
                 return groupId;
             }

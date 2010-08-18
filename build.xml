@@ -20,7 +20,7 @@
 -->
 <project name="org.glite.authz.pep-java" default="install-layout" basedir=".">
 
-    <property name="project.description" value="Argus PEP-J client library" />
+    <property name="project.description" value="Argus PEP Java client library" />
 
     <!-- workspace directories -->
     <property name="workspace.dir" location=".." />
@@ -54,9 +54,21 @@
     <!-- init -->
     <target name="init" depends="">
         <tstamp />
-        <!-- classpath with libraries from ETICS repository -->
+        <!-- check for the glite-slcs-common jar file -->
+        <fileset id="glite-authz-pep-common.fileset" dir="${stage.lib.dir}">
+            <include name="glite-authz-pep-common.jar"/>
+        </fileset>
+        <path id="glite-authz-pep-common.path">
+            <fileset refid="glite-authz-pep-common.fileset" />
+        </path>
+        <available classname="org.glite.authz.pep.PEPException"
+                   classpathref="glite-authz-pep-common.path"
+                   property="glite-authz-pep-common.exists"/>
+        <fail unless="glite-authz-pep-common.exists" message="ERROR: glite-authz-pep-common jar is missing from the stage directory. Please build org.glite.authz.pep-java-common first..."/>
+        <!-- classpath with libraries from stage dir and ETICS repository -->
         <path id="compile.path">
             <!-- <pathelement path="${classes.dir}"/> -->
+            <path refid="glite-authz-pep-common.path"/>
             <path refid="glite.voms-api-java.path"/>
             <path refid="externals.hessian.path"/>
             <path refid="externals.bouncycastle.bcprov.path"/>
@@ -92,7 +104,6 @@
                source="1.5" target="1.5"
                sourcepath="" >
             <include name="**/*.java" />
-            <exclude name="**/com/caucho/**" />
             <classpath refid="compile.path" />
 <!--
             <compilerarg value="-Xlint"/>

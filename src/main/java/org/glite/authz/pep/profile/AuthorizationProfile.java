@@ -173,9 +173,15 @@ public abstract class AuthorizationProfile extends
                         + " found");
             }
             else {
-                throw new ProfileException("No decision "
-                        + Result.decisionToString(decision) + " found: "
-                        + result.getDecisionString());
+                String decsionString= result.getDecisionString();
+                String errorMessage= "No decision "
+                    + Result.decisionToString(decision) + " found: "
+                    + result.getDecisionString();
+                String statusMessage= result.getStatus().getMessage();
+                if (statusMessage!=null) {
+                    errorMessage += ". Status: " + statusMessage;
+                }
+                throw new ProfileException(errorMessage);
             }
         }
         return null;

@@ -149,16 +149,16 @@
          ETICS component DEFINITIONS
          ======================================================== -->
 
+    <!-- Argus PEP common -->
+    <define-repository-dir component="glite.authz-pep-common" />
+    <define-component-path component="glite.authz-pep-common" dir="${stage.dir}">
+        <include name="**/glite-authz-pep-common.jar" />
+    </define-component-path>
     <!-- VOMS Java API -->
     <define-repository-dir component="glite.voms-api-java" />
-    <define-component-path component="glite.voms-api-java">
-        <include name="**/vomsjapi.jar" />
-    </define-component-path>
-<!--
     <define-component-path component="glite.voms-api-java" dir="${stage.dir}">
         <include name="**/vomsjapi.jar" />
     </define-component-path>
--->
     <!-- hessian -->
     <define-repository-dir component="externals.hessian" />
     <define-component-path component="externals.hessian">

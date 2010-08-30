@@ -23,7 +23,7 @@ package org.glite.authz.pep.profile;
  * <p>
  * Profile constants and utility methods.
  * 
- * @see http://edms.cern.ch/document/1058175
+ * @see <a href="http://edms.cern.ch/document/1058175">XACML Grid Worker Node Authorization Profile v1.0</a>
  * 
  * @version 1.0
  */

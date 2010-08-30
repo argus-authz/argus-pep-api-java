@@ -80,12 +80,13 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Creates a {@link Resource} containing the {@link Attribute}
-     * {@value #ID_ATTRIBUTE_RESOURCE_ID} with the value given as parameter.
+     * Creates a {@link Resource} containing the <b>resource-id</b>
+     * {@link Attribute} with the value given as parameter.
      * 
      * @param resourceId
      *            The value of the resource-id attribute
      * @return the resource
+     * @see AuthorizationProfileConstants#ID_ATTRIBUTE_RESOURCE_ID
      */
     public Resource createResourceId(String resourceId) {
         Resource resource= new Resource();
@@ -98,12 +99,13 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Creates an {@link Action} containing the {@link Attribute}
-     * {@value #ID_ATTRIBUTE_ACTION_ID} with the value given as parameter.
+     * Creates an {@link Action} containing the <b>action-id</b>
+     * {@link Attribute} with the value given as parameter.
      * 
      * @param actionId
      *            The value of the action-id attribute
      * @return the action
+     * @see AuthorizationProfileConstants#ID_ATTRIBUTE_ACTION_ID
      */
     public Action createActionId(String actionId) {
         Action action= new Action();
@@ -173,13 +175,12 @@ public abstract class AuthorizationProfile extends
                         + " found");
             }
             else {
-                String decsionString= result.getDecisionString();
                 String errorMessage= "No decision "
-                    + Result.decisionToString(decision) + " found: "
-                    + result.getDecisionString();
+                        + Result.decisionToString(decision) + " found: "
+                        + result.getDecisionString();
                 String statusMessage= result.getStatus().getMessage();
-                if (statusMessage!=null) {
-                    errorMessage += ". Status: " + statusMessage;
+                if (statusMessage != null) {
+                    errorMessage+= ". Status: " + statusMessage;
                 }
                 throw new ProfileException(errorMessage);
             }
@@ -204,10 +205,13 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Creates a base {@link Environment} containing the Attribute
-     * {@value #ID_ATTRIBUTE_PROFILE_ID} with the profile identifier
-     * @param profileId the profile ID value
+     * Creates a base {@link Environment} containing the <b>profile-id</b>
+     * Attribute with the profile identifier
+     * 
+     * @param profileId
+     *            the profile ID value
      * @return the environment
+     * @see AuthorizationProfileConstants#ID_ATTRIBUTE_PROFILE_ID
      */
     public Environment createEnvironmentProfileId(String profileId) {
         Environment environment= new Environment();
@@ -221,8 +225,7 @@ public abstract class AuthorizationProfile extends
 
     /**
      * Creates a {@link Request} with the given end entity certificate or proxy
-     * certificate, with chain, the resourceid and the actionid. The subject
-     * attribute is {@value #ID_ATTRIBUTE_SUBJECT_KEY_INFO}
+     * certificate, with chain, the resourceid and the actionid.
      * 
      * @param certs
      *            the user certificate or proxy certificate, with chain
@@ -233,6 +236,10 @@ public abstract class AuthorizationProfile extends
      * @return a new request
      * @throws ProfileException
      *             if the a certificate can not be converted to PEM format.
+     * @see #createSubjectKeyInfo(X509Certificate[])
+     * @see #createResourceId(String)
+     * @see #createActionId(String)
+     * @see #createRequest(Subject, Resource, Action)
      */
     public Request createRequest(X509Certificate[] certs, String resourceid,
             String actionid) throws ProfileException {
@@ -244,9 +251,9 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Creates a {@link Subject} containing the {@link Attribute}
-     * {@value #ID_ATTRIBUTE_SUBJECT_KEY_INFO} and for value the certificates
-     * given as parameter, encoded in PEM blocks.
+     * Creates a {@link Subject} containing the <b>key-info</b>
+     * {@link Attribute} and for value the certificates given as parameter,
+     * encoded in PEM blocks.
      * 
      * @param cert
      *            the user certificate
@@ -254,6 +261,7 @@ public abstract class AuthorizationProfile extends
      * @throws ProfileException
      *             if an error occurs while converting a certificate in PEM
      *             format
+     * @see AuthorizationProfileConstants#ID_ATTRIBUTE_SUBJECT_KEY_INFO
      */
     public Subject createSubjectKeyInfo(X509Certificate cert)
             throws ProfileException {
@@ -261,9 +269,9 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Creates a {@link Subject} containing the {@link Attribute}
-     * {@value #ID_ATTRIBUTE_SUBJECT_KEY_INFO} and for value the certificates
-     * given as parameter, encoded in PEM blocks.
+     * Creates a {@link Subject} containing the <b>key-info</b>
+     * {@link Attribute} and for value the certificates given as parameter,
+     * encoded in PEM blocks.
      * 
      * @param certs
      *            the user certificate and chain
@@ -271,6 +279,7 @@ public abstract class AuthorizationProfile extends
      * @throws ProfileException
      *             if an error occurs while converting a certificate in PEM
      *             format
+     * @see AuthorizationProfileConstants#ID_ATTRIBUTE_SUBJECT_KEY_INFO
      */
     public Subject createSubjectKeyInfo(X509Certificate[] certs)
             throws ProfileException {
@@ -278,9 +287,9 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Creates a {@link Subject} containing the {@link Attribute}
-     * {@value #ID_ATTRIBUTE_SUBJECT_KEY_INFO} and for value the certificates
-     * given as parameter, encoded in PEM blocks.
+     * Creates a {@link Subject} containing the <b>key-info</b>
+     * {@link Attribute} and for value the certificates given as parameter,
+     * encoded in PEM blocks.
      * 
      * @param cert
      *            the user certificate
@@ -290,6 +299,7 @@ public abstract class AuthorizationProfile extends
      * @throws ProfileException
      *             if an error occurs while converting a certificate in PEM
      *             format
+     * @see AuthorizationProfileConstants#ID_ATTRIBUTE_SUBJECT_KEY_INFO
      */
     public Subject createSubjectKeyInfo(X509Certificate cert,
             X509Certificate[] chain) throws ProfileException {
@@ -319,8 +329,8 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Gets the obligation {@value #ID_OBLIGATION_POSIX_ENV_MAP} from the result
-     * with a <code>Permit</code> decision
+     * Gets the <b>posix env map</b> {@link Obligation} from the result with a
+     * <code>Permit</code> decision
      * 
      * @param response
      *            the response to process
@@ -328,6 +338,7 @@ public abstract class AuthorizationProfile extends
      * @throws ProfileException
      *             if no decision Permit or no POSIX mapping obligation is
      *             found.
+     * @see AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP
      */
     public Obligation getObligationPosixMapping(Response response)
             throws ProfileException {
@@ -338,17 +349,18 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Gets the mandatory POSIX user-id (login name) from the
-     * {@value #ID_OBLIGATION_POSIX_ENV_MAP} obligation
+     * Gets the mandatory POSIX user-id (login name) from the <b>posix env
+     * map</b> {@link Obligation}
      * 
      * @param posixMappingObligation
      *            the posix mapping obligation
      * @return the POSIX login name to map
      * @throws ProfileException
-     *             if the obligation is not a
-     *             {@value #ID_OBLIGATION_POSIX_ENV_MAP} , or if the mandatory
-     *             user-id attribute assignment is not contained in the
-     *             obligation, or if the user-id login name is empty or null.
+     *             if the obligation is not a <b>posix env map</b> , or if the
+     *             mandatory user-id attribute assignment is not contained in
+     *             the obligation, or if the user-id login name is empty or
+     *             null.
+     * @see AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP
      */
     public String getAttributeAssignmentUserId(Obligation posixMappingObligation)
             throws ProfileException {
@@ -377,16 +389,16 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Gets the list of POSIX group-ids (group names) from the obligation
-     * {@value #ID_OBLIGATION_POSIX_ENV_MAP}
+     * Gets the list of POSIX group-ids (group names) from the <b>posix env
+     * map</b> {@link Obligation}
      * 
      * @param posixMappingObligation
      *            the posix mapping obligation
      * @return list of POSIX group names, can be empty if the group-id attribute
      *         assignments are not contained in the obligation.
      * @throws ProfileException
-     *             if the obligation is not a
-     *             {@value #ID_OBLIGATION_POSIX_ENV_MAP}
+     *             if the obligation is not a <b>posix env map</b>
+     * @see AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP
      */
     public List<String> getAttributeAssignmentGroupIds(
             Obligation posixMappingObligation) throws ProfileException {
@@ -406,16 +418,16 @@ public abstract class AuthorizationProfile extends
     }
 
     /**
-     * Gets the POSIX primary group-id (group name) from the obligation
-     * {@value #ID_OBLIGATION_POSIX_ENV_MAP}
+     * Gets the POSIX primary group-id (group name) from the <b>posix env
+     * map</b> {@link Obligation}
      * 
      * @param posixMappingObligation
      *            the posix mapping obligation
      * @return the POSIX group name, can be <code>null</code> if the attribute
      *         is not contained in the obligation.
      * @throws ProfileException
-     *             if the obligation is not a
-     *             {@value #ID_OBLIGATION_POSIX_ENV_MAP}
+     *             if the obligation is not a <b>posix env map</b>
+     * @see AuthorizationProfileConstants#ID_OBLIGATION_POSIX_ENV_MAP
      */
     public String getAttributeAssignmentPrimaryGroupId(
             Obligation posixMappingObligation) throws ProfileException {

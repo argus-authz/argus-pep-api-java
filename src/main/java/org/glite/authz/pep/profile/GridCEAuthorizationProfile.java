@@ -24,7 +24,7 @@ package org.glite.authz.pep.profile;
  * <p>
  * Profile constants and utility methods.
  * 
- * @see https://edms.cern.ch/document/1078881
+ * @see <a href="https://edms.cern.ch/document/1078881">XACML Grid Computing Element Authorization Profile v1.0</a>
  * 
  * @version 1.0
  */

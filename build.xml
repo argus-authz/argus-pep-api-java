@@ -55,6 +55,7 @@
     <target name="init" depends="">
         <tstamp />
         <!-- check for the glite-slcs-common jar file -->
+        <!--
         <fileset id="glite-authz-pep-common.fileset" dir="${stage.lib.dir}">
             <include name="glite-authz-pep-common.jar"/>
         </fileset>
@@ -65,10 +66,11 @@
                    classpathref="glite-authz-pep-common.path"
                    property="glite-authz-pep-common.exists"/>
         <fail unless="glite-authz-pep-common.exists" message="ERROR: glite-authz-pep-common jar is missing from the stage directory. Please build org.glite.authz.pep-java-common first..."/>
+        -->
         <!-- classpath with libraries from stage dir and ETICS repository -->
         <path id="compile.path">
             <!-- <pathelement path="${classes.dir}"/> -->
-            <path refid="glite-authz-pep-common.path"/>
+            <path refid="glite.authz-pep-common.path"/>
             <path refid="glite.voms-api-java.path"/>
             <path refid="externals.hessian.path"/>
             <path refid="externals.bouncycastle.bcprov.path"/>
@@ -212,24 +214,24 @@
         </copy>
     </target>
 
-
-
+    <!-- doesn't work well with the linked pep-common Javadoc, use mvn javadoc:javadoc instead -->
     <target name="javadoc" depends="prepare">
         <javadoc
             destdir="${doc.dir}/api"
             author="true"
             version="true"
             use="true"
-            windowtitle="${project.description}">
+            windowtitle="${project.description} ${version} Javadoc"
+            doctitle="${project.description} ${version} API">
             <fileset dir="${src.dir}" defaultexcludes="yes">
                 <include name="org/glite/**"/>
-                <exclude name="com/caucho/**"/>
             </fileset>
+            <link href="http://www.switch.ch/grid/authz/docs/org.glite.authz.pep-common/"/>
             <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
         </javadoc>
     </target>
 
-    <target name="doc" depends="javadoc">
+    <target name="doc" depends="prepare">
         <copy todir="${doc.dir}">
             <fileset dir="${example.src.dir}" />
         </copy>
@@ -248,6 +250,10 @@
 
     <!-- download eternals dependencies in local repository -->
     <target name="repository" depends="init">
+        <download-repository component="glite.authz-pep-common" />    
+        <stage-repository-files component="glite.authz-pep-common">
+            <include name="**/glite-authz-pep-common.jar" />
+        </stage-repository-files>
         <download-repository component="glite.voms-api-java" />    
         <stage-repository-files component="glite.voms-api-java">
             <include name="**/vomsjapi.jar" />

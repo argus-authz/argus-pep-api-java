@@ -71,7 +71,9 @@ public class PEPClientTestCase extends TestCase {
      */
     public void testPEPClient() throws Exception {
         PEPClientConfiguration config= new PEPClientConfiguration();
-        String endpoint= "https://chaos.switch.ch:8154/authz";
+        String endpoint= "https://demeter.switch.ch:8154/authz";
+        String resourceid= "switch";
+        String actionid= "switch";
         config.addPEPDaemonEndpoint(endpoint);
 
         String cadir= "/etc/grid-security/certificates";
@@ -88,7 +90,7 @@ public class PEPClientTestCase extends TestCase {
         X509Certificate[] certs= reader.readCertificates(usercert);
         
         AuthorizationProfile profile= GridWNAuthorizationProfile.getInstance();
-        Request request= profile.createRequest(certs, "gridftp", "access");
+        Request request= profile.createRequest(certs, resourceid, actionid);
         System.out.println(request);
         Response response= client.authorize(request);
         System.out.println(response);

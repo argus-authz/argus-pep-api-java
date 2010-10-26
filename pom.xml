@@ -22,15 +22,16 @@ limitations under the License.
     <parent>
         <groupId>org.glite.authz</groupId>
         <artifactId>argus-parent</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
         <relativePath>../org.glite.authz</relativePath>
     </parent>
-    <name>Argus PEP Java client library</name>
-    <artifactId>pep-java</artifactId>
-    <version>2.0.0</version>
 
-    <description>PEP Java client library for the Argus Authorization Service
-    </description>
+    <name>Argus PEP client library</name>
+    <groupId>org.glite.authz</groupId>
+    <artifactId>pep-java</artifactId>
+    <version>${pep-java.version}</version>
+
+    <description>PEP Java client API for the Argus Authorization Service</description>
     <url>http://glite.web.cern.ch/glite/</url>
     <inceptionYear>2009</inceptionYear>
     
@@ -75,11 +76,13 @@ limitations under the License.
         	<artifactId>bcprov-jdk15</artifactId>
         	<scope>provided</scope>
         </dependency>
+<!--
         <dependency>
         	<groupId>com.caucho</groupId>
         	<artifactId>hessian</artifactId>
         	<scope>compile</scope>
         </dependency>
+-->
     </dependencies>
 
     <build>
@@ -144,16 +147,15 @@ limitations under the License.
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <links>
-                        <link>http://java.sun.com/j2se/1.5.0/docs/api/
-                        </link>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+                        <link>http://www.switch.ch/grid/authz/docs/org.glite.authz.pep-common/</link>
                     </links>
                     <quiet>true</quiet>
                     <aggregate>true</aggregate>
                     <author>false</author>
                     <version>true</version>
                     <doctitle>${project.name} ${project.version} Java API.</doctitle>
-                    <windowtitle>${project.name} ${project.version} Java API.
-                    </windowtitle>
+                    <windowtitle>${project.name} ${project.version} Java API.</windowtitle>
                     <overview>src/main/java/overview.html</overview>
                 </configuration>
             </plugin>

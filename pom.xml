@@ -30,6 +30,8 @@ limitations under the License.
     <groupId>org.glite.authz</groupId>
     <artifactId>pep-java</artifactId>
     <version>${pep-java.version}</version>
+    <packaging>jar</packaging>
+
 
     <description>PEP Java client API for the Argus Authorization Service</description>
     <url>http://glite.web.cern.ch/glite/</url>

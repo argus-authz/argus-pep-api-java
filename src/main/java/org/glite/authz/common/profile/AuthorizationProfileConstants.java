@@ -118,6 +118,9 @@ public class AuthorizationProfileConstants {
     /** The datatype #string: {@value} */
     public static final String DATATYPE_STRING= Attribute.DT_STRING;
 
+    /** The datatype X.500 name (RFC2253 format DN): {@value} . */
+    public static final String DATATYPE_X500_NAME = Attribute.DT_X500_NAME;
+
     /** The algorithm FQAN exact match id: {@value} */
     public static final String ID_ALGORITHM_FQAN_EXACT_MATCH= NS_ALGORITHM
             + SEPARATOR + "fqan-match";

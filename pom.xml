@@ -32,10 +32,17 @@ limitations under the License.
     <version>${pep-java.version}</version>
     <packaging>jar</packaging>
 
-
     <description>PEP Java client API for the Argus Authorization Service</description>
     <url>http://glite.web.cern.ch/glite/</url>
     <inceptionYear>2009</inceptionYear>
+
+    <repositories>
+        <repository>
+            <id>switch</id>
+            <name>SWITCH Releases</name>
+            <url>http://www.switch.ch/grid/authz/docs/maven2/release</url>
+        </repository>
+    </repositories>
     
     <dependencies>
         <!-- Test Dependencies -->

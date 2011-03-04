@@ -1,0 +1,14 @@
+argus-pep-api-java 2.0.1
+------------------------
+new constants added in common authorization profile.
+refactoring: depends on argus-pep-common 2.1.0.
+
+
+argus-pep-api-java 2.0.0
+------------------------
+back compatible with Argus 1.1.
+new constants (namespaces, datatypes, identitifers, algorithm) for the authorization profiles.
+profiles for glite Grid CE and WN authorization added.
+error message includes status message if available.
+refactoring: depends on argus-pep-common 2.0.0.
+ 

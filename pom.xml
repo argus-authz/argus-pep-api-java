@@ -52,13 +52,11 @@ limitations under the License.
         <dependency>
         	<groupId>commons-httpclient</groupId>
         	<artifactId>commons-httpclient</artifactId>
-        	<version>3.1</version>
         	<scope>compile</scope>
         </dependency>
         <dependency>
         	<groupId>log4j</groupId>
         	<artifactId>log4j</artifactId>
-        	<version>1.2.13</version>
         	<scope>runtime</scope>
         </dependency>
         <dependency>
@@ -69,7 +67,6 @@ limitations under the License.
         <dependency>
         	<groupId>commons-logging</groupId>
         	<artifactId>commons-logging</artifactId>
-        	<version>1.1</version>
         	<scope>compile</scope>
         </dependency>
         <dependency>
@@ -77,13 +74,6 @@ limitations under the License.
         	<artifactId>bcprov-jdk15</artifactId>
         	<scope>provided</scope>
         </dependency>
-<!--
-        <dependency>
-        	<groupId>com.caucho</groupId>
-        	<artifactId>hessian</artifactId>
-        	<scope>compile</scope>
-        </dependency>
--->
     </dependencies>
 
     <build>
@@ -130,8 +120,8 @@ limitations under the License.
                             <manifestSection>
                                 <name>org/glite/authz/pep/client/</name>
                                 <manifestEntries>
-                                    <Implementation-Title>${pom.artifactId}</Implementation-Title>
-                                    <Implementation-Version>${pom.version}</Implementation-Version>
+                                    <Implementation-Title>${project.artifactId}</Implementation-Title>
+                                    <Implementation-Version>${project.version}</Implementation-Version>
                                     <Implementation-Vendor>EGEE Collaboration</Implementation-Vendor>
                                 </manifestEntries>
                             </manifestSection>

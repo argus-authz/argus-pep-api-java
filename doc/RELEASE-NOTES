@@ -1,3 +1,8 @@
+argus-pep-api-java 2.0.2
+------------------------
+Maven parent module: org.glite.authz:argus-parent:1.4
+
+
 argus-pep-api-java 2.0.1
 ------------------------
 new constants added in common authorization profile.

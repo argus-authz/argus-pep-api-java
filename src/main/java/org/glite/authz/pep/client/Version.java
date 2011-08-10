@@ -68,4 +68,11 @@ public class Version {
     private Version() {
     }
 
+    /**
+     * Print version number
+     */
+    public static void main(String[] args) {
+        System.out.println(getName() + " version " + getVersion());
+    }
+
 }

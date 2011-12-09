@@ -18,89 +18,146 @@
  */
 package org.glite.authz.pep.profile;
 
+import org.glite.authz.common.profile.AuthorizationProfileConstants;
 
 /**
  * XACML Grid Computing Element Authorization Profile v1.0.
  * <p>
  * Profile constants and utility methods.
  * 
- * @see <a href="https://edms.cern.ch/document/1078881">XACML Grid Computing Element Authorization Profile v1.0</a>
+ * @see <a href="https://edms.cern.ch/document/1078881">XACML Grid Computing
+ *      Element Authorization Profile v1.0</a>
  * 
  * @version 1.0
  */
-public final class GridCEAuthorizationProfile extends AuthorizationProfile {
+public final class GridCEAuthorizationProfile extends
+        AbstractAuthorizationProfile implements AuthorizationProfile {
 
-    private static final String ACTION_CE_PREFIX= NS_ACTION + SEPARATOR + "ce";
+    private static final String ACTION_CE_PREFIX= AuthorizationProfileConstants.NS_ACTION
+            + AuthorizationProfileConstants.SEPARATOR + "ce";
 
     private static final String ACTION_CE_JOB_PREFIX= ACTION_CE_PREFIX
-            + SEPARATOR + "job";
+            + AuthorizationProfileConstants.SEPARATOR + "job";
 
     private static final String ACTION_CE_LEASE_PREFIX= ACTION_CE_PREFIX
-            + SEPARATOR + "lease";
+            + AuthorizationProfileConstants.SEPARATOR + "lease";
 
     private static final String ACTION_CE_DELEGATION_PREFIX= ACTION_CE_PREFIX
-            + SEPARATOR + "delegation";
+            + AuthorizationProfileConstants.SEPARATOR + "delegation";
 
     private static final String ACTION_CE_SUBSCRIPTION_PREFIX= ACTION_CE_PREFIX
-            + SEPARATOR + "subscription";
+            + AuthorizationProfileConstants.SEPARATOR + "subscription";
 
     /** Action value <b>job submit</b>: {@value} */
     public static final String ACTION_JOB_SUBMIT= ACTION_CE_JOB_PREFIX
-            + SEPARATOR + "submit";
+            + AuthorizationProfileConstants.SEPARATOR + "submit";
 
     /** Action value <b>job terminate</b>: {@value} */
     public static final String ACTION_JOB_TERMINATE= ACTION_CE_JOB_PREFIX
-            + SEPARATOR + "terminate";
+            + AuthorizationProfileConstants.SEPARATOR + "terminate";
 
     /** Action value <b>job get info</b>: {@value} */
     public static final String ACTION_JOB_GET_INFO= ACTION_CE_JOB_PREFIX
-            + SEPARATOR + "get-info";
+            + AuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>job manage</b>: {@value} */
     public static final String ACTION_JOB_MANAGE= ACTION_CE_JOB_PREFIX
-            + SEPARATOR + "manage";
+            + AuthorizationProfileConstants.SEPARATOR + "manage";
 
     /** Action value <b>lease get info</b>: {@value} */
     public static final String ACTION_LEASE_GET_INFO= ACTION_CE_LEASE_PREFIX
-            + SEPARATOR + "get-info";
+            + AuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>lease manage</b>: {@value} */
     public static final String ACTION_LEASE_MANAGE= ACTION_CE_LEASE_PREFIX
-            + SEPARATOR + "manage";
+            + AuthorizationProfileConstants.SEPARATOR + "manage";
 
     /** Action value <b>get info</b>: {@value} */
-    public static final String ACTION_GET_INFO= ACTION_CE_PREFIX + SEPARATOR
-            + "get-info";
+    public static final String ACTION_GET_INFO= ACTION_CE_PREFIX
+            + AuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>delegation get info</b>: {@value} */
     public static final String ACTION_DELEGATION_GET_INFO= ACTION_CE_DELEGATION_PREFIX
-            + SEPARATOR + "get-info";
+            + AuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>delegation manage</b>: {@value} */
     public static final String ACTION_DELEGATION_MANAGE= ACTION_CE_DELEGATION_PREFIX
-            + SEPARATOR + "manage";
+            + AuthorizationProfileConstants.SEPARATOR + "manage";
 
     /** Action value <b>subscription get info</b>: {@value} */
     public static final String ACTION_SUBSCRIPTION_GET_INFO= ACTION_CE_SUBSCRIPTION_PREFIX
-            + SEPARATOR + "get-info";
+            + AuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>subscription manage</b>: {@value} */
     public static final String ACTION_SUBSCRIPTION_MANAGE= ACTION_CE_SUBSCRIPTION_PREFIX
-            + SEPARATOR + "manage";
+            + AuthorizationProfileConstants.SEPARATOR + "manage";
 
     /** Singleton */
     private static GridCEAuthorizationProfile SINGLETON= null;
 
-    /** Version of the profile: {@value} */
-    public static final String PROFILE_VERSION= "1.0";
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getAttributeIdentiferProfileId()
+     */
+    public String getProfileIdAttributeIdentifer() {
+        return AuthorizationProfileConstants.ID_ATTRIBUTE_PROFILE_ID;
+    }
 
-    /** Identifier of the XACML Grid Computing Element Authorization Profile v1.0: {@value} */
-    public static final String PROFILE_ID= NS_PROFILE + SEPARATOR + "grid-ce"
-            + SEPARATOR + PROFILE_VERSION;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AbstractAuthorizationProfile#
+     * getSubjectKeyInfoDatatype()
+     */
+    protected String getSubjectKeyInfoDatatype() {
+        return AuthorizationProfileConstants.DATATYPE_STRING;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getObligationIdentifierMapPOSIXUser()
+     */
+    public String getMapUserToPOSIXEnvironmentObligationIdentifier() {
+        return AuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getAttributeAssignmentIdentifierUserId()
+     */
+    public String getUserIdAttributeAssignmentIdentifier() {
+        return AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getAttributeAssignmentIdentifierGroupId()
+     */
+    public String getGroupIdAttributeAssignmentIdentifier() {
+        return AuthorizationProfileConstants.ID_ATTRIBUTE_GROUP_ID;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getAttributeAssignmentIdentifierPrimaryGroupId()
+     */
+    public String getPrimaryGroupIdAttributeAssignmentIdentifier() {
+        return AuthorizationProfileConstants.ID_ATTRIBUTE_PRIMARY_GROUP_ID;
+    }
 
     /** Prevents instantiation */
     private GridCEAuthorizationProfile() {
-        super(PROFILE_ID);
+        super(AuthorizationProfileConstants.GRID_CE_AUTHZ_V1_PROFILE_ID);
     }
 
     /**

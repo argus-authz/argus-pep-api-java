@@ -16,6 +16,6 @@
  */
 
 /** 
- * XACML Grid authorization profiles
+ * XACML authorization profiles
  */
 package org.glite.authz.pep.profile;

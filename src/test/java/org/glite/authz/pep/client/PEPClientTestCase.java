@@ -16,7 +16,7 @@
  *
  * $Id$
  */
-package test;
+package org.glite.authz.pep.client;
 
 import java.io.File;
 import java.security.cert.CertificateException;
@@ -69,9 +69,9 @@ public class PEPClientTestCase extends TestCase {
      * 
      * @throws CertificateException
      */
-    public void testPEPClient() throws Exception {
+    public void testGridWNAuthorizationProfile() throws Exception {
         PEPClientConfiguration config= new PEPClientConfiguration();
-        String endpoint= "https://demeter.switch.ch:8154/authz";
+        String endpoint= "https://chaos.switch.ch:8154/authz";
         String resourceid= "switch";
         String actionid= "switch";
         config.addPEPDaemonEndpoint(endpoint);
@@ -81,7 +81,7 @@ public class PEPClientTestCase extends TestCase {
         String dotGlobus= home + File.separator + ".globus";
         String usercert= dotGlobus + File.separator + "usercert.pem";
         String userkey= dotGlobus + File.separator + "userkey.pem";
-        String password= "changeit";
+        String password= "1absynth";
 
         config.setTrustMaterial(cadir);
         config.setKeyMaterial(usercert, userkey, password);
@@ -91,9 +91,13 @@ public class PEPClientTestCase extends TestCase {
         
         AuthorizationProfile profile= GridWNAuthorizationProfile.getInstance();
         Request request= profile.createRequest(certs, resourceid, actionid);
+        System.out.println("----------------------------------------");
         System.out.println(request);
+        System.out.println("----------------------------------------");
         Response response= client.authorize(request);
+        System.out.println("----------------------------------------");
         System.out.println(response);
+        System.out.println("----------------------------------------");
         Obligation obligation= profile.getObligationPosixMapping(response);
         String username= profile.getAttributeAssignmentUserId(obligation);
         System.out.println("Username: " + username);

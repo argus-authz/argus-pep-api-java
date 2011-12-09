@@ -18,33 +18,87 @@
  */
 package org.glite.authz.pep.profile;
 
+import org.glite.authz.common.profile.AuthorizationProfileConstants;
+
 /**
  * XACML Grid Worker Node Authorization Profile v1.0.
  * <p>
  * Profile constants and utility methods.
  * 
- * @see <a href="http://edms.cern.ch/document/1058175">XACML Grid Worker Node Authorization Profile v1.0</a>
+ * @see <a href="http://edms.cern.ch/document/1058175">XACML Grid Worker Node
+ *      Authorization Profile v1.0</a>
  * 
  * @version 1.0
  */
-public final class GridWNAuthorizationProfile extends AuthorizationProfile {
+public final class GridWNAuthorizationProfile extends
+        AbstractAuthorizationProfile {
 
     /** Singleton */
     private static GridWNAuthorizationProfile SINGLETON= null;
 
-    /** Version of the profile: {@value} */
-    public static final String PROFILE_VERSION= "1.0";
-
-    /**
-     * Identifier of the XACML Grid Worker Node Authorization Profile v1.0:
-     * {@value}
-     */
-    public static final String PROFILE_ID= NS_PROFILE + SEPARATOR + "grid-wn"
-            + SEPARATOR + PROFILE_VERSION;
-
     /** Action value <b>execute</b>: {@value} */
-    public static final String ACTION_EXECUTE= NS_ACTION + SEPARATOR
-            + "execute";
+    public static final String ACTION_EXECUTE= AuthorizationProfileConstants.NS_ACTION
+            + AuthorizationProfileConstants.SEPARATOR + "execute";
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getAttributeIdentiferProfileId()
+     */
+    protected String getProfileIdAttributeIdentifer() {
+        return AuthorizationProfileConstants.ID_ATTRIBUTE_PROFILE_ID;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AbstractAuthorizationProfile#
+     * getSubjectKeyInfoDatatype()
+     */
+    protected String getSubjectKeyInfoDatatype() {
+        return AuthorizationProfileConstants.DATATYPE_STRING;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getObligationIdentifierMapPOSIXUser()
+     */
+    public String getMapUserToPOSIXEnvironmentObligationIdentifier() {
+        return AuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getAttributeAssignmentIdentifierUserId()
+     */
+    public String getUserIdAttributeAssignmentIdentifier() {
+        return AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getAttributeAssignmentIdentifierGroupId()
+     */
+    public String getGroupIdAttributeAssignmentIdentifier() {
+        return AuthorizationProfileConstants.ID_ATTRIBUTE_GROUP_ID;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.glite.authz.pep.profile.AstractAuthorizationProfile#
+     * getAttributeAssignmentIdentifierPrimaryGroupId()
+     */
+    public String getPrimaryGroupIdAttributeAssignmentIdentifier() {
+        return AuthorizationProfileConstants.ID_ATTRIBUTE_PRIMARY_GROUP_ID;
+    }
 
     /**
      * Gets the Grid Worker Node Authorization Profile instance
@@ -59,9 +113,9 @@ public final class GridWNAuthorizationProfile extends AuthorizationProfile {
     }
 
     /**
-     * Constructor
+     * Prevent instantiation.
      */
     private GridWNAuthorizationProfile() {
-        super(PROFILE_ID);
+        super(AuthorizationProfileConstants.GRID_WN_AUTHZ_V1_PROFILE_ID);
     }
 }

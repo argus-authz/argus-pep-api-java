@@ -25,13 +25,14 @@ import java.util.List;
 import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Response;
+import org.glite.authz.common.profile.AuthorizationProfileConstants;
 import org.glite.authz.common.security.PEMFileReader;
 import org.glite.authz.pep.client.PEPClient;
 import org.glite.authz.pep.client.PEPClientException;
 import org.glite.authz.pep.client.config.PEPClientConfiguration;
 import org.glite.authz.pep.client.config.PEPClientConfigurationException;
 import org.glite.authz.pep.profile.AuthorizationProfile;
-import org.glite.authz.pep.profile.GridWNAuthorizationProfile;
+import org.glite.authz.pep.profile.CommonXACMLAuthorizationProfile;
 import org.glite.authz.pep.profile.ProfileException;
 
 /**
@@ -50,7 +51,7 @@ public class ArgusPEPClientExample {
         String cadirname= "/etc/grid-security/certificates";
         String clientcert= "/etc/grid-security/hostcert.pem";
         String clientkey= "/etc/grid-security/hostkey.pem";
-        String clientpasswd= "changeit";
+        String clientpasswd= "23782738sadhfjaskfh";
 
         // create PEP client config
         PEPClientConfiguration config= new PEPClientConfiguration();
@@ -74,10 +75,10 @@ public class ArgusPEPClientExample {
         }
 
         // get the user proxy
-        String userproxy= "/tmp/x509up_u959";
-        PEMFileReader reader= new PEMFileReader();
+        String userproxy= "/Users/tschopp/.globus/usercert.pem";
         X509Certificate[] certs= null;
         try {
+            PEMFileReader reader= new PEMFileReader();
             certs= reader.readCertificates(userproxy);
         } catch (IOException e) {
             System.err.println(e.getMessage());
@@ -86,30 +87,39 @@ public class ArgusPEPClientExample {
         }
 
         // get the profile
-        AuthorizationProfile profile= GridWNAuthorizationProfile.getInstance();
+        // AuthorizationProfile profile=
+        // GridWNAuthorizationProfile.getInstance();
+        AuthorizationProfile profile= CommonXACMLAuthorizationProfile.getInstance();
 
         // create a request
         String resourceid= "http://grid.switch.ch/wn002";
-        String actionid= GridWNAuthorizationProfile.ACTION_EXECUTE;
+        String actionid= "ANY";
         Request request= null;
         try {
-            request= profile.createRequest(certs, resourceid, actionid);
+            request= profile.createRequest(certs,
+                                           resourceid,
+                                           actionid);
         } catch (ProfileException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
             System.exit(-1);
         }
+        System.out.println("----------------------------------------");
         System.out.println(request);
 
         // authorize the request by PEP daemon
         Response response= null;
         try {
+            System.out.println("----------------------------------------");
+            System.out.println("Authorize request: " + endpoint);
+
             response= pep.authorize(request);
         } catch (PEPClientException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
             System.exit(-1);
         }
+        System.out.println("----------------------------------------");
         System.out.println(response);
 
         // extract response attributes

@@ -27,6 +27,6 @@ public interface Profile {
      * 
      * @return the profile ID
      */
-    String getProfileId();
+    public String getProfileId();
     
 }

@@ -25,7 +25,6 @@ import java.util.List;
 import org.glite.authz.common.model.Obligation;
 import org.glite.authz.common.model.Request;
 import org.glite.authz.common.model.Response;
-import org.glite.authz.common.profile.AuthorizationProfileConstants;
 import org.glite.authz.common.security.PEMFileReader;
 import org.glite.authz.pep.client.PEPClient;
 import org.glite.authz.pep.client.PEPClientException;

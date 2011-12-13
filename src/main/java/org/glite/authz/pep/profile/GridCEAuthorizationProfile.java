@@ -18,7 +18,7 @@
  */
 package org.glite.authz.pep.profile;
 
-import org.glite.authz.common.profile.AuthorizationProfileConstants;
+import org.glite.authz.common.profile.GLiteAuthorizationProfileConstants;
 
 /**
  * XACML Grid Computing Element Authorization Profile v1.0.
@@ -33,64 +33,64 @@ import org.glite.authz.common.profile.AuthorizationProfileConstants;
 public final class GridCEAuthorizationProfile extends
         AbstractAuthorizationProfile implements AuthorizationProfile {
 
-    private static final String ACTION_CE_PREFIX= AuthorizationProfileConstants.NS_ACTION
-            + AuthorizationProfileConstants.SEPARATOR + "ce";
+    private static final String ACTION_CE_PREFIX= GLiteAuthorizationProfileConstants.NS_ACTION
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "ce";
 
     private static final String ACTION_CE_JOB_PREFIX= ACTION_CE_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "job";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "job";
 
     private static final String ACTION_CE_LEASE_PREFIX= ACTION_CE_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "lease";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "lease";
 
     private static final String ACTION_CE_DELEGATION_PREFIX= ACTION_CE_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "delegation";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "delegation";
 
     private static final String ACTION_CE_SUBSCRIPTION_PREFIX= ACTION_CE_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "subscription";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "subscription";
 
     /** Action value <b>job submit</b>: {@value} */
     public static final String ACTION_JOB_SUBMIT= ACTION_CE_JOB_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "submit";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "submit";
 
     /** Action value <b>job terminate</b>: {@value} */
     public static final String ACTION_JOB_TERMINATE= ACTION_CE_JOB_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "terminate";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "terminate";
 
     /** Action value <b>job get info</b>: {@value} */
     public static final String ACTION_JOB_GET_INFO= ACTION_CE_JOB_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "get-info";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>job manage</b>: {@value} */
     public static final String ACTION_JOB_MANAGE= ACTION_CE_JOB_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "manage";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "manage";
 
     /** Action value <b>lease get info</b>: {@value} */
     public static final String ACTION_LEASE_GET_INFO= ACTION_CE_LEASE_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "get-info";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>lease manage</b>: {@value} */
     public static final String ACTION_LEASE_MANAGE= ACTION_CE_LEASE_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "manage";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "manage";
 
     /** Action value <b>get info</b>: {@value} */
     public static final String ACTION_GET_INFO= ACTION_CE_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "get-info";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>delegation get info</b>: {@value} */
     public static final String ACTION_DELEGATION_GET_INFO= ACTION_CE_DELEGATION_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "get-info";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>delegation manage</b>: {@value} */
     public static final String ACTION_DELEGATION_MANAGE= ACTION_CE_DELEGATION_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "manage";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "manage";
 
     /** Action value <b>subscription get info</b>: {@value} */
     public static final String ACTION_SUBSCRIPTION_GET_INFO= ACTION_CE_SUBSCRIPTION_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "get-info";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "get-info";
 
     /** Action value <b>subscription manage</b>: {@value} */
     public static final String ACTION_SUBSCRIPTION_MANAGE= ACTION_CE_SUBSCRIPTION_PREFIX
-            + AuthorizationProfileConstants.SEPARATOR + "manage";
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "manage";
 
     /** Singleton */
     private static GridCEAuthorizationProfile SINGLETON= null;
@@ -102,7 +102,7 @@ public final class GridCEAuthorizationProfile extends
      * getAttributeIdentiferProfileId()
      */
     public String getProfileIdAttributeIdentifer() {
-        return AuthorizationProfileConstants.ID_ATTRIBUTE_PROFILE_ID;
+        return GLiteAuthorizationProfileConstants.ID_ATTRIBUTE_PROFILE_ID;
     }
 
     /*
@@ -112,7 +112,7 @@ public final class GridCEAuthorizationProfile extends
      * getSubjectKeyInfoDatatype()
      */
     protected String getSubjectKeyInfoDatatype() {
-        return AuthorizationProfileConstants.DATATYPE_STRING;
+        return GLiteAuthorizationProfileConstants.DATATYPE_STRING;
     }
 
     /*
@@ -122,7 +122,7 @@ public final class GridCEAuthorizationProfile extends
      * getObligationIdentifierMapPOSIXUser()
      */
     public String getMapUserToPOSIXEnvironmentObligationIdentifier() {
-        return AuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP;
+        return GLiteAuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP;
     }
 
     /*
@@ -132,7 +132,7 @@ public final class GridCEAuthorizationProfile extends
      * getAttributeAssignmentIdentifierUserId()
      */
     public String getUserIdAttributeAssignmentIdentifier() {
-        return AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID;
+        return GLiteAuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID;
     }
 
     /*
@@ -142,7 +142,7 @@ public final class GridCEAuthorizationProfile extends
      * getAttributeAssignmentIdentifierGroupId()
      */
     public String getGroupIdAttributeAssignmentIdentifier() {
-        return AuthorizationProfileConstants.ID_ATTRIBUTE_GROUP_ID;
+        return GLiteAuthorizationProfileConstants.ID_ATTRIBUTE_GROUP_ID;
     }
 
     /*
@@ -152,12 +152,12 @@ public final class GridCEAuthorizationProfile extends
      * getAttributeAssignmentIdentifierPrimaryGroupId()
      */
     public String getPrimaryGroupIdAttributeAssignmentIdentifier() {
-        return AuthorizationProfileConstants.ID_ATTRIBUTE_PRIMARY_GROUP_ID;
+        return GLiteAuthorizationProfileConstants.ID_ATTRIBUTE_PRIMARY_GROUP_ID;
     }
 
     /** Prevents instantiation */
     private GridCEAuthorizationProfile() {
-        super(AuthorizationProfileConstants.GRID_CE_AUTHZ_V1_PROFILE_ID);
+        super(GLiteAuthorizationProfileConstants.GRID_CE_AUTHZ_V1_PROFILE_ID);
     }
 
     /**

@@ -18,7 +18,7 @@
  */
 package org.glite.authz.pep.profile;
 
-import org.glite.authz.common.profile.AuthorizationProfileConstants;
+import org.glite.authz.common.profile.GLiteAuthorizationProfileConstants;
 
 /**
  * XACML Grid Worker Node Authorization Profile v1.0.
@@ -37,8 +37,8 @@ public final class GridWNAuthorizationProfile extends
     private static GridWNAuthorizationProfile SINGLETON= null;
 
     /** Action value <b>execute</b>: {@value} */
-    public static final String ACTION_EXECUTE= AuthorizationProfileConstants.NS_ACTION
-            + AuthorizationProfileConstants.SEPARATOR + "execute";
+    public static final String ACTION_EXECUTE= GLiteAuthorizationProfileConstants.NS_ACTION
+            + GLiteAuthorizationProfileConstants.SEPARATOR + "execute";
 
     /*
      * (non-Javadoc)
@@ -47,7 +47,7 @@ public final class GridWNAuthorizationProfile extends
      * getAttributeIdentiferProfileId()
      */
     protected String getProfileIdAttributeIdentifer() {
-        return AuthorizationProfileConstants.ID_ATTRIBUTE_PROFILE_ID;
+        return GLiteAuthorizationProfileConstants.ID_ATTRIBUTE_PROFILE_ID;
     }
 
     /*
@@ -57,7 +57,7 @@ public final class GridWNAuthorizationProfile extends
      * getSubjectKeyInfoDatatype()
      */
     protected String getSubjectKeyInfoDatatype() {
-        return AuthorizationProfileConstants.DATATYPE_STRING;
+        return GLiteAuthorizationProfileConstants.DATATYPE_STRING;
     }
 
     /*
@@ -67,7 +67,7 @@ public final class GridWNAuthorizationProfile extends
      * getObligationIdentifierMapPOSIXUser()
      */
     public String getMapUserToPOSIXEnvironmentObligationIdentifier() {
-        return AuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP;
+        return GLiteAuthorizationProfileConstants.ID_OBLIGATION_POSIX_ENV_MAP;
     }
 
     /*
@@ -77,7 +77,7 @@ public final class GridWNAuthorizationProfile extends
      * getAttributeAssignmentIdentifierUserId()
      */
     public String getUserIdAttributeAssignmentIdentifier() {
-        return AuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID;
+        return GLiteAuthorizationProfileConstants.ID_ATTRIBUTE_USER_ID;
     }
 
     /*
@@ -87,7 +87,7 @@ public final class GridWNAuthorizationProfile extends
      * getAttributeAssignmentIdentifierGroupId()
      */
     public String getGroupIdAttributeAssignmentIdentifier() {
-        return AuthorizationProfileConstants.ID_ATTRIBUTE_GROUP_ID;
+        return GLiteAuthorizationProfileConstants.ID_ATTRIBUTE_GROUP_ID;
     }
 
     /*
@@ -97,7 +97,7 @@ public final class GridWNAuthorizationProfile extends
      * getAttributeAssignmentIdentifierPrimaryGroupId()
      */
     public String getPrimaryGroupIdAttributeAssignmentIdentifier() {
-        return AuthorizationProfileConstants.ID_ATTRIBUTE_PRIMARY_GROUP_ID;
+        return GLiteAuthorizationProfileConstants.ID_ATTRIBUTE_PRIMARY_GROUP_ID;
     }
 
     /**
@@ -116,6 +116,6 @@ public final class GridWNAuthorizationProfile extends
      * Prevent instantiation.
      */
     private GridWNAuthorizationProfile() {
-        super(AuthorizationProfileConstants.GRID_WN_AUTHZ_V1_PROFILE_ID);
+        super(GLiteAuthorizationProfileConstants.GRID_WN_AUTHZ_V1_PROFILE_ID);
     }
 }

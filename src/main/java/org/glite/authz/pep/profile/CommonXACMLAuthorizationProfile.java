@@ -62,7 +62,7 @@ public final class CommonXACMLAuthorizationProfile extends
 
         Attribute attrKeyInfo= new Attribute();
         attrKeyInfo.setId(getSubjectKeyInfoAttributeIdentifer());
-        attrKeyInfo.setDataType(getSubjectKeyInfoDatatype());
+        attrKeyInfo.setDataType(getSubjectKeyInfoAttributeDatatype());
 
         for (X509Certificate x509 : x509s) {
             try {
@@ -97,7 +97,7 @@ public final class CommonXACMLAuthorizationProfile extends
      * @see org.glite.authz.pep.profile.AbstractAuthorizationProfile#
      * getSubjectKeyInfoDatatype()
      */
-    protected String getSubjectKeyInfoDatatype() {
+    protected String getSubjectKeyInfoAttributeDatatype() {
         return CommonXACMLAuthorizationProfileConstants.DATATYPE_BASE64_BINARY;
     }
 

@@ -91,6 +91,26 @@ public abstract class AbstractAuthorizationProfile implements
     }
 
     /**
+     * Returns the attribute identifier for the subject subject-id attribute:
+     * {@value Attribute#ID_SUB_ID}
+     * 
+     * @return the subject subject-id attribute identifier
+     */
+    protected String getSubjectIdAttributeIdentifier() {
+        return Attribute.ID_SUB_ID;
+    }
+
+    /**
+     * Returns the attribute data type for the subject subject-id attribute,
+     * defined by the profile (X500Name)
+     * 
+     * @return subject subject-id attribute data type
+     */
+    protected String getSubjectIdAttributeDatatype() {
+        return Attribute.DT_X500_NAME;
+    }
+
+    /**
      * Returns the attribute identifier for the subject key-info attribute:
      * {@value Attribute#ID_SUB_KEY_INFO}
      * 
@@ -101,12 +121,12 @@ public abstract class AbstractAuthorizationProfile implements
     }
 
     /**
-     * Returns the attribute data type for the subject key-info attribute, defined by
-     * the profile.
+     * Returns the attribute data type for the subject key-info attribute,
+     * defined by the profile.
      * 
      * @return subject key-info attribute data type
      */
-    abstract protected String getSubjectKeyInfoDatatype();
+    abstract protected String getSubjectKeyInfoAttributeDatatype();
 
     /**
      * Returns the attribute identifier for the profile-id attribute, defined by
@@ -311,14 +331,38 @@ public abstract class AbstractAuthorizationProfile implements
         return request;
     }
 
-    public Request createRequest(X509Certificate[] certs, String resourceid,
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.glite.authz.pep.profile.AuthorizationProfile#createRequest(java.security
+     * .cert.X509Certificate[], java.lang.String, java.lang.String,
+     * java.lang.String)
+     */
+    public Request createRequest(X509Certificate[] keyinfo, String resourceid,
             String actionid, String profileid) throws ProfileException {
-        Subject subject= createSubjectKeyInfo(certs);
+        Subject subject= createSubjectKeyInfo(keyinfo);
         Resource resource= createResourceId(resourceid);
         Action action= createActionId(actionid);
         Environment environment= createEnvironmentProfileId(profileid);
         Request request= createRequest(subject, resource, action, environment);
         return request;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.glite.authz.pep.profile.AuthorizationProfile#createSubjectId(java
+     * .lang.String)
+     */
+    public Subject createSubjectId(String subjectId) {
+        Subject subject= new Subject();
+        Attribute subjectIdAttribute= new Attribute(getSubjectIdAttributeIdentifier(),
+                                                    getSubjectIdAttributeDatatype());
+        subjectIdAttribute.getValues().add(subjectId);
+        subject.getAttributes().add(subjectIdAttribute);
+        return subject;
     }
 
     /*
@@ -374,7 +418,7 @@ public abstract class AbstractAuthorizationProfile implements
         Subject subject= new Subject();
         Attribute attrKeyInfo= new Attribute();
         attrKeyInfo.setId(getSubjectKeyInfoAttributeIdentifer());
-        attrKeyInfo.setDataType(getSubjectKeyInfoDatatype());
+        attrKeyInfo.setDataType(getSubjectKeyInfoAttributeDatatype());
         attrKeyInfo.getValues().add(keyInfo);
         subject.getAttributes().add(attrKeyInfo);
         return subject;

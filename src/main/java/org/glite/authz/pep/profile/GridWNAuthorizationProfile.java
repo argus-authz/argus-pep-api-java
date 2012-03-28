@@ -56,7 +56,7 @@ public final class GridWNAuthorizationProfile extends
      * @see org.glite.authz.pep.profile.AbstractAuthorizationProfile#
      * getSubjectKeyInfoDatatype()
      */
-    protected String getSubjectKeyInfoDatatype() {
+    protected String getSubjectKeyInfoAttributeDatatype() {
         return GLiteAuthorizationProfileConstants.DATATYPE_STRING;
     }
 

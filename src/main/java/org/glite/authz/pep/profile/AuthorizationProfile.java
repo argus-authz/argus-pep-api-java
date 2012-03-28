@@ -166,6 +166,16 @@ public interface AuthorizationProfile extends Profile {
             String actionid, String profileId) throws ProfileException;
 
     /**
+     * Creates a {@link Subject} containing the <b>subject-id</b>
+     * {@link Attribute} with the value given as parameter.
+     * 
+     * @param subjectId
+     *            The X500name of the subject (user DN)
+     * @return the subject
+     */
+    public Subject createSubjectId(String subjectId);
+
+    /**
      * Creates a {@link Subject} containing the <b>key-info</b>
      * {@link Attribute} and for value the certificates given as parameter.
      * 

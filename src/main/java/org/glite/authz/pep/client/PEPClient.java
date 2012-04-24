@@ -48,7 +48,7 @@ import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
 
 /**
- * A PEP client to communicate with the Argus PEP daemon and authorize request.
+ * A PEP client to communicate with the Argus PEP Server and authorize request.
  * 
  * It uses a multi-threaded http client to authorize the request. The http
  * client tries to keep alive connection whitin its pool of connections.
@@ -99,7 +99,7 @@ public class PEPClient {
 
         pepdEndpoints_= config.getPEPDaemonEndpoints();
         if (pepdEndpoints_.isEmpty()) {
-            throw new PEPClientException("Configuration doesn't contain any PEP daemon endpoint URL");
+            throw new PEPClientException("Configuration doesn't contain any PEP Server endpoint URL");
         }
         pips_= config.getPolicyInformationPoints();
         obligationHandlers_= config.getObligationHandlers();
@@ -116,6 +116,7 @@ public class PEPClient {
      */
     public Response authorize(Request request) throws PEPClientException {
         Response response= null;
+        Exception cause= null;
         try {
             runPolicyInformationPoints(request);
         } catch (PIPProcessingException e) {
@@ -127,14 +128,19 @@ public class PEPClient {
                 // success, exit loop
                 break;
             } catch (PEPClientException e) {
-                log.warn("request failed for PEP daemon " + endpoint, e);
+                log.error("request failed for PEP Server " + endpoint, e);
+                cause= e;
             }
         }
         if (response == null) {
-            String error= "No PEP daemon(s) " + pepdEndpoints_
+            String error= "No PEP Server " + pepdEndpoints_
                     + " was able to process the request";
             log.error(error);
-            throw new PEPClientException(error);
+            PEPClientException exception= new PEPClientException(error);
+            if (cause != null) {
+                exception.setStackTrace(cause.getStackTrace());
+            }
+            throw exception;
         }
         try {
             runObligationHandlers(request, response);
@@ -169,7 +175,7 @@ public class PEPClient {
         } catch (IOException e) {
             log.error("Unable to serialize request object", e);
             throw new PEPClientException("Unable to serialize request object",
-                                                    e);
+                                         e);
         }
 
         PostMethod postMethod= new PostMethod(pepUrl);
@@ -193,21 +199,21 @@ public class PEPClient {
                 } catch (IOException e) {
                     log.error("Unable to deserialize response object", e);
                     throw new PEPClientException("Unable to deserialize response object",
-                                                            e);
+                                                 e);
                 }
             }
             else {
                 String error= postMethod.getStatusCode()
-                        + " status code response from the PEP daemon " + pepUrl;
+                        + " status code response from the PEP Server " + pepUrl;
                 log.error(error);
                 throw new PEPClientException(error);
 
             }
         } catch (IOException e) {
-            log.error("Unable to read response from PEP daemon " + pepUrl, e);
-            throw new PEPClientException("Unable to read response from PEP daemon "
-                                                            + pepUrl,
-                                                    e);
+            log.error("Unable to read response from PEP Server " + pepUrl, e);
+            throw new PEPClientException("Unable to read response from PEP Server "
+                                                 + pepUrl,
+                                         e);
         } finally {
             log.debug("release connection");
             postMethod.releaseConnection();

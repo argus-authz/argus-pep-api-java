@@ -27,8 +27,8 @@
     </appender>
 
     <!-- PEPClient logger -->
-    <logger name="org.glite.authz.pep.client">
-        <level value="info" />
+    <logger name="org.glite.authz">
+        <level value="debug" />
     </logger>
 
     <!-- VOMS API logger -->

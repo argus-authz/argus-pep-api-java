@@ -19,9 +19,13 @@
 package org.glite.authz.common.security;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.Security;
@@ -35,10 +39,16 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PasswordFinder;
+import org.glite.authz.common.model.util.Strings;
 
 /**
  * PEM files reader to extract PEM encoded private key and certificates from
- * file. (OpenSSL compatible)
+ * file.
+ * <p>
+ * <ul>
+ * <li>OpenSSL 0.9 PCKS1 format compatible
+ * <li>OpenSSL 1.0 PKCS8 format compatible (requires BouncyCastle >= 1.46)
+ * </ul>
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
@@ -61,7 +71,8 @@ public class PEMFileReader {
     }
 
     /**
-     * Reads the first PEM encoded private key from a filename
+     * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
+     * format) from a filename.
      * 
      * @param filename
      *            the filename of the file to read from
@@ -81,7 +92,8 @@ public class PEMFileReader {
     }
 
     /**
-     * Reads the first PEM encoded private key from a file
+     * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
+     * format) from a file object.
      * 
      * @param file
      *            the file to read from
@@ -97,26 +109,64 @@ public class PEMFileReader {
     public PrivateKey readPrivateKey(File file, String password)
             throws FileNotFoundException, IOException {
         log.debug("file: " + file);
-        FileReader fileReader= new FileReader(file);
-        PEMReader reader= new PEMReader(fileReader, new PEMPassword(password));
+        InputStream is= new FileInputStream(file);
+        try {
+            return readPrivateKey(is, password);
+        } catch (IOException ioe) {
+            String error= "Invalid file " + file + ": " + ioe.getMessage();
+            log.error(error);
+            throw new IOException(error, ioe);
+        }
+    }
+
+    /**
+     * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
+     * format) from an input stream.
+     * 
+     * @param is
+     *            the input stream
+     * @param password
+     *            the password of the private key if encrypted, can be
+     *            <code>null</code> if the key is not encrypted
+     * @return the private key
+     * @throws IOException
+     *             if an error occurs while parsing the input stream
+     */
+    protected PrivateKey readPrivateKey(InputStream is, String password)
+            throws IOException {
+        Reader inputStreamReader= new InputStreamReader(is);
+        PEMReader reader= new PEMReader(inputStreamReader, new PEMPassword(password));
         KeyPair keyPair;
         Object object= null;
         do {
             object= reader.readObject();
             if (object == null) {
-                log.error("No KeyPair object found in file " + file);
-                throw new IOException("No KeyPair object found in file " + file);
+                String error= "No KeyPair or PrivateKey object found";
+                log.error(error);
+                throw new IOException(error);
             }
-        } while (!(object instanceof KeyPair));
+        } while (!(object instanceof KeyPair || object instanceof PrivateKey));
+
+        log.debug("Object type: " + object.getClass().getCanonicalName());
 
         try {
             reader.close();
         } catch (Exception e) {
             // ignored
         }
+        if (object instanceof KeyPair) {
+            keyPair= (KeyPair) object;
+            return keyPair.getPrivate();
+        }
+        else if (object instanceof PrivateKey) {
+            return (PrivateKey) object;
+        }
+        else {
+            String error= "Unknown object type: " + object.getClass().getName();
+            log.error(error);
+            throw new IOException(error);
 
-        keyPair= (KeyPair) object;
-        return keyPair.getPrivate();
+        }
     }
 
     /**
@@ -196,6 +246,9 @@ public class PEMFileReader {
          */
         public PEMPassword(String password) {
             if (password == null) {
+                password_= null;
+            }
+            else if (Strings.safeTrimOrNullString(password) == null) {
                 password_= null;
             }
             else {

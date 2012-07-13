@@ -1,3 +1,15 @@
+argus-pep-api-java 2.1.1
+------------------------
+PEMFileReader bug fix to read OpenSSL 1.0 PKCS8 PEM private keys from file.
+
+
+argus-pep-api-java 2.1.0
+------------------------
+Maven parent module: org.glite.authz:argus-parent:1.5
+XACML profile handlers and constants refactored.
+Common XACML Authorization Profile v.1.1 implemented. 
+
+
 argus-pep-api-java 2.0.2
 ------------------------
 Maven parent module: org.glite.authz:argus-parent:1.4

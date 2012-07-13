@@ -70,10 +70,19 @@ public class PEPClientTestCase extends TestCase {
      * @throws CertificateException
      */
     public void testGridWNAuthorizationProfile() throws Exception {
-        PEPClientConfiguration config= new PEPClientConfiguration();
         String endpoint= "https://chaos.switch.ch:8154/authz";
         String resourceid= "switch";
         String actionid= "switch";
+
+        if (System.getProperty("skipPEPClientTests") != null) {
+            System.out.println("INFO: Skip test PEPClient callout to "
+                    + endpoint);
+            return;
+        }
+        else {
+            System.out.println("INFO: Property skipPEPClientTests not defined, run test...");
+        }
+        PEPClientConfiguration config= new PEPClientConfiguration();
         config.addPEPDaemonEndpoint(endpoint);
 
         String cadir= "/etc/grid-security/certificates";
@@ -81,14 +90,14 @@ public class PEPClientTestCase extends TestCase {
         String dotGlobus= home + File.separator + ".globus";
         String usercert= dotGlobus + File.separator + "usercert.pem";
         String userkey= dotGlobus + File.separator + "userkey.pem";
-        String password= "1absynth";
+        String password= "test";
 
         config.setTrustMaterial(cadir);
         config.setKeyMaterial(usercert, userkey, password);
         PEPClient client= new PEPClient(config);
         PEMFileReader reader= new PEMFileReader();
         X509Certificate[] certs= reader.readCertificates(usercert);
-        
+
         AuthorizationProfile profile= GridWNAuthorizationProfile.getInstance();
         Request request= profile.createRequest(certs, resourceid, actionid);
         System.out.println("----------------------------------------");

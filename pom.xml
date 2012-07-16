@@ -1,230 +1,254 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-Copyright (c) Members of the EGEE Collaboration. 2010.
-See http://www.eu-egee.org/partners/ for details on the copyright holders.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
+<!-- Copyright (c) Members of the EGEE Collaboration. 2010. See http://www.eu-egee.org/partners/ 
+	for details on the copyright holders. Licensed under the Apache License, 
+	Version 2.0 (the "License"); you may not use this file except in compliance 
+	with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.glite.authz</groupId>
-        <artifactId>argus-parent</artifactId>
-        <version>1.5</version>
-        <relativePath>../emi.argus.parent</relativePath>
-    </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.glite.authz</groupId>
+		<artifactId>argus-parent</artifactId>
+		<version>1.5</version>
+		<relativePath>../emi.argus.parent</relativePath>
+	</parent>
 
-    <name>Argus PEP client Java library</name>
-    <groupId>org.glite.authz</groupId>
-    <artifactId>pep-java</artifactId>
-    <version>2.1.1</version>
-    <packaging>jar</packaging>
+	<name>Argus PEP client Java library</name>
+	<groupId>org.glite.authz</groupId>
+	<artifactId>pep-java</artifactId>
+	<version>2.1.1</version>
+	<packaging>jar</packaging>
 
-    <description>PEP Java client API for the Argus Authorization Service</description>
-    <url>http://glite.web.cern.ch/glite/</url>
-    <inceptionYear>2009</inceptionYear>
+	<description>PEP Java client API for the Argus Authorization Service</description>
+	<url>http://glite.web.cern.ch/glite/</url>
+	<inceptionYear>2009</inceptionYear>
 
-    <dependencies>
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- Compile Dependencies-->
-        <dependency>
-        	<groupId>org.glite.authz</groupId>
-        	<artifactId>pep-common</artifactId>
-        	<scope>compile</scope>
-        </dependency>
-        <dependency>
-        	<groupId>commons-httpclient</groupId>
-        	<artifactId>commons-httpclient</artifactId>
-        	<scope>compile</scope>
-        </dependency>
-        <dependency>
-        	<groupId>log4j</groupId>
-        	<artifactId>log4j</artifactId>
-        	<scope>runtime</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.glite.voms</groupId>
-        	<artifactId>voms-api-java</artifactId>
-        	<scope>compile</scope>
-        </dependency>
-        <dependency>
-        	<groupId>commons-logging</groupId>
-        	<artifactId>commons-logging</artifactId>
-        	<scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.bouncycastle</groupId>
-        	<artifactId>bcprov-jdk15</artifactId>
-        	<scope>provided</scope>
-        </dependency>
-    </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <configuration>
-                    <header>project/LICENSE.template</header>
-                    <mapping>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
-                    <includes>
-                        <include>src/main/java/**</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/com/caucho/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <index>true</index>
-                        <manifestEntries>
-                            <Main-Class>org.glite.authz.pep.client.Version</Main-Class>
-                        </manifestEntries>
-                        <manifestSections>
-                            <manifestSection>
-                                <name>org/glite/authz/pep/client/</name>
-                                <manifestEntries>
-                                    <Implementation-Title>${project.name}</Implementation-Title>
-                                    <Implementation-Version>${project.version}</Implementation-Version>
-                                    <Implementation-Vendor>EMI</Implementation-Vendor>
-                                </manifestEntries>
-                            </manifestSection>
-                        </manifestSections>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<repositories>
+		<repository>
+		    <!-- org.glite.authz:argus-parent:1.5 directly from SWITCH repo -->
+			<id>switch</id>
+			<name>SWITCH Releases</name>
+			<url>http://www.switch.ch/grid/authz/docs/maven2/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Compile Dependencies -->
+		<dependency>
+			<groupId>org.glite.authz</groupId>
+			<artifactId>pep-common</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glite.voms</groupId>
+			<artifactId>voms-api-java</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>avalon-framework</artifactId>
+					<groupId>avalon-framework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>logkit</artifactId>
+					<groupId>logkit</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
+			<scope>compile</scope>
+			<version>1.46</version>
+		</dependency>
+	</dependencies>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <links>
-                        <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
-                        <link>http://www.switch.ch/grid/authz/docs/org.glite.authz.pep-common/</link>
-                    </links>
-                    <quiet>true</quiet>
-                    <aggregate>true</aggregate>
-                    <author>false</author>
-                    <version>true</version>
-                    <doctitle>${project.name} ${project.version} Java API.</doctitle>
-                    <windowtitle>${project.name} ${project.version} Java API.</windowtitle>
-                    <overview>src/main/java/overview.html</overview>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <outputDirectory>${project.reporting.outputDirectory}/xref
-                    </outputDirectory>
-                    <doctitle>${project.name} ${project.version} Code Cross-Reference
-                    </doctitle>
-                    <windowtitle>${project.name} ${project.version} Java API.
-                    </windowtitle>
-                    <javadocDir>${project.reporting.outputDirectory}/apidocs
-                    </javadocDir>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <outputDirectory>${project.reporting.outputDirectory}/unitTest
-                    </outputDirectory>
-                    <xrefLocation>${project.reporting.outputDirectory}/xref
-                    </xrefLocation>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<header>project/LICENSE.template</header>
+					<mapping>
+						<java>SLASHSTAR_STYLE</java>
+					</mapping>
+					<includes>
+						<include>src/main/java/**</include>
+					</includes>
+					<excludes>
+						<exclude>**/com/caucho/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<index>true</index>
+						<manifestEntries>
+							<Main-Class>org.glite.authz.pep.client.Version</Main-Class>
+						</manifestEntries>
+						<manifestSections>
+							<manifestSection>
+								<name>org/glite/authz/pep/client/</name>
+								<manifestEntries>
+									<Implementation-Title>${project.name}</Implementation-Title>
+									<Implementation-Version>${project.version}</Implementation-Version>
+									<Implementation-Vendor>EMI</Implementation-Vendor>
+								</manifestEntries>
+							</manifestSection>
+						</manifestSections>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <profiles>
-        <profile>
-            <id>EMI</id>
-            <build>
-                <finalName>pep-java</finalName>
-            </build>
-        </profile>
-    </profiles>
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<links>
+						<link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+						<link>http://www.switch.ch/grid/authz/docs/org.glite.authz.pep-common/</link>
+					</links>
+					<quiet>true</quiet>
+					<aggregate>true</aggregate>
+					<author>false</author>
+					<version>true</version>
+					<doctitle>${project.name} ${project.version} Java API.</doctitle>
+					<windowtitle>${project.name} ${project.version} Java API.</windowtitle>
+					<overview>src/main/java/overview.html</overview>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+					<outputDirectory>${project.reporting.outputDirectory}/xref
+					</outputDirectory>
+					<doctitle>${project.name} ${project.version} Code Cross-Reference
+					</doctitle>
+					<windowtitle>${project.name} ${project.version} Java API.
+					</windowtitle>
+					<javadocDir>${project.reporting.outputDirectory}/apidocs
+					</javadocDir>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+					<outputDirectory>${project.reporting.outputDirectory}/unitTest
+					</outputDirectory>
+					<xrefLocation>${project.reporting.outputDirectory}/xref
+					</xrefLocation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 
-    <developers>
-        <developer>
-            <id>vtschopp</id>
-            <name>Valery Tschopp</name>
-            <organization>SWITCH</organization>
-            <organizationUrl>http://www.switch.ch/</organizationUrl>
-            <roles>
-                <role>developer</role>
-                <role>documentation</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
+	<profiles>
+		<profile>
+			<id>EMI</id>
+			<build>
+				<finalName>pep-java</finalName>
+			</build>
+		</profile>
+	</profiles>
 
-    <licenses>
-        <license>
-            <name>Apache 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
+	<developers>
+		<developer>
+			<id>vtschopp</id>
+			<name>Valery Tschopp</name>
+			<organization>SWITCH</organization>
+			<organizationUrl>http://www.switch.ch/</organizationUrl>
+			<roles>
+				<role>developer</role>
+				<role>documentation</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
 
-    <organization>
-        <name>EMI - European Middleware Initiative</name>
-        <url>http://www.eu-emi.eu/</url>
-    </organization>
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>EMI - European Middleware Initiative</name>
+		<url>http://www.eu-emi.eu/</url>
+	</organization>
+	<scm>
+		<url>https://github.com/argus-authz/argus-pep-api-java</url>
+		<connection>scm:git:https://github.com/argus-authz/argus-pep-api-java.git</connection>
+	</scm>
 </project>

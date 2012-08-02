@@ -38,7 +38,6 @@ import org.glite.authz.pep.profile.GridWNAuthorizationProfile;
  * PEPClientTestCase
  * 
  * @author Valery Tschopp &lt;tschopp&#64;switch.ch&gt;
- * @version $Revision$
  */
 public class PEPClientTestCase extends TestCase {
 
@@ -69,7 +68,7 @@ public class PEPClientTestCase extends TestCase {
      * 
      * @throws CertificateException
      */
-    public void testGridWNAuthorizationProfile() throws Exception {
+    public void disabled_testGridWNAuthorizationProfile() throws Exception {
         String endpoint= "https://chaos.switch.ch:8154/authz";
         String resourceid= "switch";
         String actionid= "switch";

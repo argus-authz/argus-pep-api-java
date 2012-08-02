@@ -59,13 +59,12 @@ public class PEPClientTestCase extends TestCase {
         super.tearDown();
     }
 
+    public void testNothing() {
+        System.out.println("Online tests are disabled!");
+    }
+
     /**
-     * Test method for
-     * {@link org.glite.authz.pep.client.PEPClient#PEPClient(org.glite.authz.pep.client.config.PEPClientConfiguration)}
-     * .
-     * 
      * @throws Exception
-     * 
      * @throws CertificateException
      */
     public void disabled_testGridWNAuthorizationProfile() throws Exception {

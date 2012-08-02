@@ -18,13 +18,13 @@ spec:
 	sed -e 's#@@BUILD_SETTINGS@@# #g' $(spec).in > $(spec)
 
 package: spec
-	mvn -B -DskipPEPClientTests package
+	mvn -B package
 
 spec-etics:
 	sed -e 's#@@BUILD_SETTINGS@@#-s $(settings_file)#g' $(spec).in > $(spec)
 
 package-etics: spec-etics
-	mvn -B -DskipPEPClientTests -s $(settings_file) package
+	mvn -B -s $(settings_file) package
 
 
 rpm: 

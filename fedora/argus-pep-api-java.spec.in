@@ -33,7 +33,7 @@ The Argus Authorization Service is composed of three main components:
 %setup -q -n argus-pep-api-java
 
 %build
-mvn -B -DskipPEPClientTests @@BUILD_SETTINGS@@ package
+mvn -B @@BUILD_SETTINGS@@ package
 
 %install
 rm -rf $RPM_BUILD_ROOT

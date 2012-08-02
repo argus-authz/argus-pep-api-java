@@ -21,7 +21,7 @@ package org.glite.authz.pep.client;
 import java.io.File;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.List;
+import java.util.*;
 
 import junit.framework.TestCase;
 
@@ -74,6 +74,8 @@ public class PEPClientTestCase extends TestCase {
         String resourceid= "switch";
         String actionid= "switch";
 
+        dumpSystemProperties();
+
         if (System.getProperty("skipPEPClientTests") != null) {
             System.out.println("INFO: Skip test PEPClient callout to "
                     + endpoint);
@@ -115,5 +117,20 @@ public class PEPClientTestCase extends TestCase {
         List<String> groups= profile.getAttributeAssignmentGroupIds(obligation);
         System.out.println("Secondary Groups: " + groups);
     }
+
+    private void dumpSystemProperties() {
+        Properties props= System.getProperties();
+        // sort hashtable keys
+        Vector sortedKeys= new Vector( props.keySet() );
+        Collections.sort( sortedKeys );
+        // dump sorted hashtable
+        Enumeration keys= sortedKeys.elements();
+        while (keys.hasMoreElements()) {
+               String name= (String)keys.nextElement();
+           String value= props.getProperty( name );
+           System.out.println("XXX: " + name + "=" + value);
+        }
+    }
+
 
 }

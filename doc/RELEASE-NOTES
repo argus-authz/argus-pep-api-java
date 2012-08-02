@@ -1,6 +1,6 @@
 argus-pep-api-java 2.1.1
 ------------------------
-PEMFileReader bug fix to read OpenSSL 1.0 PKCS8 PEM private keys from file.
+PEMFileReader bug fix to read OpenSSL 1.0 PKCS8 PEM private keys from file (requires BouncyCastle >= 1.46)
 
 
 argus-pep-api-java 2.1.0

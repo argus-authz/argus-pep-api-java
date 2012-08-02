@@ -1,2 +1,7 @@
 /.settings
 /target
+/rpmbuild
+/RPMS
+/tgz
+/stage
+

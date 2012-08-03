@@ -23,7 +23,7 @@ limitations under the License.
         <groupId>org.glite.authz</groupId>
         <artifactId>argus-parent</artifactId>
         <version>1.5</version>
-        <relativePath>../emi.argus.parent</relativePath>
+        <!-- <relativePath>../emi.argus.parent</relativePath> -->
     </parent>
 
     <name>Argus PEP client Java library</name>
@@ -36,16 +36,11 @@ limitations under the License.
     <url>https://twiki.cern.ch/twiki/bin/view/EGEE/AuthorizationFramework</url>
     <inceptionYear>2009</inceptionYear>
 
-
     <repositories>
         <repository>
-            <!-- org.glite.authz:argus-parent:1.5 directly from SWITCH repo -->
             <id>switch</id>
             <name>SWITCH Releases</name>
             <url>http://www.switch.ch/grid/authz/docs/maven2/release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
     </repositories>
     

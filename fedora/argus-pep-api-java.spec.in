@@ -49,7 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/java
 %{_datadir}/java/%{name}.jar
 %{_datadir}/java/%{name}-%{version}.jar
-%doc README.md doc/README doc/RELEASE-NOTES doc/COPYRIGHT doc/LICENSE src/example/java
+%doc README.md doc/RELEASE-NOTES doc/COPYRIGHT doc/LICENSE src/example/java
 
 %changelog
 * Thu Aug 2 2012 Valery Tschopp <valery.tschopp@switch.ch> 2.1.1-1

@@ -39,6 +39,7 @@
         <exclude>**/.*</exclude>
         <exclude>**/.*/**</exclude>
         <exclude>**/bin/**</exclude>
+        <exclude>**/*.tar.gz</exclude>
       </excludes>
     </fileSet>
   </fileSets>

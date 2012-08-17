@@ -3,8 +3,8 @@
 
 Name: argus-pep-api-java
 
-Version: 2.1.1
-Release: 1%{?dist}
+Version: @@VERSION@@
+Release: @@RELEASE@@%{?dist}
 Summary: Argus PEP client Java API
 
 Group: System Environment/Libraries
@@ -30,26 +30,17 @@ The Argus Authorization Service is composed of three main components:
 - The Policy Enforcement Point Server (PEP Server) ensures the integrity and consistency of the authorization requests received from the PEP clients. Lightweight PEP client libraries are also provided to ease the integration and interoperability with other EMI services or components. 
 
 %prep
-%setup -q -n argus-pep-api-java
+%setup -q
 
 %build
-mvn -B @@BUILD_SETTINGS@@ package
+make package
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT
-tar -C $RPM_BUILD_ROOT -xvzf target/%{name}-%{version}.tar.gz
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%pre
-
-%preun
-
-%post
-
-%postun
 
 %files
 %defattr(-,root,root,-)

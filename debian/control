@@ -1,7 +1,7 @@
 Source: argus-pep-api-java
 Priority: extra
 Maintainer: Valery Tschopp <valery.tschopp@switch.ch>
-Build-Depends: debhelper (>= 7.0.50~), maven2, default-jdk
+Build-Depends: debhelper (>= 7.0.50~), maven2, java2-sdk|default-jdk
 Standards-Version: 3.8.4
 Section: java
 Homepage: https://twiki.cern.ch/twiki/bin/view/EGEE/AuthorizationFramework
@@ -9,7 +9,7 @@ Vcs-Git: git://github.com/argus-authz/argus-pep-api-java.git
 Vcs-Browser: https://github.com/argus-authz/argus-pep-api-java
 
 Package: libargus-pep-api-java
-Architecture: any
+Architecture: all
 Depends: libargus-pep-common-java, ${java:Depends}, ${misc:Depends}
 Recommends: ${java:Recommends}
 Description: Argus PEP client library for Java

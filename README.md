@@ -32,4 +32,6 @@ Support
 -------
 Send your support request to argus-support@cern.ch or use GGUS.
 
-
+Source
+------
+The sources are available on GitHub: https://github.com/argus-authz/argus-pep-api-java

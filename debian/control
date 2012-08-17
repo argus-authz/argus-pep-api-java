@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/argus-authz/argus-pep-api-java
 
 Package: libargus-pep-api-java
 Architecture: any
-Depends: ${java:Depends}, ${misc:Depends}
+Depends: libargus-pep-common-java, ${java:Depends}, ${misc:Depends}
 Recommends: ${java:Recommends}
 Description: Argus PEP client library for Java
  The Argus Authorization Service renders consistent authorization 

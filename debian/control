@@ -1,7 +1,7 @@
 Source: argus-pep-api-java
 Priority: extra
 Maintainer: Valery Tschopp <valery.tschopp@switch.ch>
-Build-Depends: debhelper (>= 7.0.50~)
+Build-Depends: debhelper (>= 7.0.50~), maven2, default-jdk
 Standards-Version: 3.8.4
 Section: java
 Homepage: https://twiki.cern.ch/twiki/bin/view/EGEE/AuthorizationFramework

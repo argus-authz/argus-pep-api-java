@@ -1,5 +1,5 @@
 argus-pep-api-java (2.1.1-1) unstable; urgency=low
 
-  * Initial release for Debian.
+  * Initial release for Debian (Closes: #23482) 
 
  -- Valery Tschopp <valery.tschopp@switch.ch>  Thu, 16 Aug 2012 09:52:59 +0200

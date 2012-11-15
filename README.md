@@ -7,11 +7,11 @@ Argus PEP Server, and parse the authorization decision.
 Runtime Dependencies (CLASSPATH)
 --------------------------------
 - emi.argus.pep-common
-  package: argus-pep-common >= 2.1 (includes java-hessian internally)
-- org.glite.security.voms-api-java
-  package: glite-security-voms-api-java >= 1.9.18
+  package: argus-pep-common >= 2.3 
+- emi.security.canl
+  package: emi-canl-java- >= 1.1.0-rc2
 - bouncycastle
-  package external >= 1.45
+  package: bcprov-jdk16 = 1.46
 - jakarta-commons-httpclient
   package external >= 3.0.1
 - jakarta-commons-codec

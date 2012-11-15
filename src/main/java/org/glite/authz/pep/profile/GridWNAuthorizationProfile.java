@@ -24,9 +24,10 @@ import org.glite.authz.common.profile.GLiteAuthorizationProfileConstants;
  * XACML Grid Worker Node Authorization Profile v1.0.
  * <p>
  * Profile constants and utility methods.
+ * <p>
+ * <b>Identifier:</b> http://glite.org/xacml/profile/grid-wn/1.0
  * 
- * @see <a href="http://edms.cern.ch/document/1058175">XACML Grid Worker Node
- *      Authorization Profile v1.0</a>
+ * @see <a href="http://edms.cern.ch/document/1058175">XACML Grid Worker Node Authorization Profile v1.0</a>
  * 
  * @version 1.0
  */

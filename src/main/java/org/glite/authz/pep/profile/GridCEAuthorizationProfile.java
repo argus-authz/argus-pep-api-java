@@ -24,9 +24,10 @@ import org.glite.authz.common.profile.GLiteAuthorizationProfileConstants;
  * XACML Grid Computing Element Authorization Profile v1.0.
  * <p>
  * Profile constants and utility methods.
+ * <p>
+ * <b>Identifier:</b> http://glite.org/xacml/profile/grid-ce/1.0
  * 
- * @see <a href="https://edms.cern.ch/document/1078881">XACML Grid Computing
- *      Element Authorization Profile v1.0</a>
+ * @see <a href="https://edms.cern.ch/document/1078881">XACML Grid Computing Element Authorization Profile v1.0</a>
  * 
  * @version 1.0
  */

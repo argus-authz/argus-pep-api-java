@@ -29,10 +29,11 @@ import org.glite.authz.common.profile.CommonXACMLAuthorizationProfileConstants;
 import org.glite.authz.common.util.Base64;
 
 /**
- * EMI <a href="http://dci-sec.org/xacml/profile/common-authz/1.1">Common XACML
- * Authorization Profile v.1.1</a>
+ * EMI <a href="http://dci-sec.org/xacml/profile/common-authz/1.1">Common XACML Authorization Profile v.1.1</a>
  * <p>
  * Profile constants and utility methods.
+ * <p>
+ * <b>Identifier:</b> http://dci-sec.org/xacml/profile/common-authz/1.1
  * 
  * @version 1.1
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;

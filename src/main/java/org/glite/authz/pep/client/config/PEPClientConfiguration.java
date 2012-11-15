@@ -18,13 +18,11 @@
  */
 package org.glite.authz.pep.client.config;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CRLException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,16 +30,17 @@ import java.util.List;
 import javax.net.ssl.X509KeyManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.glite.authz.common.security.PKIKeyManager;
-import org.glite.authz.common.security.PKITrustManager;
-import org.glite.authz.pep.obligation.ObligationHandler;
-import org.glite.authz.pep.pip.PolicyInformationPoint;
-import org.glite.voms.PKIStore;
-import org.glite.voms.VOMSTrustManager;
-
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.glite.authz.pep.obligation.ObligationHandler;
+import org.glite.authz.pep.pip.PolicyInformationPoint;
+
+import eu.emi.security.authn.x509.CommonX509TrustManager;
+import eu.emi.security.authn.x509.X509CertChainValidator;
+import eu.emi.security.authn.x509.impl.InMemoryKeystoreCertChainValidator;
+import eu.emi.security.authn.x509.impl.OpensslCertChainValidator;
+import eu.emi.security.authn.x509.impl.PEMCredential;
 
 /**
  * PEP client configuration
@@ -187,16 +186,14 @@ public class PEPClientConfiguration {
         if (log_.isDebugEnabled()) {
             log_.debug("cadirname: " + cadirname);
         }
-        try {
-            PKIStore trustStore= new PKIStore(cadirname, PKIStore.TYPE_CADIR);
-            trustManager_= new VOMSTrustManager(trustStore);
-        } catch (CertificateException e) {
-            throw new PEPClientConfigurationException(e);
-        } catch (CRLException e) {
-            throw new PEPClientConfigurationException(e);
-        } catch (IOException e) {
-            throw new PEPClientConfigurationException(e);
+        
+        File caDirectory= new File(cadirname);
+        if (!caDirectory.isDirectory()) {
+            throw new PEPClientConfigurationException( cadirname + " is not a valid directory");            
         }
+        
+        X509CertChainValidator validator= new OpensslCertChainValidator(cadirname);
+        trustManager_= new CommonX509TrustManager(validator);
     }
 
     /**
@@ -212,8 +209,9 @@ public class PEPClientConfiguration {
     public void setTrustMaterial(KeyStore truststore)
             throws PEPClientConfigurationException {
         try {
-            trustManager_= new PKITrustManager(truststore);
-        } catch (NoSuchAlgorithmException e) {
+            X509CertChainValidator validator= new InMemoryKeystoreCertChainValidator(truststore);
+            trustManager_= new CommonX509TrustManager(validator);
+        } catch (IOException e) {
             throw new PEPClientConfigurationException(e);
         } catch (KeyStoreException e) {
             throw new PEPClientConfigurationException(e);
@@ -246,7 +244,8 @@ public class PEPClientConfiguration {
             log_.debug("userkey: " + userkey + " password: " + password);
         }
         try {
-            keyManager_= new PKIKeyManager(usercert, userkey, password);
+            PEMCredential credential= new PEMCredential(userkey, usercert, password.toCharArray());
+            keyManager_= credential.getKeyManager();
         } catch (GeneralSecurityException e) {
             throw new PEPClientConfigurationException(e);
         } catch (IOException e) {
@@ -266,17 +265,17 @@ public class PEPClientConfiguration {
      *             if an error occurs reading the key material or creating the
      *             key manager
      */
-    public void setKeyMaterial(KeyStore keystore, String password)
-            throws PEPClientConfigurationException {
-        if (password == null) {
-            throw new IllegalArgumentException("password can not be null");
-        }
-        try {
-            keyManager_= new PKIKeyManager(keystore, password);
-        } catch (GeneralSecurityException e) {
-            throw new PEPClientConfigurationException(e);
-        }
-    }
+//    public void setKeyMaterial(KeyStore keystore, String password)
+//            throws PEPClientConfigurationException {
+//        if (password == null) {
+//            throw new IllegalArgumentException("password can not be null");
+//        }
+//        try {
+//            keyManager_= new PKIKeyManager(keystore, password);
+//        } catch (GeneralSecurityException e) {
+//            throw new PEPClientConfigurationException(e);
+//        }
+//    }
 
     /**
      * Gets the trust manager if any

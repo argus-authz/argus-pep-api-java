@@ -128,7 +128,7 @@ public class PEPClient {
                 // success, exit loop
                 break;
             } catch (PEPClientException e) {
-                log.error("request failed for PEP Server " + endpoint, e);
+                log.error("Request failed for PEP Server " + endpoint, e);
                 cause= e;
             }
         }
@@ -136,7 +136,7 @@ public class PEPClient {
             String error= "No PEP Server " + pepdEndpoints_
                     + " was able to process the request";
             log.error(error);
-            PEPClientException exception= new PEPClientException(error);
+            PEPClientException exception= new PEPClientException(error,cause);
             if (cause != null) {
                 exception.setStackTrace(cause.getStackTrace());
             }

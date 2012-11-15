@@ -56,3 +56,8 @@ install:
 	test -f target/$(name)-$(version).tar.gz
 	mkdir -p $(DESTDIR)$(prefix)
 	tar -C $(DESTDIR)$(prefix) -xvzf target/$(name)-$(version).tar.gz
+
+mvn_install:
+	@echo "Install in local maven repository"
+	mvn -B -s $(maven_settings_file) install
+

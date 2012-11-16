@@ -23,7 +23,6 @@ limitations under the License.
         <groupId>org.glite.authz</groupId>
         <artifactId>argus-parent</artifactId>
         <version>1.6</version>
-        <!-- <relativePath>../emi.argus.parent</relativePath> -->
     </parent>
 
     <name>Argus PEP client Java library</name>

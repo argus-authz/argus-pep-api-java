@@ -1,8 +1,3 @@
 /.settings
 /target
-/rpmbuild
-/debbuild
-/RPMS
-/tgz
 /*.tar.gz
-argus-pep-api-java.spec

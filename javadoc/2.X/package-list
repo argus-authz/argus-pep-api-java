@@ -1,0 +1,7 @@
+org.glite.authz.common.profile
+org.glite.authz.common.security
+org.glite.authz.common.util
+org.glite.authz.pep.client
+org.glite.authz.pep.client.config
+org.glite.authz.pep.client.http
+org.glite.authz.pep.profile

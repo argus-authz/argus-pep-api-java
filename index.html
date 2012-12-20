@@ -36,7 +36,25 @@ Argus PEP Server, and parse the authorization decision.</p>
 
 <p>Please refer to the <a href="https://twiki.cern.ch/twiki/bin/view/EGEE/AuthorizationFramework">Argus Authorization Service</a> documentation for more general information.</p>
 
-<h2>Runtime Dependencies (CLASSPATH)</h2>
+<h2>Building</h2>
+
+
+<h3>Maven</h3>
+
+Tu build you project with <strong>maven</strong> add the following repository definition in your project pom.xml file:
+
+<verbatim>
+<repository>
+    <id>switch</id>
+    <name>SWITCH Releases</name>
+    <url>http://www.switch.ch/grid/authz/docs/maven2/release</url>
+</repository>
+</verbatim>
+
+
+<h3>Runtime Dependencies</h3>
+
+If you don't use <strong>maven</strong> to build, assure that the <strong>CLASSPATH</strong> contains the following dependencies:
 
 <ul>
 <li>emi.argus.pep-common &gt;= 2.3 </li>

@@ -6,18 +6,13 @@ Argus PEP Server, and parse the authorization decision.
 
 Runtime Dependencies (CLASSPATH)
 --------------------------------
-- emi.argus.pep-common
-  package: argus-pep-common >= 2.3 
-- emi.security.canl
-  package: emi-canl-java- >= 1.1.0-rc2
-- bouncycastle
-  package: bcprov-jdk16 = 1.46
-- jakarta-commons-httpclient
-  package external >= 3.0.1
-- jakarta-commons-codec
-  package external >= 1.3
-- jakarta-commons-logging
-  package external >= 1.1
+- emi.argus.pep-common >= 2.3 
+- emi.security.canl >= 1.1.0
+- bouncycastle bcprov-jdk16 = 1.46
+- commons-io >= 1.4
+- commons-httpclient >= 3.0.1
+- commons-codecl >= 1.3
+- commons-logging >= 1.1
 
 Documentation
 -------------

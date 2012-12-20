@@ -62,15 +62,14 @@ limitations under the License.
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>1.4</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -181,6 +180,22 @@ limitations under the License.
                     <tarLongFileMode>gnu</tarLongFileMode>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <links>
+                        <link>http://docs.oracle.com/javase/1.5.0/docs/api/</link>
+                        <link>http://argus-authz.github.com/argus-pep-common/javadoc/2.X/</link>                        
+                    </links>
+                    <quiet>true</quiet>
+                    <aggregate>true</aggregate>
+                    <author>false</author>
+                    <version>true</version>
+                    <doctitle>${project.name} 2.x API.</doctitle>
+                    <windowtitle>${project.name} 2.x API.</windowtitle>
+                    <overview>src/main/java/overview.html</overview>
+                </configuration>
+            </plugin>
         </plugins>
         <extensions>
           <extension>
@@ -195,23 +210,8 @@ limitations under the License.
     <reporting>
         <plugins>
             <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <links>
-                        <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
-                        <link>http://www.switch.ch/grid/authz/docs/org.glite.authz.pep-common/</link>
-                    </links>
-                    <quiet>true</quiet>
-                    <aggregate>true</aggregate>
-                    <author>false</author>
-                    <version>true</version>
-                    <doctitle>${project.name} ${project.version} Java API.</doctitle>
-                    <windowtitle>${project.name} ${project.version} Java API.</windowtitle>
-                    <overview>src/main/java/overview.html</overview>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>                
                 <configuration>
                     <aggregate>true</aggregate>
                     <outputDirectory>${project.reporting.outputDirectory}/xref
@@ -226,6 +226,7 @@ limitations under the License.
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.12</version>                
                 <configuration>
                     <aggregate>true</aggregate>
                     <outputDirectory>${project.reporting.outputDirectory}/unitTest

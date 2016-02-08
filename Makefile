@@ -22,8 +22,6 @@ release=1
 
 prefix=/
 
-maven_settings_file=project/maven-settings.xml
-
 tmp_dir=$(CURDIR)/tmp
 
 .PHONY: clean dist package install
@@ -37,7 +35,7 @@ dist:
 	@echo "Package the sources..."
 	test ! -d $(tmp_dir) || rm -fr $(tmp_dir)
 	mkdir -p $(tmp_dir)/$(name)-$(version)
-	cp .classpath .project Makefile README.md pom.xml $(tmp_dir)/$(name)-$(version)
+	cp Makefile README.md pom.xml $(tmp_dir)/$(name)-$(version)
 	cp -r project $(tmp_dir)/$(name)-$(version)
 	cp -r doc $(tmp_dir)/$(name)-$(version)
 	cp -r src $(tmp_dir)/$(name)-$(version)
@@ -48,7 +46,7 @@ dist:
 
 package:
 	@echo "Build with maven"
-	mvn -B -s $(maven_settings_file) package
+	mvn -B -U package
 
 
 install:
@@ -59,5 +57,4 @@ install:
 
 mvn_install:
 	@echo "Install in local maven repository"
-	mvn -B -s $(maven_settings_file) install
-
+	mvn -B -U install

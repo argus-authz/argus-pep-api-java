@@ -17,7 +17,7 @@
 
 name=argus-pep-api-java
 
-version=2.2.0
+version=2.3.0
 release=1
 
 prefix=/

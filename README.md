@@ -25,7 +25,7 @@ API: https://twiki.cern.ch/twiki/bin/view/EGEE/AuthZPEPJavaAPI
 
 Support
 -------
-Send your support request to argus-support@cern.ch or use GGUS.
+Send your support request to argus-support@googlegroups.com or use GGUS.
 
 Source
 ------

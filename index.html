@@ -56,14 +56,22 @@ If you want to use the Argus PEP client Java libray you can either use maven, or
 
 <h3>Maven</h3>
 
-Tu build you project with <strong>maven</strong> add the following repository definition in your project pom.xml file:
+Tu build you project with <strong>maven</strong> do the following:
 
 <pre>
-&lt;repository&gt;
-    &lt;id&gt;switch&lt;/id&gt;
-    &lt;name&gt;SWITCH Releases&lt;/name&gt;
-    &lt;url&gt;http://www.switch.ch/grid/authz/docs/maven2/release&lt;/url&gt;
-&lt;/repository&gt;
+git clone https://github.com/argus-authz/argus-parent.git
+cd argus-parent
+mvn install
+
+cd ..
+git clone https://github.com/argus-authz/argus-pep-common.git
+cd argus-pep-common
+mvn install
+
+cd ..
+git clone https://github.com/argus-authz/argus-pep-api-java.git
+cd argus-pep-api-java
+mvn compile
 </pre>
 
 

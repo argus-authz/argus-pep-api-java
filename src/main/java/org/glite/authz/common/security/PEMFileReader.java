@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
@@ -38,8 +40,12 @@ import eu.emi.security.authn.x509.impl.CertificateUtils.Encoding;
 
 /**
  * PEM files reader to extract PEM encoded private key and certificates from
- * file. <p> <ul> <li>OpenSSL 0.9 PCKS1 format compatible <li>OpenSSL 1.0 PKCS8
- * format compatible (requires BouncyCastle >= 1.46) </ul>
+ * file.
+ * <p>
+ * <ul>
+ * <li>OpenSSL 0.9 PCKS1 format compatible
+ * <li>OpenSSL 1.0 PKCS8 format compatible (requires BouncyCastle >= 1.46)
+ * </ul>
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
@@ -65,11 +71,12 @@ public class PEMFileReader {
    * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
    * format) from a filename.
    * 
-   * @param filename the filename of the file to read from @param password the
-   * password of the private key if encrypted, can be <code>null</code> if the
-   * key is not encrypted @return the private key @throws FileNotFoundException
-   * if the file doesn't exist @throws IOException if an error occurs while
-   * reading the file
+   * @param filename
+   *          the filename of the file to read from @param password the password
+   *          of the private key if encrypted, can be <code>null</code> if the
+   *          key is not encrypted @return the private key @throws
+   *          FileNotFoundException if the file doesn't exist @throws
+   *          IOException if an error occurs while reading the file
    */
   public PrivateKey readPrivateKey(String filename, String password)
     throws FileNotFoundException, IOException {
@@ -82,10 +89,12 @@ public class PEMFileReader {
    * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
    * format) from a file object.
    * 
-   * @param file the file to read from @param password the password of the
-   * private key if encrypted, can be <code>null</code> if the key is not
-   * encrypted @return the private key @throws FileNotFoundException if the file
-   * doesn't exist @throws IOException if an error occurs while reading the file
+   * @param file
+   *          the file to read from @param password the password of the private
+   *          key if encrypted, can be <code>null</code> if the key is not
+   *          encrypted @return the private key @throws FileNotFoundException if
+   *          the file doesn't exist @throws IOException if an error occurs
+   *          while reading the file
    */
   public PrivateKey readPrivateKey(File file, String password)
     throws FileNotFoundException, IOException {
@@ -105,10 +114,11 @@ public class PEMFileReader {
    * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
    * format) from an input stream.
    * 
-   * @param is the input stream @param password the password of the private key
-   * if encrypted, can be <code>null</code> if the key is not encrypted @return
-   * the private key @throws IOException if an error occurs while parsing the
-   * input stream
+   * @param is
+   *          the input stream @param password the password of the private key
+   *          if encrypted, can be <code>null</code> if the key is not
+   *          encrypted @return the private key @throws IOException if an error
+   *          occurs while parsing the input stream
    */
   protected PrivateKey readPrivateKey(InputStream is, String password)
     throws IOException {
@@ -125,9 +135,10 @@ public class PEMFileReader {
   /**
    * Reads all PEM encoded X.509 certificates from a file
    * 
-   * @param filename the filename of the file to read from @return a list of all
-   * X.509 certificates @throws IOException if an error occurs while reading the
-   * file
+   * @param filename
+   *          the filename of the file to read from @return a list of all X.509
+   *          certificates @throws IOException if an error occurs while reading
+   *          the file
    */
   public X509Certificate[] readCertificates(String filename)
     throws FileNotFoundException, IOException {
@@ -139,8 +150,10 @@ public class PEMFileReader {
   /**
    * Reads all PEM encoded X.509 certificates from a file
    * 
-   * @param file the file to read from @return a list of all X.509
-   * certificates @throws IOException if an error occurs while reading the file
+   * @param file
+   *          the file to read from @return a list of all X.509
+   *          certificates @throws IOException if an error occurs while reading
+   *          the file
    */
   public X509Certificate[] readCertificates(File file)
     throws FileNotFoundException, IOException {
@@ -148,6 +161,18 @@ public class PEMFileReader {
     FileInputStream fis = new FileInputStream(file);
     return CertificateUtils.loadCertificateChain(fis, Encoding.PEM);
 
+  }
+
+  public X509Certificate[] readProxyCertificate(String filename,
+    String password) throws FileNotFoundException, IOException,
+    ClassCastException, KeyStoreException {
+
+    KeyStore ks = CertificateUtils.loadPEMKeystore(
+      new FileInputStream(filename), (char[]) null, password.toCharArray());
+    X509Certificate[] converted = CertificateUtils.convertToX509Chain(
+      ks.getCertificateChain(CertificateUtils.DEFAULT_KEYSTORE_ALIAS));
+
+    return converted;
   }
 
   /**
@@ -169,7 +194,8 @@ public class PEMFileReader {
     /**
      * Constructor.
      * 
-     * @param password the PEM password.
+     * @param password
+     *          the PEM password.
      */
     public PEMPassword(String password) {
       if (password == null) {

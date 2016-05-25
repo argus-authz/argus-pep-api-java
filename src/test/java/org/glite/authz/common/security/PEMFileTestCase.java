@@ -94,9 +94,9 @@ public class PEMFileTestCase extends TestCase {
 
     String filePath = getClass().getResource("/" + proxyFilename).getPath();
     PEMFileReader pfr = new PEMFileReader();
-    X509Certificate[] proxy = pfr.readProxyCertificate(filePath, proxyPasswd);
+    X509Certificate[] proxy = pfr.readProxyCertificates(filePath, proxyPasswd);
 
-    assertNotNull(proxy);
+    assertNotNull("Proxy file cannot be read", proxy);
 
   }
 

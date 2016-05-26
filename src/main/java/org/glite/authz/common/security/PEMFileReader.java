@@ -173,7 +173,9 @@ public class PEMFileReader {
   }
 
   /***
-   * Reads all PEM encoded X.509 certificates from a file
+   * Reads all PEM encoded X.509 certificates from a file. This function can
+   * read file with encrypted private key and should be use for read Grid proxy
+   * certificate.
    * 
    * @param filename
    *          the path of the file to read

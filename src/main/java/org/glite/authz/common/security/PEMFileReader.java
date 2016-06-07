@@ -20,9 +20,10 @@ package org.glite.authz.common.security;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
@@ -38,8 +39,12 @@ import eu.emi.security.authn.x509.impl.CertificateUtils.Encoding;
 
 /**
  * PEM files reader to extract PEM encoded private key and certificates from
- * file. <p> <ul> <li>OpenSSL 0.9 PCKS1 format compatible <li>OpenSSL 1.0 PKCS8
- * format compatible (requires BouncyCastle >= 1.46) </ul>
+ * file.
+ * <p>
+ * <ul>
+ * <li>OpenSSL 0.9 PCKS1 format compatible
+ * <li>OpenSSL 1.0 PKCS8 format compatible (requires BouncyCastle >= 1.46)
+ * </ul>
  * 
  * @author Valery Tschopp &lt;valery.tschopp&#64;switch.ch&gt;
  */
@@ -65,14 +70,18 @@ public class PEMFileReader {
    * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
    * format) from a filename.
    * 
-   * @param filename the filename of the file to read from @param password the
-   * password of the private key if encrypted, can be <code>null</code> if the
-   * key is not encrypted @return the private key @throws FileNotFoundException
-   * if the file doesn't exist @throws IOException if an error occurs while
-   * reading the file
+   * @param filename
+   *          the filename of the file to read from
+   * @param password
+   *          the password of the private key if encrypted, can be
+   *          <code>null</code> if the key is not encrypted
+   * @return the private key @throws FileNotFoundException if the file doesn't
+   *         exist
+   * @throws IOException
+   *           if an error occurs while reading the file
    */
-  public PrivateKey readPrivateKey(String filename, String password)
-    throws FileNotFoundException, IOException {
+  public PrivateKey readPrivateKey(final String filename, final String password)
+    throws IOException {
 
     File file = new File(filename);
     return readPrivateKey(file, password);
@@ -82,13 +91,17 @@ public class PEMFileReader {
    * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
    * format) from a file object.
    * 
-   * @param file the file to read from @param password the password of the
-   * private key if encrypted, can be <code>null</code> if the key is not
-   * encrypted @return the private key @throws FileNotFoundException if the file
-   * doesn't exist @throws IOException if an error occurs while reading the file
+   * @param file
+   *          the file to read from
+   * @param password
+   *          the password of the private key if encrypted, can be
+   *          <code>null</code> if the key is not encrypted
+   * @return the private key
+   * @throws IOException
+   *           if an error occurs while reading the file
    */
-  public PrivateKey readPrivateKey(File file, String password)
-    throws FileNotFoundException, IOException {
+  public PrivateKey readPrivateKey(final File file, final String password)
+    throws IOException {
 
     log.debug("file: " + file);
     InputStream is = new FileInputStream(file);
@@ -98,6 +111,8 @@ public class PEMFileReader {
       String error = "Invalid file " + file + ": " + ioe.getMessage();
       log.error(error);
       throw new IOException(error, ioe);
+    } finally {
+      is.close();
     }
   }
 
@@ -105,32 +120,36 @@ public class PEMFileReader {
    * Reads the <b>first</b> available PEM encoded private key (PKCS1 and PKCS8
    * format) from an input stream.
    * 
-   * @param is the input stream @param password the password of the private key
-   * if encrypted, can be <code>null</code> if the key is not encrypted @return
-   * the private key @throws IOException if an error occurs while parsing the
-   * input stream
+   * @param is
+   *          the input stream
+   * @param password
+   *          the password of the private key if encrypted, can be
+   *          <code>null</code> if the key is not encrypted
+   * @return the private key
+   * @throws IOException
+   *           if an error occurs while parsing the input stream
    */
-  protected PrivateKey readPrivateKey(InputStream is, String password)
-    throws IOException {
+  protected PrivateKey readPrivateKey(final InputStream is,
+    final String password) throws IOException {
 
-    final char[] char_password = password == null ? null
+    final char[] charPassword = password == null ? null
       : password.toCharArray();
 
-    PrivateKey pk = CertificateUtils.loadPrivateKey(is, Encoding.PEM,
-      char_password);
+    return CertificateUtils.loadPrivateKey(is, Encoding.PEM, charPassword);
 
-    return pk;
   }
 
   /**
    * Reads all PEM encoded X.509 certificates from a file
    * 
-   * @param filename the filename of the file to read from @return a list of all
-   * X.509 certificates @throws IOException if an error occurs while reading the
-   * file
+   * @param filename
+   *          the filename of the file to read from
+   * @return a list of all X.509 certificates
+   * @throws IOException
+   *           if an error occurs while reading the file
    */
-  public X509Certificate[] readCertificates(String filename)
-    throws FileNotFoundException, IOException {
+  public X509Certificate[] readCertificates(final String filename)
+    throws IOException {
 
     File file = new File(filename);
     return readCertificates(file);
@@ -139,14 +158,42 @@ public class PEMFileReader {
   /**
    * Reads all PEM encoded X.509 certificates from a file
    * 
-   * @param file the file to read from @return a list of all X.509
-   * certificates @throws IOException if an error occurs while reading the file
+   * @param file
+   *          the file to read from
+   * @return a list of all X.509 certificates
+   * @throws IOException
+   *           if an error occurs while reading the file
    */
-  public X509Certificate[] readCertificates(File file)
-    throws FileNotFoundException, IOException {
+  public X509Certificate[] readCertificates(final File file)
+    throws IOException {
 
     FileInputStream fis = new FileInputStream(file);
     return CertificateUtils.loadCertificateChain(fis, Encoding.PEM);
+
+  }
+
+  /***
+   * Reads all PEM encoded X.509 certificates from a file. This function can
+   * read file with encrypted private key and should be use for read Grid proxy
+   * certificate.
+   * 
+   * @param filename
+   *          the path of the file to read
+   * @param password
+   *          the password of the certificate if encrypted
+   * @return a list of all X.509 certificates
+   * @throws IOException
+   *           if an error occurs while reading the file
+   * @throws KeyStoreException
+   *           if the keystore has not been initialized (loaded).
+   */
+  public X509Certificate[] readProxyCertificates(final String filename,
+    final String password) throws IOException, KeyStoreException {
+
+    KeyStore ks = CertificateUtils.loadPEMKeystore(
+      new FileInputStream(filename), (char[]) null, password.toCharArray());
+    return CertificateUtils.convertToX509Chain(
+      ks.getCertificateChain(CertificateUtils.DEFAULT_KEYSTORE_ALIAS));
 
   }
 
@@ -157,27 +204,28 @@ public class PEMFileReader {
   private class PEMPassword implements PasswordFinder {
 
     /** The password */
-    private char[] password_ = null;
+    private char[] password = null;
 
     /**
      * Default constructor. The password is <code>null</code>.
      */
     public PEMPassword() {
-      password_ = null;
+      this.password = null;
     }
 
     /**
      * Constructor.
      * 
-     * @param password the PEM password.
+     * @param password
+     *          the PEM password.
      */
-    public PEMPassword(String password) {
+    public PEMPassword(final String password) {
       if (password == null) {
-        password_ = null;
+        this.password = null;
       } else if (Strings.safeTrimOrNullString(password) == null) {
-        password_ = null;
+        this.password = null;
       } else {
-        password_ = password.toCharArray();
+        this.password = password.toCharArray();
       }
     }
 
@@ -186,9 +234,10 @@ public class PEMFileReader {
      * 
      * @see org.bouncycastle.openssl.PasswordFinder#getPassword()
      */
+    @Override
     public char[] getPassword() {
 
-      return password_;
+      return this.password;
     }
 
   }
